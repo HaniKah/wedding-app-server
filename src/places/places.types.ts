@@ -20,3 +20,15 @@ export enum WeddingSteps {
   CosmeticClinics = 'CosmeticClinics',
   ExtraDecorations = 'ExtraDecorations',
 }
+
+export interface GooglePlacesResponse {
+  html_attributions: string[];
+  results: google.maps.places.PlaceResult[];
+  status: google.maps.places.PlacesServiceStatus;
+}
+
+export class PlacesViewModel {
+  name?: string;
+  formatted_address?: string;
+  formatted_phone_number?: string;
+}

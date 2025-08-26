@@ -8,7 +8,7 @@ export class PlacesController {
   constructor(private readonly placesService: PlacesService) {}
 
   @Get('getDjs')
-  public async getDjs(): Promise<PlaceResult> {
-    return await this.placesService.getPlaces(WeddingSteps.Dj);
+  public getDjs(): Promise<PlaceResult[]> {
+    return this.placesService.getPlaces(WeddingSteps.Dj);
   }
 }

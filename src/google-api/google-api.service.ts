@@ -1,16 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import * as process from 'node:process';
-import PlaceResult = google.maps.places.PlaceResult;
+import { GooglePlacesResponse } from '../places/places.types';
 
 @Injectable()
 export class GoogleApiService {
-  async getPlaces(query: string): Promise<PlaceResult> {
-    const res: PlaceResult = await fetch(
-      `https://maps.googleapis.com/maps/api/place/textsearch/json?${query}=` +
-        query +
-        `&key=${process.env.GOOGLE_API_KEY}`,
-    );
+  constructor() {}
 
-    return res;
+  async getPlaces(query: string): Promise<GooglePlacesResponse> {
+    const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&key=${process.env.GOOGLE_API_KEY}`;
+
+    const response: Response = await fetch(url);
+
+    return (await response.json()) as GooglePlacesResponse;
   }
 }
