@@ -1,3 +1,5 @@
+import LatLng = google.maps.LatLng;
+
 export enum WeddingSteps {
   Date = 'Date',
   Place = 'Place',
@@ -28,6 +30,9 @@ export interface GooglePlacesResponse {
 }
 
 export class PlacesViewModel {
+  placeId?: string;
+  businessStatus?: string;
+  location?: LatLng;
   name?: string;
   formatted_address?: string;
   formatted_phone_number?: string;
