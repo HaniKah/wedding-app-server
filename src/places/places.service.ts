@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import {
   GooglePlacesResponse,
+  PlacesDto,
   PlacesViewModel,
   WeddingSteps,
 } from './places.types';
@@ -10,12 +11,12 @@ import PlaceResult = google.maps.places.PlaceResult;
 @Injectable()
 export class PlacesService {
   constructor(private readonly googleApiService: GoogleApiService) {}
-  public async getGooglePlaces(step: WeddingSteps): Promise<PlacesViewModel[]> {
+  public async getGooglePlaces(step: WeddingSteps): Promise<PlacesViewModel> {
     const resp: GooglePlacesResponse = await this.googleApiService.getPlaces(
       'nearby ' + step,
     );
 
-    return resp.results.map((p: PlaceResult): PlacesViewModel => {
+    const places = resp.results.map((p: PlaceResult): PlacesDto => {
       return {
         placeId: p.place_id,
         businessStatus: p.business_status,
@@ -25,5 +26,8 @@ export class PlacesService {
         formatted_phone_number: p.formatted_phone_number,
       };
     });
+    return {
+      places: places,
+    };
   }
 }

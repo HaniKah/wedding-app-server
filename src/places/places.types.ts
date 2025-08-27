@@ -29,11 +29,14 @@ export interface GooglePlacesResponse {
   status: google.maps.places.PlacesServiceStatus;
 }
 
-export class PlacesViewModel {
+export class PlacesDto {
   placeId?: string;
   businessStatus?: string;
   location?: LatLng;
   name?: string;
   formatted_address?: string;
   formatted_phone_number?: string;
+}
+export class PlacesViewModel {
+  places: PlacesDto[];
 }
