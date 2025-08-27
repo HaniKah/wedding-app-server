@@ -9,6 +9,6 @@ export class PlacesController {
 
   @Get('getDjs')
   public getDjs(): Promise<PlaceResult[]> {
-    return this.placesService.getPlaces(WeddingSteps.Dj);
+    return this.placesService.getGooglePlaces(WeddingSteps.Dj);
   }
 }
