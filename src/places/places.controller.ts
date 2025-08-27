@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { PlacesService } from './places.service';
 import { WeddingSteps } from './places.types';
 import PlaceResult = google.maps.places.PlaceResult;
@@ -7,8 +7,8 @@ import PlaceResult = google.maps.places.PlaceResult;
 export class PlacesController {
   constructor(private readonly placesService: PlacesService) {}
 
-  @Get('getDjs')
-  public getDjs(): Promise<PlaceResult[]> {
-    return this.placesService.getGooglePlaces(WeddingSteps.Dj);
+  @Get('getPlace')
+  public getPlaces(@Query('step') step: WeddingSteps): Promise<PlaceResult[]> {
+    return this.placesService.getGooglePlaces(step);
   }
 }

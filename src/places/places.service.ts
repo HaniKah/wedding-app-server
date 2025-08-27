@@ -12,7 +12,7 @@ export class PlacesService {
   constructor(private readonly googleApiService: GoogleApiService) {}
   public async getGooglePlaces(step: WeddingSteps): Promise<PlacesViewModel[]> {
     const resp: GooglePlacesResponse = await this.googleApiService.getPlaces(
-      'nearby' + step,
+      'nearby ' + step,
     );
 
     return resp.results.map((p: PlaceResult) => {
