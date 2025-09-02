@@ -2,7 +2,7 @@ import LatLng = google.maps.LatLng;
 
 export enum WeddingSteps {
   Date = 'Date',
-  Place = 'Place',
+  Host = 'Host',
   Dress = 'Dress',
   Photographer = 'Photographer',
   Dj = 'Dj',
