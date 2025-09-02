@@ -1,5 +1,3 @@
-import LatLng = google.maps.LatLng;
-
 export enum WeddingSteps {
   Date = 'Date',
   Host = 'Host',
@@ -21,22 +19,4 @@ export enum WeddingSteps {
   Hammam = 'Hammam',
   CosmeticClinics = 'CosmeticClinics',
   ExtraDecorations = 'ExtraDecorations',
-}
-
-export interface GooglePlacesResponse {
-  html_attributions: string[];
-  results: google.maps.places.PlaceResult[];
-  status: google.maps.places.PlacesServiceStatus;
-}
-
-export class PlacesDto {
-  placeId?: string;
-  businessStatus?: string;
-  location?: LatLng;
-  name?: string;
-  formatted_address?: string;
-  formatted_phone_number?: string;
-}
-export class PlacesViewModel {
-  places: PlacesDto[];
 }
