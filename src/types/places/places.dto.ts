@@ -1,15 +1,15 @@
 import { LatLng } from '../general/latlng.dto';
 
-export class PlaceViewModel {
-  placeId: string;
-  businessStatus: string;
-  location: LatLng;
-  name: string;
-  formatted_address: string;
-  formatted_phone_number: string;
+export class PlacesDto {
+  placeId?: string;
+  businessStatus?: string;
+  location?: LatLng;
+  name?: string;
+  formatted_address?: string;
+  formatted_phone_number?: string;
 }
 export class PlacesViewModel {
-  result: PlaceViewModel[];
+  result: PlacesDto[];
 }
 
 export class GooglePlacesResponse {

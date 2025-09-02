@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import {
   GooglePlacesResponse,
+  PlacesDto,
   PlacesViewModel,
-  PlaceViewModel,
 } from '../types/places/places.dto';
 import { GoogleApiService } from '../google-api/google-api.service';
 import { LatLng } from '../types/general/latlng.dto';
@@ -17,7 +17,7 @@ export class PlacesService {
       'nearby ' + step,
     );
 
-    const places = resp.results.map((p: PlaceResult): PlaceViewModel => {
+    const places = resp.results.map((p: PlaceResult): PlacesDto => {
       return {
         placeId: p.place_id,
         businessStatus: p.business_status,
