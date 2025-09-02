@@ -1,14 +1,12 @@
 import { LatLng } from '../general/latlng.dto';
 
 export class PlaceViewModel {
-  placeId: string | undefined;
-  businessStatus: string | undefined;
-  location: LatLng | undefined;
-  name: string | undefined;
-
-  formatted_address: string | undefined;
-
-  formatted_phone_number: string | undefined;
+  placeId: string;
+  businessStatus: string;
+  location: LatLng;
+  name: string;
+  formatted_address: string;
+  formatted_phone_number: string;
 }
 export class PlacesViewModel {
   result: PlaceViewModel[];
