@@ -6,30 +6,35 @@ export async function dummyPlaces(
   step: WeddingSteps,
 ): Promise<PlacesViewModel> {
   await new Promise((resolve) => setTimeout(resolve, 100));
+  if (step === WeddingSteps.Date) return { result: [] };
   if (step === WeddingSteps.Host) return dummyData.host;
   if (step === WeddingSteps.Photographer) return dummyData.photographers;
   if (step === WeddingSteps.Dress) return dummyData.dress;
-
-  return { result: [] }; // default empty
+  if (step === WeddingSteps.Dj) return dummyData.dj;
+  return { result: [] };
 }
 
 const dummyData = {
-  dress: {
+  dj: {
     result: [
       {
         placeId: 'ChIJ339uDaihHBURZ2mgtOTMtVM',
         businessStatus: 'OPERATIONAL',
         location: new LatLng(31.9925027, 35.8642499),
-        name: 'dress Dress dress',
+        name: 'dj dj dj',
         formatted_address: 'Wasfi At-Tall St. 179, Amman, Jordan',
         formatted_phone_number: '+962 7 777 7777',
       },
+    ],
+  },
+  dress: {
+    result: [
       {
         placeId: 'ChIJx-QIaj2gHBURlw4ZmuM-k7c',
         businessStatus: 'OPERATIONAL',
         location: new LatLng(31.9838239, 35.8922951),
         lat: 31.9838239,
-        name: 'Allaialy halls',
+        name: 'dress dress dress',
         formatted_address: 'Amman, Jordan',
         formatted_phone_number: undefined,
       },
