@@ -5,5 +5,10 @@ export class StepsDto {
   @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
   currentStep: WeddingSteps;
   @ApiProperty({ enum: WeddingSteps, isArray: true, enumName: 'WeddingSteps' })
-  steps: WeddingSteps[];
+  steps: StepsBasicInfo[];
+}
+export class StepsBasicInfo {
+  step: WeddingSteps;
+  title: string;
+  description: string;
 }
