@@ -1,14 +1,16 @@
-import { WeddingSteps } from '../general/wedding-steps-enum.dto';
 import { ApiProperty } from '@nestjs/swagger';
+import { WeddingSteps } from '../general/wedding-steps-enum.dto';
 
 export class StepsDto {
-  @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
-  currentStep: WeddingSteps;
-  @ApiProperty({ enum: WeddingSteps, isArray: true, enumName: 'WeddingSteps' })
-  steps: StepsBasicInfo[];
-}
-export class StepsBasicInfo {
-  step: WeddingSteps;
+  @ApiProperty()
+  fullfilled: boolean;
+
+  @ApiProperty()
   title: string;
+
+  @ApiProperty()
   description: string;
+
+  @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
+  step: WeddingSteps;
 }

@@ -1,28 +1,40 @@
-import { StepsBasicInfo, StepsDto } from '../types/places/steps.dto';
+import { StepsDto } from '../types/places/steps.dto';
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
 
-export async function dummySteps(): Promise<StepsDto> {
+export async function dummySteps(): Promise<Record<WeddingSteps, StepsDto>> {
   await new Promise((resolve) => setTimeout(resolve, 100));
-  // const steps: WeddingSteps[] = Object.values(WeddingSteps);
-  // const currentStepIndex: number = Math.floor(Math.random() * steps.length);
-  const steps: StepsBasicInfo[] = [
-    { step: WeddingSteps.Date, title: 'Date', description: 'Date description' },
-    { step: WeddingSteps.Host, title: 'Host', description: 'Host description' },
-    {
-      step: WeddingSteps.Dress,
-      title: 'Dress',
-      description: 'Dress description',
-    },
-    {
-      step: WeddingSteps.Photographer,
-      title: 'Photographer',
-      description: 'Photographer description',
-    },
-    { step: WeddingSteps.Dj, title: 'Dj', description: 'Dj description' },
-  ];
 
   return {
-    currentStep: WeddingSteps.Host,
-    steps: steps,
+    [WeddingSteps.Date]: {
+      title: 'Date',
+      description: 'Date description',
+      fullfilled: true,
+      step: WeddingSteps.Date,
+    },
+    [WeddingSteps.Host]: {
+      title: 'Host',
+      description: 'Host description',
+      fullfilled: false,
+      step: WeddingSteps.Host,
+    },
+    [WeddingSteps.Dress]: {
+      title: 'Dress',
+      description: 'Dress description',
+      fullfilled: false,
+      step: WeddingSteps.Dress,
+    },
+
+    [WeddingSteps.Photographer]: {
+      title: 'Photographer',
+      description: 'Photographer description',
+      fullfilled: false,
+      step: WeddingSteps.Photographer,
+    },
+    [WeddingSteps.Dj]: {
+      title: 'Dj',
+      description: 'Dj description',
+      fullfilled: false,
+      step: WeddingSteps.Dj,
+    },
   };
 }
