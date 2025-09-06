@@ -36,6 +36,7 @@ export class PlacesController {
         },
         {} as Record<string, any>,
       ),
+      required: Object.values(WeddingSteps),
     },
   })
   @Get('getSteps')
