@@ -1,6 +1,6 @@
 import { LatLng } from '../types/general/latlng.dto';
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
-import { PlacesViewModel } from '../types/places/places.dto';
+import { PlacesViewModel } from '../types/planner/places.dto';
 
 export async function dummyPlaces(
   step: WeddingSteps,

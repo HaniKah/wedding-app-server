@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { GooglePlacesResponse } from '../types/places/places.dto';
+import { GooglePlacesResponse } from '../types/planner/places.dto';
 
 @Injectable()
 export class GoogleApiService {

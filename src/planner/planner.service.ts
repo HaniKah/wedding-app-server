@@ -3,14 +3,14 @@ import {
   GooglePlacesResponse,
   PlacesDto,
   PlacesViewModel,
-} from '../types/places/places.dto';
+} from '../types/planner/places.dto';
 import { GoogleApiService } from '../google-api/google-api.service';
 import { LatLng } from '../types/general/latlng.dto';
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
 import PlaceResult = google.maps.places.PlaceResult;
 
 @Injectable()
-export class PlacesService {
+export class PlannerService {
   constructor(private readonly googleApiService: GoogleApiService) {}
 
   public async getGooglePlaces(step: WeddingSteps): Promise<PlacesViewModel> {
