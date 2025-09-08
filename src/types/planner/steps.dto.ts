@@ -11,21 +11,15 @@ export class StepInfo {
   @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
   step: WeddingSteps;
 
-  @ApiProperty({
-    type: () => FullfilledStep || Date,
-    nullable: true,
-  })
-  fullfilled: FullfilledStep | Date | null;
+  @ApiProperty()
+  fullfilled: boolean;
+
+  @ApiProperty()
+  note: string;
 
   @ApiProperty()
   title: string;
 
   @ApiProperty()
   description: string;
-}
-export class FullfilledStep {
-  @ApiProperty()
-  placeId: string;
-  @ApiProperty()
-  placeName: string;
 }

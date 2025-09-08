@@ -38,41 +38,43 @@ export async function dummySteps(): Promise<StepsDto> {
   //   },
   // };
   return {
-    progress: 10,
+    progress: 0.3,
     steps: [
       {
         title: 'Date',
         description: 'Date description',
-        fullfilled: new Date(),
+        fullfilled: true,
         step: WeddingSteps.Date,
+        note: '23.08.2026',
       },
       {
         title: 'Host',
         description: 'Host description',
-        fullfilled: {
-          placeId: 'ChIJ51i9R_pfGxUR7vY7QzR16FA',
-          placeName: 'Host host host',
-        },
+        fullfilled: true,
         step: WeddingSteps.Host,
+        note: 'Fairmont wedding hall',
       },
       {
         title: 'Dress',
         description: 'Dress description',
-        fullfilled: null,
+        fullfilled: false,
         step: WeddingSteps.Dress,
+        note: 'make sure its worth it',
       },
 
       {
         title: 'Photographer',
         description: 'Photographer description',
-        fullfilled: null,
+        fullfilled: false,
         step: WeddingSteps.Photographer,
+        note: 'you can do it',
       },
       {
         title: 'Dj',
         description: 'Dj description',
-        fullfilled: null,
+        fullfilled: false,
         step: WeddingSteps.Dj,
+        note: 'keep going',
       },
     ],
   };
