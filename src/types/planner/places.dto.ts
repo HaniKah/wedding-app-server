@@ -17,3 +17,13 @@ export class GooglePlacesResponse {
   results: google.maps.places.PlaceResult[];
   status: google.maps.places.PlacesServiceStatus;
 }
+export class PlaceDetailsDto {
+  placeId?: string | undefined;
+  name: string | undefined | null;
+  nationalNumber: string | undefined | null;
+  internationalNumber: string | undefined | null;
+  formattedAddress: string | undefined | null;
+  rating: number | undefined | null;
+  userRatingCount: number | undefined | null;
+  googleMapsUri: string | undefined | null;
+}

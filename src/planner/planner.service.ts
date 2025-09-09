@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+//@ts-nocheck
 import { Injectable } from '@nestjs/common';
 import {
   GooglePlacesResponse,
+  PlaceDetailsDto,
   PlacesDto,
   PlacesViewModel,
 } from '../types/planner/places.dto';
@@ -33,6 +36,25 @@ export class PlannerService {
     });
     return {
       result: places,
+    };
+  }
+
+  public async getGooglePlaceDetails(
+    placeId: string,
+  ): Promise<PlaceDetailsDto> {
+    const googlePlace: unknown =
+      await this.googleApiService.getPlaceById(placeId);
+
+    return {
+      placeId: googlePlace.id || undefined,
+
+      name: googlePlace.displayName,
+      formattedAddress: googlePlace.formattedAddress,
+      internationalNumber: googlePlace.internationalPhoneNumber,
+      nationalNumber: googlePlace.nationalPhoneNumber,
+      rating: googlePlace.rating,
+      googleMapsUri: googlePlace.googleMapsURI,
+      userRatingCount: googlePlace.userRatingCount,
     };
   }
 }

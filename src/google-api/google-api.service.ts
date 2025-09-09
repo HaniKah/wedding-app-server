@@ -12,4 +12,11 @@ export class GoogleApiService {
 
     return (await response.json()) as GooglePlacesResponse;
   }
+
+  async getPlaceById(placeId: string): Promise<unknown> {
+    const url = `https://places.googleapis.com/v1/places/${placeId}?fields=*&key=${process.env.GOOGLE_API_KEY}`;
+    const response: Response = await fetch(url);
+
+    return await response.json();
+  }
 }
