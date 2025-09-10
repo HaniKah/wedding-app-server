@@ -23,4 +23,10 @@ export class GoogleApiService {
     console.log('result from google : ', result);
     return result;
   }
+
+  async getImageByName(imageName: string): Promise<unknown> {
+    const url = `https://places.googleapis.com/v1/places/ChIJ51i9R_pfGxUR7vY7QzR16FA/photos/${imageName}/media?key=${process.env.GOOGLE_API_KEY}&maxHeightPx=460&skipHttpRedirect=true`;
+    const response: Response = await fetch(url);
+    return response.json();
+  }
 }

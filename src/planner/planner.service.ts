@@ -12,6 +12,7 @@ import {
 import { GoogleApiService } from '../google-api/google-api.service';
 import { LatLng } from '../types/general/latlng.dto';
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
+import { PlaceImageDto } from '../types/planner/image.dto';
 import PlaceResult = google.maps.places.PlaceResult;
 
 @Injectable()
@@ -56,6 +57,14 @@ export class PlannerService {
       nationalNumber: googlePlace.nationalPhoneNumber || null,
       rating: googlePlace.rating || null,
       userRatingCount: googlePlace.userRatingCount || null,
+    };
+  }
+
+  public async getGoogleImageByName(imageName: string): Promise<PlaceImageDto> {
+    const response = await this.googleApiService.getImageByName(imageName);
+    return {
+      name: response.name,
+      url: response.url,
     };
   }
 }
