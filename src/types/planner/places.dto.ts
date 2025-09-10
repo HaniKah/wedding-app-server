@@ -18,12 +18,11 @@ export class GooglePlacesResponse {
   status: google.maps.places.PlacesServiceStatus;
 }
 export class PlaceDetailsDto {
-  placeId?: string | undefined;
-  name: string | undefined | null;
-  nationalNumber: string | undefined | null;
-  internationalNumber: string | undefined | null;
-  formattedAddress: string | undefined | null;
-  rating: number | undefined | null;
-  userRatingCount: number | undefined | null;
-  googleMapsUri: string | undefined | null;
+  placeId: string | null;
+  name: string | null;
+  nationalNumber: string | null;
+  internationalNumber: string | null;
+  formattedAddress: string | null;
+  rating: number | null;
+  userRatingCount: number | null;
 }

@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
 //@ts-nocheck
+
 import { Injectable } from '@nestjs/common';
 import {
   GooglePlacesResponse,
@@ -46,15 +48,14 @@ export class PlannerService {
       await this.googleApiService.getPlaceById(placeId);
 
     return {
-      placeId: googlePlace.id || undefined,
-
-      name: googlePlace.displayName,
-      formattedAddress: googlePlace.formattedAddress,
-      internationalNumber: googlePlace.internationalPhoneNumber,
-      nationalNumber: googlePlace.nationalPhoneNumber,
-      rating: googlePlace.rating,
-      googleMapsUri: googlePlace.googleMapsURI,
-      userRatingCount: googlePlace.userRatingCount,
+      placeId: googlePlace.id || null,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      name: googlePlace.displayName.text || null,
+      formattedAddress: googlePlace.formattedAddress || null,
+      internationalNumber: googlePlace.internationalPhoneNumber || null,
+      nationalNumber: googlePlace.nationalPhoneNumber || null,
+      rating: googlePlace.rating || null,
+      userRatingCount: googlePlace.userRatingCount || null,
     };
   }
 }

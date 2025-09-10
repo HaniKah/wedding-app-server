@@ -21,8 +21,7 @@ export class PlannerController {
   public async getGooglePlaceById(
     @Query('placeId') placeId: string,
   ): Promise<PlaceDetailsDto> {
-    const result = await this.plannerService.getGooglePlaceDetails(placeId);
-    return result;
+    return await this.plannerService.getGooglePlaceDetails(placeId);
   }
 
   // this is created to avoid overload google api with requests while testing

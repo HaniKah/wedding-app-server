@@ -14,9 +14,13 @@ export class GoogleApiService {
   }
 
   async getPlaceById(placeId: string): Promise<unknown> {
-    const url = `https://places.googleapis.com/v1/places/${placeId}?fields=*&key=${process.env.GOOGLE_API_KEY}`;
+    const fields: string =
+      'displayName,formattedAddress,internationalPhoneNumber,nationalPhoneNumber,rating,userRatingCount';
+    const url = `https://places.googleapis.com/v1/places/${placeId}?fields=${fields}&key=${process.env.GOOGLE_API_KEY}`;
     const response: Response = await fetch(url);
-
-    return await response.json();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const result = await response.json();
+    console.log('result from google : ', result);
+    return result;
   }
 }
