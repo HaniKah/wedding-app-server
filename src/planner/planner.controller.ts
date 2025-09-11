@@ -5,43 +5,42 @@ import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
 import { dummyPlaces } from '../constants/dummy-places';
 import { dummySteps } from '../constants/dummy-steps';
 import { StepsDto } from '../types/planner/steps.dto';
-import { PlaceImageDto } from '../types/planner/image.dto';
 
 @Controller('places')
 export class PlannerController {
   constructor(private readonly plannerService: PlannerService) {}
 
-  @Get('getGooglePlaces')
-  public getGooglePlaces(
+  @Get('getPlaces')
+  public getPlaces(
     @Query('step') step: WeddingSteps,
   ): Promise<PlacesViewModel> {
-    return this.plannerService.getGooglePlaces(step);
+    return this.plannerService.getPlaces(step);
   }
 
-  @Get('getGooglePlaceById')
-  public async getGooglePlaceById(
+  @Get('getPlaceById')
+  public async getPlaceById(
     @Query('placeId') placeId: string,
   ): Promise<PlaceDetailsDto> {
-    return await this.plannerService.getGooglePlaceDetails(placeId);
+    return await this.plannerService.getPlaceDetails(placeId);
   }
 
-  @Get('getGoogleImage')
-  public async getGoogleImage(
-    @Query('imageName') imageName: string,
-  ): Promise<PlaceImageDto> {
-    return await this.plannerService.getGoogleImageByName(imageName);
+  @Get('getPhotoByRef')
+  public async getPhotoByRef(
+    @Query('fetchName') fetchName: string,
+  ): Promise<any> {
+    return await this.plannerService.getPhotos(fetchName);
   }
 
   // this is created to avoid overload google api with requests while testing
-  @Get('getPlaces')
-  public async getPlaces(
+  @Get('getDummyPlaces')
+  public async getDummyPlaces(
     @Query('step') step: WeddingSteps,
   ): Promise<PlacesViewModel> {
     return await dummyPlaces(step);
   }
 
-  @Get('getSteps')
-  public async getSteps(): Promise<StepsDto> {
+  @Get('getDummySteps')
+  public async getDummySteps(): Promise<StepsDto> {
     return dummySteps();
   }
 }
