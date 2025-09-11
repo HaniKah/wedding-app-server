@@ -1,9 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import {
-  PlaceDetailsDto,
-  PlacePhotoDto,
-  PlacesDto,
-} from '../types/planner/places.dto';
+import { PlaceDetailsDto, PlacePhotoDto, PlacesDto, } from '../types/planner/places.dto';
 import {
   Client,
   FindPlaceFromTextResponse,
@@ -110,11 +106,10 @@ export class GoogleApiService {
   private async fetchGooglePlacePhotoByRef(
     photoRef: string,
   ): Promise<PhotosDto> {
-    const url = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photoRef}&key=${process.env.GOOGLE_API_KEY}`;
+    const url = `https://places.googleapis.com/v1/${photoRef}/media?key=${process.env.GOOGLE_API_KEY}&maxHeightPx=400&skipHttpRedirect=true`;
     const res: Response = await fetch(url);
     const json = (await res.json()) as { name: string; photoUri: string };
     return {
-      name: json.name,
       uri: json.photoUri,
     };
   }

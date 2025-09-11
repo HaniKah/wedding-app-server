@@ -1,5 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { PlaceDetailsDto, PlacesDto, PlacesViewModel, } from '../types/planner/places.dto';
+import {
+  PlaceDetailsDto,
+  PlacesDto,
+  PlacesViewModel,
+} from '../types/planner/places.dto';
 import { GoogleApiService } from '../google-api/google-api.service';
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
 import { PhotosDto } from '../types/planner/photos.dto';
