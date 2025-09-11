@@ -13,7 +13,7 @@ export class PlacesViewModel {
 
 //coming from google places api , a fetchName is used to fetch from the places photos api
 export class PlacePhotoDto {
-  photoRef: string | null;
+  photoRef: string;
   width: number | null;
   height: number | null;
   attributions: AuthorAttributionDto[] | null;

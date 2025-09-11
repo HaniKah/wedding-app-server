@@ -32,7 +32,7 @@ export class GoogleApiService {
     if (res?.photos) {
       photos = res?.photos?.map((p) => {
         return {
-          photoRef: p.name ? p.name : null,
+          photoRef: p.name ? p.name : '',
           width: p.widthPx ? p.widthPx : null,
           height: p.heightPx ? p.heightPx : null,
           attributions: p.authorAttributions ? p.authorAttributions : null, //this is an array ,we defined excatly the object fields that is coming from google , thats way we are note looping over the array and defining the values again , because i am too lazy to do that , and google sucks
