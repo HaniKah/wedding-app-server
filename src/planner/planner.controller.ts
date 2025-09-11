@@ -15,6 +15,7 @@ export class PlannerController {
   public getPlaces(
     @Query('step') step: WeddingSteps,
   ): Promise<PlacesViewModel> {
+    console.log('step is :' + step);
     return this.plannerService.getPlaces(step);
   }
 

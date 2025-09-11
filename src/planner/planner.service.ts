@@ -14,7 +14,7 @@ export class PlannerService {
 
   public async getPlaces(step: WeddingSteps): Promise<PlacesViewModel> {
     const res: PlacesDto[] = await this.googleApiService.getPlaces(
-      'nearby' + step,
+      'nearby ' + step,
     );
     return { result: res };
   }
