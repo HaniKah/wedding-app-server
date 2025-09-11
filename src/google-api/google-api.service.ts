@@ -1,5 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { PlaceDetailsDto, PlacePhotoDto, PlacesDto, } from '../types/planner/places.dto';
+import {
+  PlaceDetailsDto,
+  PlacePhotoDto,
+  PlacesDto,
+} from '../types/planner/places.dto';
 import {
   Client,
   FindPlaceFromTextResponse,

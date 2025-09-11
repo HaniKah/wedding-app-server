@@ -5,6 +5,7 @@ import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
 import { dummyPlaces } from '../constants/dummy-places';
 import { dummySteps } from '../constants/dummy-steps';
 import { StepsDto } from '../types/planner/steps.dto';
+import { PhotosDto } from '../types/planner/photos.dto';
 
 @Controller('places')
 export class PlannerController {
@@ -26,9 +27,9 @@ export class PlannerController {
 
   @Get('getPhotoByRef')
   public async getPhotoByRef(
-    @Query('fetchName') fetchName: string,
-  ): Promise<any> {
-    return await this.plannerService.getPhotos(fetchName);
+    @Query('photoRef') photoRef: string,
+  ): Promise<PhotosDto> {
+    return await this.plannerService.getPhotos(photoRef);
   }
 
   // this is created to avoid overload google api with requests while testing
