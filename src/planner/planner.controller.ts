@@ -30,7 +30,8 @@ export class PlannerController {
   public async getPhotoByRef(
     @Query('photoRef') photoRef: string,
   ): Promise<PhotosDto> {
-    return await this.plannerService.getPhotos(photoRef);
+    const res = await this.plannerService.getPhotos(photoRef);
+    return res;
   }
 
   // this is created to avoid overload google api with requests while testing

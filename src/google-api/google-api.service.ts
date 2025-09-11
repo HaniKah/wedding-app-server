@@ -6,10 +6,11 @@ import {
 } from '../types/planner/places.dto';
 
 import { LatLng } from '../types/general/latlng.dto';
-import { PhotosDto } from '../types/planner/photos.dto';
 import { PlacesClient } from '@googlemaps/places';
 import { google } from '@googlemaps/places/build/protos/protos';
+import { PhotosDto } from '../types/planner/photos.dto';
 import IPlace = google.maps.places.v1.IPlace;
+import IGetPhotoMediaRequest = google.maps.places.v1.IGetPhotoMediaRequest;
 
 @Injectable()
 export class GoogleApiService {
@@ -18,7 +19,10 @@ export class GoogleApiService {
   });
 
   async getPhotoByRef(photoRef: string): Promise<PhotosDto> {
-    return await this.fetchGooglePlacePhotoByRef(photoRef);
+    const res = await this.fetchGooglePlacePhotoByRef(photoRef);
+    return {
+      uri: res,
+    };
   }
 
   public async getPlaceById(placeId: string): Promise<PlaceDetailsDto> {
@@ -125,14 +129,27 @@ export class GoogleApiService {
     const [response] = await this.client.searchText(request, callOptions);
     return response.places;
   }
-  private async fetchGooglePlacePhotoByRef(
-    photoRef: string,
-  ): Promise<PhotosDto> {
-    const url = `https://places.googleapis.com/v1/${photoRef}/media?key=${process.env.GOOGLE_API_KEY}&maxHeightPx=400&skipHttpRedirect=true`;
-    const res: Response = await fetch(url);
-    const json = (await res.json()) as { name: string; photoUri: string };
-    return {
-      uri: json.photoUri,
+  // private async fetchGooglePlacePhotoByRef(
+  //   photoRef: string,
+  // ): Promise<PhotosDto> {
+  //   const url = `https://places.googleapis.com/v1/${photoRef}/media?key=${process.env.GOOGLE_API_KEY}&maxHeightPx=400&skipHttpRedirect=true`;
+  //   const res: Response = await fetch(url);
+  //   const json = (await res.json()) as { name: string; photoUri: string };
+  //   return {
+  //     uri: json.photoUri,
+  //   };
+  // }
+
+  private async fetchGooglePlacePhotoByRef(photoRef: string): Promise<string> {
+    const photoMediaName = photoRef + '/media';
+    // Construct the Place Photos request
+    const getPhotoMediaRequest: IGetPhotoMediaRequest = {
+      name: photoMediaName,
+      maxHeightPx: 350,
+      skipHttpRedirect: true,
     };
+    const [photoMediaResponse] =
+      await this.client.getPhotoMedia(getPhotoMediaRequest);
+    return photoMediaResponse.photoUri || '';
   }
 }
