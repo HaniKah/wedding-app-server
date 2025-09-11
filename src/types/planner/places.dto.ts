@@ -32,6 +32,5 @@ export class PlaceDetailsDto {
   website: string | null;
   formattedAddress: string | null;
   rating: number | null;
-  userRatingCount: number | null;
   photos: PlacePhotoDto[];
 }

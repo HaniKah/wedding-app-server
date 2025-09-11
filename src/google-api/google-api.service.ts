@@ -51,7 +51,6 @@ export class GoogleApiService {
         ? res.nationalPhoneNumber
         : null,
       rating: res?.rating ? res.rating : null,
-      userRatingCount: res?.userRatingCount ? res.userRatingCount : null,
       photos: photos,
     };
   }
@@ -85,7 +84,6 @@ export class GoogleApiService {
       'internationalPhoneNumber',
       'nationalPhoneNumber',
       'rating',
-      'userRatingCount',
       'photos',
     ];
     const request = {
