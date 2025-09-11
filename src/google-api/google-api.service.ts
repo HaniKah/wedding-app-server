@@ -63,7 +63,7 @@ export class GoogleApiService {
           p.location?.latitude ? p.location.latitude : null,
           p.location?.latitude ? p.location.longitude : null,
         ),
-        name: p.name ? p.name : null,
+        name: p.displayName?.text ? p.displayName.text : null,
         formattedAddress: p.formattedAddress ? p.formattedAddress : null,
         internationalPhoneNumber: p.internationalPhoneNumber
           ? p.internationalPhoneNumber
