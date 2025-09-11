@@ -37,7 +37,7 @@ export class GoogleApiService {
     }
     return {
       placeId: placeId,
-      name: res?.name ? res.name : null,
+      name: res?.displayName?.text ? res?.displayName?.text : null,
       website: res?.websiteUri ? res.websiteUri : null,
       formattedAddress: res?.formattedAddress ? res.formattedAddress : null,
       internationalPhoneNumber: res?.internationalPhoneNumber
