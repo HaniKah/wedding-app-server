@@ -127,16 +127,6 @@ export class GoogleApiService {
     const [response] = await this.client.searchText(request, callOptions);
     return response.places;
   }
-  // private async fetchGooglePlacePhotoByRef(
-  //   photoRef: string,
-  // ): Promise<PhotosDto> {
-  //   const url = `https://places.googleapis.com/v1/${photoRef}/media?key=${process.env.GOOGLE_API_KEY}&maxHeightPx=400&skipHttpRedirect=true`;
-  //   const res: Response = await fetch(url);
-  //   const json = (await res.json()) as { name: string; photoUri: string };
-  //   return {
-  //     uri: json.photoUri,
-  //   };
-  // }
 
   private async fetchGooglePlacePhotoByRef(photoRef: string): Promise<string> {
     const photoMediaName = photoRef + '/media';
