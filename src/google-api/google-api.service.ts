@@ -19,10 +19,17 @@ export class GoogleApiService {
   });
 
   async getPhotoByRef(photoRef: string): Promise<PhotosDto> {
-    const res = await this.fetchGooglePlacePhotoByRef(photoRef);
-    return {
-      uri: res,
-    };
+    try {
+      const res = await this.fetchGooglePlacePhotoByRef(photoRef);
+      return {
+        uri: res,
+      };
+    } catch (err) {
+      console.error(err);
+      return {
+        uri: '',
+      };
+    }
   }
 
   public async getPlaceById(placeId: string): Promise<PlaceDetailsDto> {
@@ -133,11 +140,23 @@ export class GoogleApiService {
     // Construct the Place Photos request
     const getPhotoMediaRequest: IGetPhotoMediaRequest = {
       name: photoMediaName,
-      maxHeightPx: 350,
+      maxHeightPx: 450,
       skipHttpRedirect: true,
     };
+
     const [photoMediaResponse] =
       await this.client.getPhotoMedia(getPhotoMediaRequest);
     return photoMediaResponse.photoUri || '';
+
+    // const url = `https://places.googleapis.com/v1/${photoRef}/media?key=${process.env.GOOGLE_API_KEY}&maxHeightPx=450&skipHttpRedirect=true`;
+    //
+    // const res = await fetch(url);
+    //
+    // if (!res.ok) {
+    //   throw new Error(`Failed to fetch photo: ${res.status} ${res.statusText}`);
+    // }
+    //
+    // const json = (await res.json()) as { name: string; photoUri: string };
+    // return json.photoUri || '';
   }
 }
