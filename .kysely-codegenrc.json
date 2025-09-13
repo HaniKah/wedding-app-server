@@ -1,0 +1,9 @@
+{
+  "overrides": {
+    "columns": {
+      "user.role": "Role"
+    }
+  },
+  "camelCase": true,
+  "dialect": "postgres"
+}
