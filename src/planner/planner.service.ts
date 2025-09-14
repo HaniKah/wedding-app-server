@@ -10,13 +10,18 @@ import { PhotosDto } from '../types/planner/photos.dto';
 
 @Injectable()
 export class PlannerService {
+  private readonly activateGoogle: boolean = false;
   constructor(private readonly googleApiService: GoogleApiService) {}
 
   public async getPlaces(step: WeddingSteps): Promise<PlacesViewModel> {
-    const res: PlacesDto[] = await this.googleApiService.getPlaces(
-      'nearby ' + step,
-    );
-    return { result: res };
+    let googlePlaces: PlacesDto[] = [];
+
+    if (this.activateGoogle) {
+      googlePlaces = await this.googleApiService.getPlaces('nearby ' + step);
+    }
+    // now here you can fetch places from database and add it to the ViewModel
+
+    return { googlePlaces: googlePlaces };
   }
 
   public async getPlaceDetails(placeId: string): Promise<PlaceDetailsDto> {

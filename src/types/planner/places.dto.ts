@@ -8,7 +8,7 @@ export class PlacesDto {
   internationalPhoneNumber?: string | null;
 }
 export class PlacesViewModel {
-  result: PlacesDto[];
+  googlePlaces: PlacesDto[];
 }
 
 //coming from google places api , a fetchName is used to fetch from the places photos api

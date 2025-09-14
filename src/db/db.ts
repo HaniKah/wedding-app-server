@@ -1,4 +1,9 @@
-import { CamelCasePlugin, Kysely, PostgresDialect } from 'kysely';
+import {
+  CamelCasePlugin,
+  Kysely,
+  PostgresDialect,
+  WithSchemaPlugin,
+} from 'kysely';
 import * as pg from 'pg';
 import { DB } from 'kysely-codegen';
 
@@ -8,5 +13,5 @@ export const db = new Kysely<DB>({
       connectionString: process.env.DATABASE_URL as string,
     }),
   }),
-  plugins: [new CamelCasePlugin()],
+  plugins: [new CamelCasePlugin(), new WithSchemaPlugin('planner')],
 });
