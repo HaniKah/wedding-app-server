@@ -1,14 +1,17 @@
-import { LatLng } from '../general/latlng.dto';
-
 export class PlacesDto {
-  placeId: string | null;
-  location?: LatLng | null;
+  placeId: number;
   name?: string | null;
   formattedAddress?: string | null;
-  internationalPhoneNumber?: string | null;
+}
+export class PlaceDetailsDto {
+  id: number;
+  name: string;
+  address: string | null;
+  website: string | null;
+  phoneNumber: string | null;
 }
 export class PlacesViewModel {
-  googlePlaces: PlacesDto[];
+  places: PlacesDto[];
 }
 
 //coming from google places api , a fetchName is used to fetch from the places photos api
@@ -24,13 +27,13 @@ export class AuthorAttributionDto {
   photoUri?: string | null;
 }
 
-export class PlaceDetailsDto {
-  placeId: string;
-  name: string | null;
-  nationalPhoneNumber: string | null;
-  internationalPhoneNumber: string | null;
-  website: string | null;
-  formattedAddress: string | null;
-  rating: number | null;
-  photos: PlacePhotoDto[];
-}
+// export class PlaceDetailsDto {
+//   placeId: string;
+//   name: string | null;
+//   nationalPhoneNumber: string | null;
+//   internationalPhoneNumber: string | null;
+//   website: string | null;
+//   formattedAddress: string | null;
+//   rating: number | null;
+//   photos: PlacePhotoDto[];
+// }

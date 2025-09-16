@@ -4,32 +4,52 @@ import {
   PlacesDto,
   PlacesViewModel,
 } from '../types/planner/places.dto';
-import { GoogleApiService } from '../google-api/google-api.service';
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
-import { PhotosDto } from '../types/planner/photos.dto';
+import { PlannerRepositoryService } from './planner.repository.service';
+import { Places } from 'kysely-codegen';
+import { Selectable } from 'kysely';
 
 @Injectable()
 export class PlannerService {
-  private readonly activateGoogle: boolean = false;
-  constructor(private readonly googleApiService: GoogleApiService) {}
+  constructor(
+    private readonly plannerRepositoryService: PlannerRepositoryService,
+  ) {}
 
   public async getPlaces(step: WeddingSteps): Promise<PlacesViewModel> {
-    let googlePlaces: PlacesDto[] = [];
+    const placesRecord: Selectable<Places>[] =
+      await this.plannerRepositoryService.getAllPlaces(step);
+    const places = this.createPlacesDto(placesRecord);
 
-    if (this.activateGoogle) {
-      googlePlaces = await this.googleApiService.getPlaces('nearby ' + step);
-    }
-    // now here you can fetch places from database and add it to the ViewModel
-
-    return { googlePlaces: googlePlaces };
+    return { places };
   }
 
-  public async getPlaceDetails(placeId: string): Promise<PlaceDetailsDto> {
-    return await this.googleApiService.getPlaceById(placeId);
+  // public async getPlaceDetails(placeId: number): Promise<PlaceDetailsDto> {
+  //   const record :Selectable<PlacesDe> this.plannerRepositoryService.getPlaceDetails(placeId);
+  // }
+
+  // public async getPhotos(photoRef: string): Promise<PhotosDto> {
+  //   // if we store images, we can mix images with google places api
+  // }
+
+  public async getPlaceById(id: number): Promise<PlaceDetailsDto> {
+    const record: Selectable<Places> =
+      await this.plannerRepositoryService.getPlaceById(id);
+    return {
+      id: record?.id,
+      name: record.name,
+      address: record.streetName,
+      phoneNumber: record.phoneNumber,
+      website: record.website,
+    };
   }
 
-  public async getPhotos(photoRef: string): Promise<PhotosDto> {
-    // if we store images, we can mix images with google places api
-    return await this.googleApiService.getPhotoByRef(photoRef);
+  private createPlacesDto(record: Selectable<Places>[]): PlacesDto[] {
+    return record.map((r) => {
+      return {
+        placeId: r.id,
+        name: r.name,
+        formattedAddress: r.streetName,
+      };
+    });
   }
 }
