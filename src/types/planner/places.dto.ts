@@ -1,5 +1,5 @@
 export class PlacesDto {
-  placeId: number;
+  id: number;
   name?: string | null;
   formattedAddress?: string | null;
 }

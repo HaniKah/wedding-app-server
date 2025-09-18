@@ -1,9 +1,14 @@
 {
   "overrides": {
     "columns": {
-      "user.role": "Role"
+      "user.role": "Role",
+      "plans_details.step": "WeddingSteps",
+      "places.step": "WeddingSteps"
     }
   },
+  "defaultSchemas": [
+    "planner"
+  ],
   "camelCase": true,
   "dialect": "postgres"
 }

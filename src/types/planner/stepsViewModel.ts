@@ -1,18 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { WeddingSteps } from '../general/wedding-steps-enum.dto';
 
-export class StepsDto {
+export class StepsViewModel {
   @ApiProperty()
   progress: number;
-  @ApiProperty({ type: () => [StepInfo] })
-  steps: StepInfo[];
+  @ApiProperty({ type: () => [StepsDto] })
+  steps: StepsDto[];
 }
-export class StepInfo {
+export class StepsDto {
   @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
   step: WeddingSteps;
 
   @ApiProperty()
-  fullfilled: boolean;
+  isCompleted: boolean;
 
   @ApiProperty()
   note: string;
@@ -21,5 +21,9 @@ export class StepInfo {
   title: string;
 
   @ApiProperty()
+  description: string;
+}
+export interface StepsInfo {
+  title: string;
   description: string;
 }

@@ -1,13 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import {
-  PlaceDetailsDto,
-  PlacesDto,
-  PlacesViewModel,
-} from '../types/planner/places.dto';
+import { PlaceDetailsDto, PlacesViewModel } from '../types/planner/places.dto';
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
 import { PlannerRepositoryService } from './planner.repository.service';
-import { Places } from 'kysely-codegen';
-import { Selectable } from 'kysely';
 
 @Injectable()
 export class PlannerService {
@@ -16,11 +10,26 @@ export class PlannerService {
   ) {}
 
   public async getPlaces(step: WeddingSteps): Promise<PlacesViewModel> {
-    const placesRecord: Selectable<Places>[] =
-      await this.plannerRepositoryService.getAllPlaces(step);
-    const places = this.createPlacesDto(placesRecord);
+    const placesRecord = await this.plannerRepositoryService.getAllPlaces(step);
+    const list = placesRecord.map((r) => {
+      return {
+        id: r.id,
+        name: r.name,
+        formattedAddress: r.streetName,
+      };
+    });
+    return { places: list };
+  }
 
-    return { places };
+  public async getPlaceById(id: number): Promise<PlaceDetailsDto> {
+    const record = await this.plannerRepositoryService.getPlaceByIdOrThrow(id);
+    return {
+      id: record.id,
+      name: record.name,
+      address: `${record.streetName}, ${record.city}, ${record.country}`,
+      phoneNumber: record?.phoneNumber,
+      website: record?.website,
+    };
   }
 
   // public async getPlaceDetails(placeId: number): Promise<PlaceDetailsDto> {
@@ -31,25 +40,23 @@ export class PlannerService {
   //   // if we store images, we can mix images with google places api
   // }
 
-  public async getPlaceById(id: number): Promise<PlaceDetailsDto> {
-    const record: Selectable<Places> =
-      await this.plannerRepositoryService.getPlaceById(id);
-    return {
-      id: record?.id,
-      name: record.name,
-      address: record.streetName,
-      phoneNumber: record.phoneNumber,
-      website: record.website,
-    };
-  }
-
-  private createPlacesDto(record: Selectable<Places>[]): PlacesDto[] {
-    return record.map((r) => {
-      return {
-        placeId: r.id,
-        name: r.name,
-        formattedAddress: r.streetName,
-      };
-    });
-  }
+  // public async getSteps(): Promise<StepsViewModel> {
+  //   const steps: Promise<StepsDto[]> = Object.values(WeddingSteps).map(
+  //     async (v) => {
+  //       const details = await this.plannerRepositoryService.getDetailsByStep(v);
+  //       const isCompleted = details?.find((d) => d.picked == true);
+  //       return {
+  //         title: stepsInfo[v].title,
+  //         description: stepsInfo[v].description,
+  //         step: v,
+  //         isCompleted: !!isCompleted,
+  //         note: 'you can do it',
+  //       };
+  //     },
+  //   );
+  //   return {
+  //     progress: 3.4,
+  //     steps: await steps,
+  //   };
+  // }
 }
