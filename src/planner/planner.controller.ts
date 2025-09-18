@@ -1,6 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { PlannerService } from './planner.service';
-import { PlacesDto, PlacesViewModel } from '../types/planner/places.dto';
+import { PlaceDetailsDto, PlacesViewModel } from '../types/planner/places.dto';
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
 import { StepsViewModel } from '../types/planner/stepsViewModel';
 
@@ -18,7 +18,7 @@ export class PlannerController {
   @Get('getPlaceById')
   public async getPlaceById(
     @Query('placeId') placeId: number,
-  ): Promise<PlacesDto> {
+  ): Promise<PlaceDetailsDto> {
     return await this.plannerService.getPlaceById(placeId);
   }
   @Get('getSteps')
