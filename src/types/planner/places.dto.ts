@@ -9,6 +9,9 @@ export class PlaceDetailsDto {
   address: string | null;
   website: string | null;
   phoneNumber: string | null;
+  minCost: number | null;
+  maxCost: number | null;
+  cost: number | null;
 }
 export class PlacesViewModel {
   places: PlacesDto[];

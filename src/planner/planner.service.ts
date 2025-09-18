@@ -31,6 +31,9 @@ export class PlannerService {
       address: `${record.streetName}, ${record.city}, ${record.country}`,
       phoneNumber: record?.phoneNumber,
       website: record?.website,
+      minCost: record.minCost,
+      maxCost: record.maxCost,
+      cost: record.cost,
     };
   }
 
