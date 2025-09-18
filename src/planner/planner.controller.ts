@@ -23,9 +23,6 @@ export class PlannerController {
   }
   @Get('getSteps')
   public async getSteps(): Promise<StepsViewModel> {
-    return {
-      progress: 3.4,
-      steps: [],
-    };
+    return await this.plannerService.getSteps();
   }
 }

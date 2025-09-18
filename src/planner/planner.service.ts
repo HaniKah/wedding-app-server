@@ -35,6 +35,7 @@ export class PlannerService {
   }
 
   public async getSteps(): Promise<StepsViewModel> {
+    //todo : ignored steps are not implemented yet
     const stepsList: WeddingSteps[] = Object.values(WeddingSteps);
 
     const completedSteps =
@@ -44,6 +45,9 @@ export class PlannerService {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       (s) => s.step,
     ) as WeddingSteps[];
+
+    const progress: number =
+      Math.floor((completedStepsList.length / stepsList.length) * 100) / 100;
 
     const steps: StepsDto[] = await Promise.all(
       stepsList.map(async (step) => {
@@ -58,7 +62,7 @@ export class PlannerService {
       }),
     );
     return {
-      progress: 3.4,
+      progress: progress,
       steps: steps,
     };
   }
