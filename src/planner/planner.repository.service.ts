@@ -35,16 +35,14 @@ export class PlannerRepositoryService {
       .execute();
   }
 
-  public async getCompletedSteps(): Promise<Selectable<PlansDetails>[]> {
+  public async getCompletedSteps() {
     return await db
       .selectFrom('plansDetails')
       .selectAll()
       .where('picked', '=', true)
       .execute();
   }
-  public async getDetailsForCompletedStep(
-    step: WeddingSteps,
-  ): Promise<Selectable<PlansDetails> | undefined> {
+  public async getDetailsOfCompletedStep(step: WeddingSteps) {
     return await db
       .selectFrom('plansDetails')
       .selectAll()

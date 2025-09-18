@@ -2,6 +2,7 @@ import { Controller, Get, Query } from '@nestjs/common';
 import { PlannerService } from './planner.service';
 import { PlacesDto, PlacesViewModel } from '../types/planner/places.dto';
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
+import { StepsViewModel } from '../types/planner/stepsViewModel';
 
 @Controller('places')
 export class PlannerController {
@@ -19,5 +20,12 @@ export class PlannerController {
     @Query('placeId') placeId: number,
   ): Promise<PlacesDto> {
     return await this.plannerService.getPlaceById(placeId);
+  }
+  @Get('getSteps')
+  public async getSteps(): Promise<StepsViewModel> {
+    return {
+      progress: 3.4,
+      steps: [],
+    };
   }
 }
