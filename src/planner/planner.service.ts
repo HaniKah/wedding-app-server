@@ -11,6 +11,10 @@ export class PlannerService {
     private readonly plannerRepositoryService: PlannerRepositoryService,
   ) {}
 
+  public async storeFavourite(placeId: number): Promise<void> {
+    await this.plannerRepositoryService.updateFavourite(placeId);
+  }
+
   public async getPlaces(step: WeddingSteps): Promise<PlacesViewModel> {
     const placesRecord = await this.plannerRepositoryService.getAllPlaces(step);
     const list = placesRecord.map((r) => {
