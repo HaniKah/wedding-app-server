@@ -76,7 +76,9 @@ export class PlannerService {
   ): Promise<string> {
     if (isCompleted) {
       const details =
-        await this.plannerRepositoryService.getDetailsOfCompletedStep(step);
+        await this.plannerRepositoryService.getPlaceDetailsOfCompletedStep(
+          step,
+        );
       if (details?.placeId) {
         const place = await this.plannerRepositoryService.getPlaceByIdOrThrow(
           details.placeId,

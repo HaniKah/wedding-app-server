@@ -1,16 +1,19 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
 
-import { Selectable } from 'kysely';
-import { PlansDetails } from 'kysely-codegen';
+import { Kysely, Selectable } from 'kysely';
+import { DB, PlansDetails } from 'kysely-codegen';
 import { DbService } from '../db/db.service';
 
 @Injectable()
 export class PlannerRepositoryService {
-  constructor(private readonly dbService: DbService) {}
+  private readonly db: Kysely<DB>;
+  constructor(private readonly dbService: DbService) {
+    this.db = dbService.db;
+  }
 
   public async getAllPlaces(step: WeddingSteps) {
-    return await this.dbService.db
+    return await this.db
       .selectFrom('places')
       .selectAll()
       .where('step', '=', step)
@@ -18,7 +21,7 @@ export class PlannerRepositoryService {
   }
 
   public async getPlaceByIdOrThrow(placeId: number) {
-    return await this.dbService.db
+    return await this.db
       .selectFrom('places')
       .selectAll()
       .where('id', '=', placeId)
@@ -31,7 +34,7 @@ export class PlannerRepositoryService {
   public async getDetailsByStep(
     step: WeddingSteps,
   ): Promise<Selectable<PlansDetails>[]> {
-    return await this.dbService.db
+    return await this.db
       .selectFrom('plansDetails')
       .selectAll()
       .where('step', '=', step)
@@ -39,18 +42,25 @@ export class PlannerRepositoryService {
   }
 
   public async getCompletedSteps() {
-    return await this.dbService.db
+    return await this.db
       .selectFrom('plansDetails')
       .selectAll()
       .where('picked', '=', true)
       .execute();
   }
-  public async getDetailsOfCompletedStep(step: WeddingSteps) {
-    return await this.dbService.db
+  public async getPlaceDetailsOfCompletedStep(step: WeddingSteps) {
+    return await this.db
       .selectFrom('plansDetails')
       .selectAll()
       .where('step', '=', step)
       .where('picked', '=', true)
+      .executeTakeFirst();
+  }
+  public async getPlaceDetailsByPlaceId(placeId: number) {
+    return await this.db
+      .selectFrom('plansDetails')
+      .selectAll()
+      .where('placeId', '=', placeId)
       .executeTakeFirst();
   }
   // public async getPlanByUserId(userId): Promise<Selectable<Plans>[]> {
