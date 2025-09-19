@@ -29,8 +29,8 @@ export class PlannerController {
   public async getSteps(): Promise<StepsViewModel> {
     return await this.plannerService.getSteps();
   }
-  @Post('pickPlace')
-  public async pickPlace(@Body() request: PickPlaceRequest): Promise<void> {
-    await this.plannerService.pickPlace(request.placeId, request.step);
+  @Post('pickOnePlace')
+  public async pickOnePlace(@Body() request: PickPlaceRequest): Promise<void> {
+    await this.plannerService.pickAPlace(request.placeId, request.step);
   }
 }

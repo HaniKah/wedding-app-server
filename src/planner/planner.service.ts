@@ -12,7 +12,7 @@ export class PlannerService {
     private readonly plannerRepositoryService: PlannerRepositoryService,
   ) {}
 
-  public async pickPlace(placeId: number, step: WeddingSteps): Promise<void> {
+  public async pickAPlace(placeId: number, step: WeddingSteps): Promise<void> {
     await this.plannerRepositoryService.pickPlace(placeId, step, this.planId);
   }
 

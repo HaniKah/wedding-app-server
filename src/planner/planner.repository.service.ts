@@ -44,8 +44,9 @@ export class PlannerRepositoryService {
     } else {
       await this.createPlaceDetails({
         placeId: placeId,
-        step: WeddingSteps,
+        step: step,
         planId: planId,
+        picked: true,
       });
     }
   }
