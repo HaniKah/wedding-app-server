@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { PlannerService } from './planner.service';
 import {
   PickPlaceRequest,
@@ -30,9 +30,7 @@ export class PlannerController {
     return await this.plannerService.getSteps();
   }
   @Post('pickPlace')
-  public async pickPlace(
-    @Query('placeRequest') request: PickPlaceRequest,
-  ): Promise<void> {
+  public async pickPlace(@Body() request: PickPlaceRequest): Promise<void> {
     await this.plannerService.pickPlace(request.placeId, request.step);
   }
 }
