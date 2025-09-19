@@ -2,7 +2,7 @@
   "overrides": {
     "columns": {
       "user.role": "Role",
-      "plans_details.step": "WeddingSteps",
+      "place_details.step": "WeddingSteps",
       "places.step": "WeddingSteps"
     }
   },

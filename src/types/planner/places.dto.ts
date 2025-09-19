@@ -1,3 +1,6 @@
+import { WeddingSteps } from '../general/wedding-steps-enum.dto';
+import { ApiProperty } from '@nestjs/swagger';
+
 export class PlacesDto {
   id: number;
   name?: string | null;
@@ -28,6 +31,12 @@ export class AuthorAttributionDto {
   displayName?: string | null;
   uri?: string | null;
   photoUri?: string | null;
+}
+
+export class PickPlaceRequest {
+  placeId: number;
+  @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
+  step: WeddingSteps;
 }
 
 // export class PlaceDetailsDto {

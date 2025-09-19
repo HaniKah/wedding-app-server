@@ -7,12 +7,13 @@ import { stepsInfo } from '../constants/steps-info';
 
 @Injectable()
 export class PlannerService {
+  private readonly planId: number = 1;
   constructor(
     private readonly plannerRepositoryService: PlannerRepositoryService,
   ) {}
 
-  public async storeFavourite(placeId: number): Promise<void> {
-    await this.plannerRepositoryService.updateFavourite(placeId);
+  public async pickPlace(placeId: number, step: WeddingSteps): Promise<void> {
+    await this.plannerRepositoryService.pickPlace(placeId, step, this.planId);
   }
 
   public async getPlaces(step: WeddingSteps): Promise<PlacesViewModel> {
@@ -46,10 +47,9 @@ export class PlannerService {
     const stepsList: WeddingSteps[] = Object.values(WeddingSteps);
 
     const completedSteps =
-      await this.plannerRepositoryService.getCompletedSteps();
+      await this.plannerRepositoryService.getCompletedSteps(this.planId);
 
     const completedStepsList: WeddingSteps[] = completedSteps.map(
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       (s) => s.step,
     ) as WeddingSteps[];
 
@@ -82,6 +82,7 @@ export class PlannerService {
       const details =
         await this.plannerRepositoryService.getPlaceDetailsOfCompletedStep(
           step,
+          this.planId,
         );
       if (details?.placeId) {
         const place = await this.plannerRepositoryService.getPlaceByIdOrThrow(
