@@ -15,6 +15,8 @@ export class PlaceDetailsDto {
   minCost: number | null;
   maxCost: number | null;
   cost: number | null;
+  @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
+  step: WeddingSteps;
 }
 export class PlacesViewModel {
   places: PlacesDto[];

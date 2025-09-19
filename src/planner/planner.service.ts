@@ -39,6 +39,7 @@ export class PlannerService {
       minCost: record.minCost,
       maxCost: record.maxCost,
       cost: record.cost,
+      step: record.step,
     };
   }
 
