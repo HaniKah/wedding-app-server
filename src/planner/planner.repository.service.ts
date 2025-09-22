@@ -14,6 +14,14 @@ export class PlannerRepositoryService {
     this.db = dbService.db;
   }
 
+  public async updateWeddingDate(planId: number, date: Date) {
+    await this.db
+      .updateTable('plans')
+      .set('weddingDate', date)
+      .where('id', '=', planId)
+      .executeTakeFirstOrThrow();
+  }
+
   public async getPlanByIdOrThrow(planId: number) {
     return this.db
       .selectFrom('plans')

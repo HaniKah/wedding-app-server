@@ -17,6 +17,10 @@ export class PlannerService {
     private readonly plannerRepositoryService: PlannerRepositoryService,
   ) {}
 
+  public async updateWeddingDate(date: Date): Promise<void> {
+    await this.plannerRepositoryService.updateWeddingDate(this.planId, date);
+  }
+
   public async getWeddingDate(): Promise<DatesDto> {
     const plan = await this.plannerRepositoryService.getPlanByIdOrThrow(
       this.planId,
