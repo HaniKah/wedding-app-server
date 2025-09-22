@@ -1,12 +1,13 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { PlannerService } from './planner.service';
 import {
-  PickPlaceRequest,
   PlaceDetailsDto,
+  PlaceDetailsRequest,
   PlacesViewModel,
 } from '../types/planner/places.dto';
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
-import { StepsViewModel } from '../types/planner/stepsViewModel';
+import { StepsViewModel } from '../types/planner/steps.dto';
+import { DatesDto } from '../types/planner/dates.dto';
 
 @Controller('places')
 export class PlannerController {
@@ -29,8 +30,14 @@ export class PlannerController {
   public async getSteps(): Promise<StepsViewModel> {
     return await this.plannerService.getSteps();
   }
-  @Post('pickOnePlace')
-  public async pickOnePlace(@Body() request: PickPlaceRequest): Promise<void> {
-    await this.plannerService.pickAPlace(request.placeId, request.step);
+  @Post('updatePlaceDetails')
+  public async updatePlaceDetails(
+    @Body() request: PlaceDetailsRequest,
+  ): Promise<void> {
+    await this.plannerService.updateAPlaceDetails(request);
+  }
+  @Get('getWeddingDate')
+  public async getWeddingDate(): Promise<DatesDto> {
+    return this.plannerService.getWeddingDate();
   }
 }

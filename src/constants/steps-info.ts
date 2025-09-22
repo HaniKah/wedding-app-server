@@ -1,5 +1,5 @@
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
-import { StepsInfo } from '../types/planner/stepsViewModel';
+import { StepsInfo } from '../types/planner/steps.dto';
 
 export const stepsInfo: Record<WeddingSteps, StepsInfo> = {
   [WeddingSteps.Date]: {

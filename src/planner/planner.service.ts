@@ -1,9 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { PlaceDetailsDto, PlacesViewModel } from '../types/planner/places.dto';
+import {
+  PlaceDetailsDto,
+  PlaceDetailsRequest,
+  PlacesViewModel,
+} from '../types/planner/places.dto';
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
 import { PlannerRepositoryService } from './planner.repository.service';
-import { StepsDto, StepsViewModel } from '../types/planner/stepsViewModel';
+import { StepsDto, StepsViewModel } from '../types/planner/steps.dto';
 import { stepsInfo } from '../constants/steps-info';
+import { DatesDto } from '../types/planner/dates.dto';
 
 @Injectable()
 export class PlannerService {
@@ -12,8 +17,22 @@ export class PlannerService {
     private readonly plannerRepositoryService: PlannerRepositoryService,
   ) {}
 
-  public async pickAPlace(placeId: number, step: WeddingSteps): Promise<void> {
-    await this.plannerRepositoryService.pickPlace(placeId, step, this.planId);
+  public async getWeddingDate(): Promise<DatesDto> {
+    const plan = await this.plannerRepositoryService.getPlanByIdOrThrow(
+      this.planId,
+    );
+    return {
+      date: plan.weddingDate,
+    };
+  }
+
+  public async updateAPlaceDetails(
+    request: PlaceDetailsRequest,
+  ): Promise<void> {
+    await this.plannerRepositoryService.updatePlaceDetails(
+      this.planId,
+      request,
+    );
   }
 
   public async getPlaces(step: WeddingSteps): Promise<PlacesViewModel> {
@@ -29,17 +48,23 @@ export class PlannerService {
   }
 
   public async getPlaceById(id: number): Promise<PlaceDetailsDto> {
-    const record = await this.plannerRepositoryService.getPlaceByIdOrThrow(id);
+    const place = await this.plannerRepositoryService.getPlaceByIdOrThrow(id);
+    const details =
+      await this.plannerRepositoryService.getPlaceDetailsByPlaceId(id);
+
     return {
-      id: record.id,
-      name: record.name,
-      address: `${record.streetName}, ${record.city}, ${record.country}`,
-      phoneNumber: record?.phoneNumber,
-      website: record?.website,
-      minCost: record.minCost,
-      maxCost: record.maxCost,
-      cost: record.cost,
-      step: record.step,
+      id: place.id,
+      name: place.name,
+      address: `${place.streetName}, ${place.city}, ${place.country}`,
+      phoneNumber: place?.phoneNumber,
+      website: place?.website,
+      minCost: place.minCost,
+      maxCost: place.maxCost,
+      cost: place.cost,
+      step: place.step as WeddingSteps,
+      picked: details?.picked || false,
+      favourite: details?.favourite || false,
+      notes: details?.notes || null,
     };
   }
 
@@ -51,8 +76,8 @@ export class PlannerService {
       await this.plannerRepositoryService.getCompletedSteps(this.planId);
 
     const completedStepsList: WeddingSteps[] = completedSteps.map(
-      (s) => s.step,
-    ) as WeddingSteps[];
+      (s) => s.step as WeddingSteps,
+    );
 
     const progress: number =
       Math.floor((completedStepsList.length / stepsList.length) * 100) / 100;
@@ -103,8 +128,4 @@ export class PlannerService {
     // create custom notes here and randomly pick one of them
     return ' you can do it';
   }
-
-  // public async getPhotos(photoRef: string): Promise<PhotosDto> {
-  //   // if we store images, we can mix images with google places api
-  // }
 }

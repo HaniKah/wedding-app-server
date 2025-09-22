@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
 
-import { Insertable, Kysely, Selectable, Updateable } from 'kysely';
+import { Insertable, Kysely, Updateable } from 'kysely';
 import { DB, PlaceDetails } from 'kysely-codegen';
 import { DbService } from '../db/db.service';
+import { PlaceDetailsRequest } from '../types/planner/places.dto';
 
 @Injectable()
 export class PlannerRepositoryService {
@@ -13,20 +14,15 @@ export class PlannerRepositoryService {
     this.db = dbService.db;
   }
 
-  public async placeDetailsExists(
-    planId: number,
-    step: WeddingSteps,
-  ): Promise<boolean> {
-    const res = await this.db
-      .selectFrom('placeDetails')
-      .select('placeId')
-      .where('planId', '=', planId)
-      .where('step', '=', step)
-      .execute();
-    return res && res.length > 0;
+  public async getPlanByIdOrThrow(planId: number) {
+    return this.db
+      .selectFrom('plans')
+      .selectAll()
+      .where('plans.id', '=', planId)
+      .executeTakeFirstOrThrow(); // every user should have a plan
   }
 
-  public async removeAllPicked(step: WeddingSteps, planId: number) {
+  public async removeAllPicked(planId: number, step: WeddingSteps) {
     await this.db
       .updateTable('placeDetails')
       .set('picked', false)
@@ -35,28 +31,35 @@ export class PlannerRepositoryService {
       .execute();
   }
 
-  public async pickPlace(placeId: number, step: WeddingSteps, planId: number) {
+  public async updatePlaceDetails(
+    planId: number,
+    request: PlaceDetailsRequest,
+  ) {
     //because we dont delete , here we might have records that has no picked, no fav , no notes !
-    await this.removeAllPicked(step, planId);
-    const details = await this.getPlaceDetailsByPlaceId(placeId);
+    if (request.picked) {
+      await this.removeAllPicked(planId, request.step);
+    }
+    const details = await this.getPlaceDetailsByPlaceId(request.placeId);
+
     if (details) {
-      await this.updatePlaceDetailsById(details.id, { picked: true });
+      //todo optimization: here we are updating unnecessary fields
+      await this.updatePlaceDetailsById(details.id, {
+        step: request.step,
+        picked: request.picked,
+        cost: request.cost,
+        notes: request.notes,
+      });
     } else {
+      //todo optimization: here we are updating unnecessary fields
       await this.createPlaceDetails({
-        placeId: placeId,
-        step: step,
         planId: planId,
-        picked: true,
+        placeId: request.placeId,
+        step: request.step,
+        picked: request.picked,
+        favourite: request.favorite,
+        cost: request.cost,
       });
     }
-  }
-
-  public async updateFavourite(placeId: number) {
-    await this.db
-      .updateTable('placeDetails')
-      .set('favourite', true)
-      .where('placeId', '=', placeId)
-      .executeTakeFirst();
   }
 
   public async getAllPlaces(step: WeddingSteps) {
@@ -76,18 +79,6 @@ export class PlannerRepositoryService {
         () =>
           new NotFoundException(`place with place Id : ${placeId} not found`),
       );
-  }
-
-  public async getDetailsByStep(
-    step: WeddingSteps,
-    planId: number,
-  ): Promise<Selectable<PlaceDetails>[]> {
-    return await this.db
-      .selectFrom('placeDetails')
-      .selectAll()
-      .where('step', '=', step)
-      .where('planId', '=', planId)
-      .execute();
   }
 
   public async getCompletedSteps(planId: number) {
@@ -134,12 +125,4 @@ export class PlannerRepositoryService {
       .where('id', '=', id)
       .executeTakeFirst();
   }
-
-  // public async getPlanByUserId(userId): Promise<Selectable<Plans>[]> {
-  //   return await db
-  //     .selectFrom('plans')
-  //     .selectAll()
-  //     .where('userId', '=', userId)
-  //     .executeTakeFirst();
-  // }
 }
