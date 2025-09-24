@@ -8,7 +8,7 @@ import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
 import { PlannerRepositoryService } from './planner.repository.service';
 import { StepsDto, StepsViewModel } from '../types/planner/steps.dto';
 import { stepsInfo } from '../constants/steps-info';
-import { DatesDto } from '../types/planner/dates.dto';
+import { WeddingDateDto } from '../types/planner/weddingDateDto';
 
 @Injectable()
 export class PlannerService {
@@ -21,12 +21,12 @@ export class PlannerService {
     await this.plannerRepositoryService.updateWeddingDate(this.planId, date);
   }
 
-  public async getWeddingDate(): Promise<DatesDto> {
+  public async getWeddingDate(): Promise<WeddingDateDto> {
     const plan = await this.plannerRepositoryService.getPlanByIdOrThrow(
       this.planId,
     );
     return {
-      date: plan.weddingDate,
+      date: plan?.weddingDate?.toLocaleDateString('en-CA') || null,
     };
   }
 

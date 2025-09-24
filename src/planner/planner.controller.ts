@@ -7,7 +7,10 @@ import {
 } from '../types/planner/places.dto';
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
 import { StepsViewModel } from '../types/planner/steps.dto';
-import { DatesDto } from '../types/planner/dates.dto';
+import {
+  UpdateDateRequest,
+  WeddingDateDto,
+} from '../types/planner/weddingDateDto';
 
 @Controller('places')
 export class PlannerController {
@@ -37,10 +40,14 @@ export class PlannerController {
     await this.plannerService.updateAPlaceDetails(request);
   }
   @Get('getWeddingDate')
-  public async getWeddingDate(): Promise<DatesDto> {
-    return await this.plannerService.getWeddingDate();
+  public async getWeddingDate(): Promise<WeddingDateDto> {
+    const weddingDate = await this.plannerService.getWeddingDate();
+    return weddingDate;
   }
-  public async updateWeddingDate(date: Date): Promise<void> {
-    return await this.plannerService.updateWeddingDate(date);
+  @Post('updateWeddingDate')
+  public async updateWeddingDate(
+    @Body() date: UpdateDateRequest,
+  ): Promise<void> {
+    return await this.plannerService.updateWeddingDate(new Date(date.date));
   }
 }
