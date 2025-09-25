@@ -41,8 +41,7 @@ export class PlannerController {
   }
   @Get('getWeddingDate')
   public async getWeddingDate(): Promise<WeddingDateDto> {
-    const weddingDate = await this.plannerService.getWeddingDate();
-    return weddingDate;
+    return await this.plannerService.getWeddingDate();
   }
   @Post('updateWeddingDate')
   public async updateWeddingDate(
