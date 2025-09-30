@@ -79,12 +79,18 @@ export class PlannerService {
     //todo : ignored steps are not implemented yet
     const stepsList: WeddingSteps[] = Object.values(WeddingSteps);
 
-    const completedSteps =
+    const completedStepsRecord =
       await this.plannerRepositoryService.getCompletedSteps(this.planId);
 
-    const completedStepsList: WeddingSteps[] = completedSteps.map(
+    const completedStepsList: WeddingSteps[] = completedStepsRecord.map(
       (s) => s.step as WeddingSteps,
     );
+
+    const weddingDate = await this.getWeddingDate();
+
+    if (weddingDate) {
+      completedStepsList.push(WeddingSteps.Date);
+    }
 
     const progress: number =
       Math.floor((completedStepsList.length / stepsList.length) * 100) / 100;
