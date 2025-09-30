@@ -5,24 +5,30 @@ import {
   PlacesViewModel,
 } from '../types/planner/places.dto';
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
-import { PlannerRepositoryService } from './planner.repository.service';
 import { StepsDto, StepsViewModel } from '../types/planner/steps.dto';
 import { stepsInfo } from '../constants/steps-info';
 import { WeddingDateDto } from '../types/planner/weddingDateDto';
+import { PlansRepositoryService } from './plans.repository.service';
+import { PlaceDetailsRepositoryService } from './place-details.repository.service';
+import { PlacesRepositoryService } from './places.repository.service';
 
 @Injectable()
 export class PlannerService {
   private readonly planId: number = 1;
   constructor(
-    private readonly plannerRepositoryService: PlannerRepositoryService,
+    private readonly placeDetailsRepositoryService: PlaceDetailsRepositoryService,
+    private readonly plansRepositoryService: PlansRepositoryService,
+    private readonly placesRepositoryService: PlacesRepositoryService,
   ) {}
 
   public async updateWeddingDate(date: Date): Promise<void> {
-    await this.plannerRepositoryService.updateWeddingDate(this.planId, date);
+    await this.plansRepositoryService.updatePlan(this.planId, {
+      weddingDate: date,
+    });
   }
 
   public async getWeddingDate(): Promise<WeddingDateDto> {
-    const plan = await this.plannerRepositoryService.getPlanByIdOrThrow(
+    const plan = await this.plansRepositoryService.getPlanByIdOrThrow(
       this.planId,
     );
     return {
@@ -33,14 +39,42 @@ export class PlannerService {
   public async updateAPlaceDetails(
     request: PlaceDetailsRequest,
   ): Promise<void> {
-    await this.plannerRepositoryService.updatePlaceDetails(
-      this.planId,
-      request,
-    );
+    if (request.picked) {
+      await this.placeDetailsRepositoryService.removeAllPicked(
+        this.planId,
+        request.step,
+      );
+    }
+    const details =
+      await this.placeDetailsRepositoryService.getPlaceDetailsByPlaceId(
+        request.placeId,
+      );
+    if (details) {
+      //todo optimization: here we are updating unnecessary fields
+      await this.placeDetailsRepositoryService.updatePlaceDetailsById(
+        details.id,
+        {
+          step: request.step,
+          picked: request.picked,
+          cost: request.cost,
+          notes: request.notes,
+        },
+      );
+    } else {
+      //todo optimization: here we are updating unnecessary fields
+      await this.placeDetailsRepositoryService.createPlaceDetails({
+        planId: this.planId,
+        placeId: request.placeId,
+        step: request.step,
+        picked: request.picked,
+        favourite: request.favorite,
+        cost: request.cost,
+      });
+    }
   }
 
   public async getPlaces(step: WeddingSteps): Promise<PlacesViewModel> {
-    const placesRecord = await this.plannerRepositoryService.getAllPlaces(step);
+    const placesRecord = await this.placesRepositoryService.getAllPlaces(step);
     const list = placesRecord.map((r) => {
       return {
         id: r.id,
@@ -52,9 +86,9 @@ export class PlannerService {
   }
 
   public async getPlaceById(id: number): Promise<PlaceDetailsDto> {
-    const place = await this.plannerRepositoryService.getPlaceByIdOrThrow(id);
+    const place = await this.placesRepositoryService.getPlaceByIdOrThrow(id);
     const details =
-      await this.plannerRepositoryService.getPlaceDetailsByPlaceId(id);
+      await this.placeDetailsRepositoryService.getPlaceDetailsByPlaceId(id);
 
     return {
       id: place.id,
@@ -80,7 +114,7 @@ export class PlannerService {
     const stepsList: WeddingSteps[] = Object.values(WeddingSteps);
 
     const completedStepsRecord =
-      await this.plannerRepositoryService.getCompletedSteps(this.planId);
+      await this.placeDetailsRepositoryService.getCompletedSteps(this.planId);
 
     const completedStepsList: WeddingSteps[] = completedStepsRecord.map(
       (s) => s.step as WeddingSteps,
@@ -119,12 +153,12 @@ export class PlannerService {
   ): Promise<string> {
     if (isCompleted) {
       const details =
-        await this.plannerRepositoryService.getPlaceDetailsOfCompletedStep(
+        await this.placeDetailsRepositoryService.getPlaceDetailsOfCompletedStep(
           step,
           this.planId,
         );
       if (details?.placeId) {
-        const place = await this.plannerRepositoryService.getPlaceByIdOrThrow(
+        const place = await this.placesRepositoryService.getPlaceByIdOrThrow(
           details.placeId,
         );
         return place.name;
