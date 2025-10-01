@@ -129,12 +129,15 @@ export class PlannerService {
 
     const dtoList = await Promise.all(
       stepsList.map(async (step) => {
+        let isCompleted: boolean = false;
         const pickedPlace = completedStepsRecord.find((s) => s.step === step);
         if (step === WeddingSteps.Date && weddingDate.date) {
           note = weddingDate.date;
+          isCompleted = true;
         } else if (pickedPlace && pickedPlace.placeId) {
           const placeDetails = await this.getPlaceById(pickedPlace.placeId);
           note = placeDetails.name;
+          isCompleted = true;
         } else {
           note = this.generateRandomNote();
         }
@@ -142,7 +145,7 @@ export class PlannerService {
           step,
           title: stepsInfo[step].title,
           description: stepsInfo[step].description,
-          isCompleted: pickedPlace !== undefined || weddingDate !== null,
+          isCompleted: isCompleted,
           note: note,
         };
       }),
@@ -165,25 +168,34 @@ export class PlannerService {
         this.planId,
       );
 
-    const weddingDate = await this.getWeddingDate();
+    const weddingDate: WeddingDateDto = await this.getWeddingDate();
 
     let placeName: string | null = null;
     let placeId: number | null = null;
 
     const dtoList: ChecklistDto[] = await Promise.all(
       stepsList.map(async (step) => {
-        const pickedPlace = completedStepsRecord.find((s) => s.step === step);
-        if (pickedPlace && pickedPlace.placeId) {
-          const placeDetails = await this.getPlaceById(pickedPlace.placeId);
-          placeName = placeDetails.name;
-          placeId = pickedPlace.placeId;
+        let isCompleted: boolean = false;
+
+        const found = completedStepsRecord.find((s) => s.step === step);
+
+        if (step === WeddingSteps.Date) {
+          isCompleted = weddingDate.date !== null;
         }
+
+        if (found && found.placeId) {
+          const placeDetails = await this.getPlaceById(found.placeId);
+          placeName = placeDetails.name;
+          placeId = found.placeId;
+          isCompleted = true;
+        }
+
         return {
           step,
-          isCompleted: pickedPlace !== undefined || weddingDate.date !== null,
+          isCompleted: isCompleted,
           placeName: placeName,
           placeId: placeId,
-          cost: pickedPlace?.cost || null,
+          cost: found?.cost || null,
         };
       }),
     );
