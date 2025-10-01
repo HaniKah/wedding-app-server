@@ -6,7 +6,7 @@ import {
   PlacesViewModel,
 } from '../types/planner/places.dto';
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
-import { StepsViewModel } from '../types/planner/steps.dto';
+import { ChecklistViewModel, StepsViewModel } from '../types/planner/steps.dto';
 import {
   UpdateDateRequest,
   WeddingDateDto,
@@ -29,24 +29,31 @@ export class PlannerController {
   ): Promise<PlaceDetailsDto> {
     return await this.plannerService.getPlaceById(placeId);
   }
+
   @Get('getSteps')
   public async getSteps(): Promise<StepsViewModel> {
     return await this.plannerService.getSteps();
   }
+
   @Post('updatePlaceDetails')
   public async updatePlaceDetails(
     @Body() request: PlaceDetailsRequest,
   ): Promise<void> {
     await this.plannerService.updateAPlaceDetails(request);
   }
+
   @Get('getWeddingDate')
   public async getWeddingDate(): Promise<WeddingDateDto> {
     return await this.plannerService.getWeddingDate();
   }
+
   @Post('updateWeddingDate')
   public async updateWeddingDate(
     @Body() date: UpdateDateRequest,
   ): Promise<void> {
     return await this.plannerService.updateWeddingDate(new Date(date.date));
+  }
+  public async getChecklist(): Promise<ChecklistViewModel> {
+    return await this.plannerService.createChecklist();
   }
 }

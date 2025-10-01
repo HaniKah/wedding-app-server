@@ -15,7 +15,7 @@ export class StepsDto {
   isCompleted: boolean;
 
   @ApiProperty()
-  note: string;
+  note: string; // the place name or the date
 
   @ApiProperty()
   title: string;
@@ -23,7 +23,20 @@ export class StepsDto {
   @ApiProperty()
   description: string;
 }
+
 export interface StepsInfo {
   title: string;
   description: string;
+}
+
+export class ChecklistDto {
+  @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
+  step: WeddingSteps;
+  isCompleted: boolean;
+  placeName: string | null;
+  placeId: number | null;
+  cost: number | null;
+}
+export class ChecklistViewModel {
+  list: ChecklistDto[];
 }

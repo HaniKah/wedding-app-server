@@ -5,16 +5,17 @@ import {
   PlacesViewModel,
 } from '../types/planner/places.dto';
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
-import { StepsDto, StepsViewModel } from '../types/planner/steps.dto';
-import { stepsInfo } from '../constants/steps-info';
+import { StepsViewModel } from '../types/planner/steps.dto';
 import { WeddingDateDto } from '../types/planner/weddingDateDto';
 import { PlansRepositoryService } from './plans.repository.service';
 import { PlaceDetailsRepositoryService } from './place-details.repository.service';
 import { PlacesRepositoryService } from './places.repository.service';
+import { stepsInfo } from '../constants/steps-info';
 
 @Injectable()
 export class PlannerService {
   private readonly planId: number = 1;
+
   constructor(
     private readonly placeDetailsRepositoryService: PlaceDetailsRepositoryService,
     private readonly plansRepositoryService: PlansRepositoryService,
@@ -78,6 +79,7 @@ export class PlannerService {
     const list = placesRecord.map((r) => {
       return {
         id: r.id,
+        step: step,
         name: r.name,
         formattedAddress: r.streetName,
       };
@@ -114,61 +116,40 @@ export class PlannerService {
     const stepsList: WeddingSteps[] = Object.values(WeddingSteps);
 
     const completedStepsRecord =
-      await this.placeDetailsRepositoryService.getCompletedSteps(this.planId);
-
-    const completedStepsList: WeddingSteps[] = completedStepsRecord.map(
-      (s) => s.step as WeddingSteps,
-    );
+      await this.placeDetailsRepositoryService.getPlaceDetailsOfCompletedSteps(
+        this.planId,
+      );
 
     const weddingDate = await this.getWeddingDate();
+    let note: string;
 
-    if (weddingDate) {
-      completedStepsList.push(WeddingSteps.Date);
-    }
-
-    const progress: number =
-      Math.floor((completedStepsList.length / stepsList.length) * 100) / 100;
-
-    const steps: StepsDto[] = await Promise.all(
+    const dtoList = await Promise.all(
       stepsList.map(async (step) => {
-        const isCompleted: boolean = completedStepsList.includes(step);
+        const pickedPlace = completedStepsRecord.find((s) => s.step === step);
+        if (step === WeddingSteps.Date && weddingDate.date) {
+          note = weddingDate.date;
+        } else if (pickedPlace && pickedPlace.placeId) {
+          const placeDetails = await this.getPlaceById(pickedPlace.placeId);
+          note = placeDetails.name;
+        } else {
+          note = this.generateRandomNote();
+        }
         return {
           step,
           title: stepsInfo[step].title,
           description: stepsInfo[step].description,
-          isCompleted,
-          note: await this.createStepNote(isCompleted, step),
+          isCompleted: pickedPlace !== undefined || weddingDate !== null,
+          note: note,
         };
       }),
     );
+
     return {
-      progress: progress,
-      steps: steps,
+      steps: dtoList,
+      progress:
+        Math.floor((completedStepsRecord.length / stepsList.length) * 100) /
+        100,
     };
-  }
-
-  private async createStepNote(
-    isCompleted: boolean,
-    step: WeddingSteps,
-  ): Promise<string> {
-    if (isCompleted) {
-      const details =
-        await this.placeDetailsRepositoryService.getPlaceDetailsOfCompletedStep(
-          step,
-          this.planId,
-        );
-      if (details?.placeId) {
-        const place = await this.placesRepositoryService.getPlaceByIdOrThrow(
-          details.placeId,
-        );
-        return place.name;
-      }
-      if (details?.googleId) {
-        return 'name should be fetched from google';
-      }
-    }
-
-    return this.generateRandomNote();
   }
 
   private generateRandomNote() {

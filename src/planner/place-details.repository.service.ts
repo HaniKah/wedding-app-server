@@ -20,27 +20,21 @@ export class PlaceDetailsRepositoryService {
       .where('planId', '=', planId)
       .execute();
   }
-
-  public async getCompletedSteps(planId: number) {
+  public async getPlaceDetailsOfCompletedSteps(planId: number) {
     return await this.db
       .selectFrom('placeDetails')
       .selectAll()
-      .where('picked', '=', true)
       .where('planId', '=', planId)
+      .where('picked', '=', true)
       .execute();
   }
 
-  public async getPlaceDetailsOfCompletedStep(
-    step: WeddingSteps,
-    planId: number,
-  ) {
+  public async getPlaceDetails(planId: number) {
     return await this.db
       .selectFrom('placeDetails')
       .selectAll()
-      .where('step', '=', step)
-      .where('picked', '=', true)
       .where('planId', '=', planId)
-      .executeTakeFirst();
+      .execute();
   }
 
   public async getPlaceDetailsByPlaceId(placeId: number) {

@@ -5,6 +5,8 @@ export class PlacesDto {
   id: number;
   name?: string | null;
   formattedAddress?: string | null;
+  @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
+  step: WeddingSteps;
 }
 export class PlaceDetailsDto {
   id: number;
