@@ -53,6 +53,7 @@ export class PlannerController {
   ): Promise<void> {
     return await this.plannerService.updateWeddingDate(new Date(date.date));
   }
+  @Get('getChecklist')
   public async getChecklist(): Promise<ChecklistViewModel> {
     return await this.plannerService.createChecklist();
   }
