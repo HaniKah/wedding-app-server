@@ -5,7 +5,11 @@ import {
   PlacesViewModel,
 } from '../types/planner/places.dto';
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
-import { StepsViewModel } from '../types/planner/steps.dto';
+import {
+  ChecklistDto,
+  ChecklistViewModel,
+  StepsViewModel,
+} from '../types/planner/steps.dto';
 import { WeddingDateDto } from '../types/planner/weddingDateDto';
 import { PlansRepositoryService } from './plans.repository.service';
 import { PlaceDetailsRepositoryService } from './place-details.repository.service';
@@ -149,6 +153,43 @@ export class PlannerService {
       progress:
         Math.floor((completedStepsRecord.length / stepsList.length) * 100) /
         100,
+    };
+  }
+
+  public async createChecklist(): Promise<ChecklistViewModel> {
+    //todo : ignored steps are not implemented yet
+    const stepsList: WeddingSteps[] = Object.values(WeddingSteps);
+
+    const completedStepsRecord =
+      await this.placeDetailsRepositoryService.getPlaceDetailsOfCompletedSteps(
+        this.planId,
+      );
+
+    const weddingDate = await this.getWeddingDate();
+
+    let placeName: string | null = null;
+    let placeId: number | null = null;
+
+    const dtoList: ChecklistDto[] = await Promise.all(
+      stepsList.map(async (step) => {
+        const pickedPlace = completedStepsRecord.find((s) => s.step === step);
+        if (pickedPlace && pickedPlace.placeId) {
+          const placeDetails = await this.getPlaceById(pickedPlace.placeId);
+          placeName = placeDetails.name;
+          placeId = pickedPlace.placeId;
+        }
+        return {
+          step,
+          isCompleted: pickedPlace !== undefined || weddingDate.date !== null,
+          placeName: placeName,
+          placeId: placeId,
+          cost: pickedPlace?.cost || null,
+        };
+      }),
+    );
+
+    return {
+      list: dtoList,
     };
   }
 
