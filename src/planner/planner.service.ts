@@ -181,6 +181,7 @@ export class PlannerService {
 
         if (step === WeddingSteps.Date) {
           isCompleted = weddingDate.date !== null;
+          placeName = weddingDate.date;
         }
 
         if (found && found.placeId) {
