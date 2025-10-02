@@ -3,7 +3,8 @@
     "columns": {
       "user.role": "Role",
       "place_details.step": "WeddingSteps",
-      "places.step": "WeddingSteps"
+      "places.step": "WeddingSteps",
+      "guests.couple_side": "CoupleSide"
     }
   },
   "defaultSchemas": [
