@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post } from '@nestjs/common';
 import { GuestsService } from './guests.service';
 import {
   AddGuestRequest,
-  GuestsDto,
+  GuestsViewModel,
   UpdateGuestRequest,
 } from '../types/guests/guests.dto';
 
@@ -10,8 +10,8 @@ import {
 export class GuestsController {
   constructor(private readonly guestsService: GuestsService) {}
   @Get('getGuests')
-  public async getGuests(): Promise<GuestsDto[]> {
-    return await this.guestsService.getGuests();
+  public async getGuests(): Promise<GuestsViewModel> {
+    return { result: await this.guestsService.getGuests() };
   }
 
   @Post('addGuest')

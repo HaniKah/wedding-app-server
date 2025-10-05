@@ -27,3 +27,7 @@ export class UpdateGuestRequest {
   @ApiProperty({ enum: CoupleSide, enumName: 'CoupleSide' })
   coupleSide?: CoupleSide;
 }
+
+export class GuestsViewModel {
+  result: GuestsDto[];
+}
