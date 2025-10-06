@@ -21,7 +21,7 @@ async function bootstrap() {
   SwaggerModule.setup('swagger', app, documentFactory, {
     jsonDocumentUrl: 'swagger/json',
   });
-
+  //todo: you might not want to expose to all (0.0.0.0) check if this has to be deleted
   await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
 }
 bootstrap();

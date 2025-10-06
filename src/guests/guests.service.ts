@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { GuestsRepositoryService } from './guests.repository.service';
 import {
   AddGuestRequest,
+  DeleteGuestRequest,
   GuestsDto,
   UpdateGuestRequest,
 } from '../types/guests/guests.dto';
@@ -36,5 +37,8 @@ export class GuestsService {
   }
   public async updateGuest(r: UpdateGuestRequest): Promise<void> {
     await this.guestsRepositoryService.updateGuest(this.userId, r);
+  }
+  public async deleteGuest(r: DeleteGuestRequest): Promise<void> {
+    await this.guestsRepositoryService.deleteGuest(r.id);
   }
 }

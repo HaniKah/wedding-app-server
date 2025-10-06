@@ -14,6 +14,7 @@ export class GuestsRepositoryService {
       .selectFrom('guests')
       .selectAll()
       .where('userId', '=', userId)
+      .where('deletedAt', 'is', null)
       .execute();
   }
 
@@ -28,5 +29,13 @@ export class GuestsRepositoryService {
       .where('userId', '=', userId)
       .where('id', '=', guest.id)
       .executeTakeFirst();
+  }
+
+  public async deleteGuest(id: number) {
+    await this.db
+      .updateTable('guests')
+      .set('deletedAt', new Date(Date.now()))
+      .where('id', '=', id)
+      .executeTakeFirstOrThrow();
   }
 }

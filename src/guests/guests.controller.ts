@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post } from '@nestjs/common';
 import { GuestsService } from './guests.service';
 import {
   AddGuestRequest,
+  DeleteGuestRequest,
   GuestsViewModel,
   UpdateGuestRequest,
 } from '../types/guests/guests.dto';
@@ -22,5 +23,10 @@ export class GuestsController {
   @Post('updateGuest')
   public async updateGuest(@Body() request: UpdateGuestRequest): Promise<void> {
     await this.guestsService.updateGuest(request);
+  }
+
+  @Post('deleteGuest')
+  public async deleteGuest(@Body() request: DeleteGuestRequest): Promise<void> {
+    await this.guestsService.deleteGuest(request);
   }
 }

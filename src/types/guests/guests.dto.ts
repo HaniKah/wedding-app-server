@@ -29,6 +29,10 @@ export class UpdateGuestRequest {
   coupleSide?: CoupleSide;
 }
 
+export class DeleteGuestRequest {
+  id: number;
+}
+
 export class GuestsViewModel {
   result: GuestsDto[];
 }
