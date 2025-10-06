@@ -24,8 +24,9 @@ export class GuestsRepositoryService {
   public async updateGuest(userId: number, guest: Updateable<Guests>) {
     await this.db
       .updateTable('guests')
-      .where('userId', '=', userId)
       .set(guest)
+      .where('userId', '=', userId)
+      .where('id', '=', guest.id)
       .executeTakeFirst();
   }
 }

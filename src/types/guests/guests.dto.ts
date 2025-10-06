@@ -22,6 +22,7 @@ export class AddGuestRequest {
 }
 
 export class UpdateGuestRequest {
+  id: number;
   name?: string;
   phoneNumber?: string;
   @ApiProperty({ enum: CoupleSide, enumName: 'CoupleSide' })
