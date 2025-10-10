@@ -46,6 +46,11 @@ lerna-debug.log*
 .env.staging
 .env.production
 
+# Firebase credentials (DO NOT commit)
+firebase-adminsdk-*.json
+serviceAccountKey.json
+*-firebase-adminsdk-*.json
+
 # temp directory
 .temp
 .tmp

@@ -5,9 +5,10 @@ import { PlannerModule } from './planner/planner.module';
 import { GoogleApiModule } from './google-api/google-api.module';
 import { DbModule } from './db/db.module';
 import { GuestsModule } from './guests/guests.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [PlannerModule, GoogleApiModule, DbModule, GuestsModule],
+  imports: [PlannerModule, GoogleApiModule, DbModule, GuestsModule, AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })

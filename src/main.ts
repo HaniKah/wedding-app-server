@@ -9,6 +9,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   //todo : swagger openApi is running in production also , which is not ideal , change following :
+
   // 1. uninstall swagger , install using --save-dev
   // 2. wrap following to be executed only in dev mode ( process.env.NODE_ENV === 'development')
   const config = new DocumentBuilder()
