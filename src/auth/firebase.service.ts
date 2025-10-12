@@ -1,12 +1,9 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import * as admin from 'firebase-admin';
-import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class FirebaseService implements OnModuleInit {
   private firebaseApp: admin.app.App;
-
-  constructor(private readonly configService: ConfigService) {}
 
   onModuleInit() {
     // Initialize Firebase Admin SDK
@@ -14,11 +11,9 @@ export class FirebaseService implements OnModuleInit {
     if (!admin.apps.length) {
       this.firebaseApp = admin.initializeApp({
         credential: admin.credential.cert({
-          projectId: this.configService.get<string>('FIREBASE_PROJECT_ID'),
-          clientEmail: this.configService.get<string>('FIREBASE_CLIENT_EMAIL'),
-          privateKey: this.configService
-            .get<string>('FIREBASE_PRIVATE_KEY')
-            ?.replace(/\\n/g, '\n'),
+          projectId: process.env.FIREBASE_PROJECT_ID,
+          clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+          privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
         }),
       });
     } else {
@@ -71,7 +66,10 @@ export class FirebaseService implements OnModuleInit {
    * @param uid - Firebase user ID
    * @param claims - Optional custom claims
    */
-  async createCustomToken(uid: string, claims?: object): Promise<string> {
+  async createCustomToken(
+    uid: string,
+    claims?: object,
+  ): Promise<string> {
     return await admin.auth().createCustomToken(uid, claims);
   }
 
