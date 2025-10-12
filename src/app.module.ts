@@ -5,9 +5,19 @@ import { PlannerModule } from './planner/planner.module';
 import { GoogleApiModule } from './google-api/google-api.module';
 import { DbModule } from './db/db.module';
 import { GuestsModule } from './guests/guests.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [PlannerModule, GoogleApiModule, DbModule, GuestsModule],
+  imports: [
+    PlannerModule,
+    GoogleApiModule,
+    DbModule,
+    GuestsModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      expandVariables: true,
+    }),
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
