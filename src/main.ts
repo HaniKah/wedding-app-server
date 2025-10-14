@@ -2,9 +2,15 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as process from 'node:process';
+import * as fs from 'node:fs';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const httpsOptions = {
+    key: fs.readFileSync('./cert/key.pem'),
+    cert: fs.readFileSync('./cert/cert.pem'),
+  };
+
+  const app = await NestFactory.create(AppModule, { httpsOptions });
   app.enableCors();
   app.setGlobalPrefix('api');
 
@@ -17,10 +23,12 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('wedApp Tag')
     .build();
+
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, documentFactory, {
     jsonDocumentUrl: 'swagger/json',
   });
+
   //todo: you might not want to expose to all (0.0.0.0) check if this has to be deleted
   await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
 }

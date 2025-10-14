@@ -62,3 +62,6 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 .note
 /googlePlace.json
 /googlePhoto.json
+
+# certificate
+/cert
