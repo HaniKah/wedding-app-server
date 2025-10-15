@@ -14,3 +14,10 @@ export enum Role {
   User = 'User',
   Guest = 'Guest',
 }
+export type AuthJwtPayload = {
+  sub: number;
+};
+export type CurrentUser = {
+  id: number;
+  role: Role;
+};

@@ -6,6 +6,8 @@ import { GoogleApiModule } from './google-api/google-api.module';
 import { DbModule } from './db/db.module';
 import { GuestsModule } from './guests/guests.module';
 import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -17,6 +19,9 @@ import { ConfigModule } from '@nestjs/config';
       isGlobal: true,
       expandVariables: true,
     }),
+    AuthModule,
+    UsersModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
