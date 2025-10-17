@@ -1,4 +1,4 @@
-import { IsEmail, IsOptional, IsString, IsUrl } from 'class-validator';
+import { IsEmail, IsString } from 'class-validator';
 import { Role } from '../auth/auth.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -13,10 +13,6 @@ export class CreateUserDto {
   @IsEmail()
   email: string;
 
-  @IsString()
-  @IsUrl()
-  @IsOptional()
-  avatarUrl?: string;
   @ApiProperty({ enum: Role, enumName: 'Role' })
   role: Role;
 

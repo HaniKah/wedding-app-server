@@ -5,7 +5,6 @@ export default registerAs(
   'refresh-jwt',
   (): JwtSignOptions => ({
     secret: process.env.REFRESH_JWT_SECRET,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    expiresIn: process.env.REFRESH_JWT_EXPIRE_IN as any,
+    expiresIn: Number(process.env.REFRESH_JWT_EXPIRES_IN),
   }),
 );

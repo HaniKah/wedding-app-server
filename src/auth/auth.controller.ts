@@ -1,7 +1,10 @@
-import { Controller, Get, Req, Res } from '@nestjs/common';
+import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
 import { ConfigService } from '@nestjs/config';
+import { GoogleAuthGuard } from './guards/google-auth/google-auth.guard';
+import { RefreshAuthGuard } from './guards/refresh-auth/refresh-auth.guard';
+import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 import type { Request, Response } from 'express';
 
 @Controller('auth')
@@ -11,71 +14,39 @@ export class AuthController {
     private readonly configService: ConfigService,
   ) {}
 
-  @Public()
-  @Get('google/login')
-  googleLogin(@Req() req: Request, @Res() res: Response) {
-    const redirectUri = req.query.redirect_uri as string;
-    const clientId = req.query.client_id as string;
-    const scope = req.query.scope as string;
-    const state = req.query.state as string;
-    let platform;
-
-    if (redirectUri === this.configService.get('APP_SCHEME')) {
-      platform = 'mobile';
-    } else if (redirectUri === this.configService.get('APP_URL')) {
-      platform = 'web';
-    } else {
-      throw new Error('Invalid redirect URI');
-    }
-
-    const stateWithPlatform = platform + '|' + state;
-
-    // this is not necessary , but if we want to combine handling apple and google on the same controller , here we have to differentiate the client_id
-    let idpClientId: string;
-    if (clientId === 'google') {
-      idpClientId = this.configService.get('GOOGLE_CLIENT_ID') as string;
-    } else {
-      throw new Error('Invalid client id');
-    }
-    const sendParams = new URLSearchParams({
-      client_id: idpClientId,
-      redirect_uri: this.configService.get<string>(
-        'GOOGLE_CALLBACK_URL',
-      ) as string,
-      response_type: 'code',
-      scope: scope || 'identity',
-      state: stateWithPlatform,
-      prompt: 'select_account',
-    });
-
-    return res.redirect(
-      this.configService.get<string>('GOOGLE_AUTH_URL') +
-        '?' +
-        sendParams.toString(),
-    );
+  @UseGuards(RefreshAuthGuard)
+  @Post('refresh')
+  refreshToken(@Req() req: Request) {
+    return this.authService.refreshToken(req.user.id);
   }
 
-  //here we get the code from google so we can exchange it for a token
-  @Public()
-  @Get('callback')
-  googleCallback(@Req() req: Request, @Res() res: Response) {
-    if (!req.params.state) {
-      return Response.json({ error: 'Invalid state' }, { status: 400 });
-    }
-    const platform = req.params.state.split('|')[0];
-    const state = req.params.state.split('|')[1];
+  @UseGuards(JwtAuthGuard)
+  @Post('signout')
+  async signOut(@Req() req: Request) {
+    if (!req.user?.id) return;
+    await this.authService.signOut(req.user?.id);
+  }
 
-    const outgoingParams = new URLSearchParams({
-      code: req.params.code || '',
-      state,
-    });
-    // so here we are going back to the app with the code and the state , we could argue that returning code is unnecessary
-    return res.redirect(
-      (this.configService.get<string>(
-        platform === 'mobile' ? 'APP_SCHEME' : 'APP_URL',
-      ) as string) +
-        '?' +
-        outgoingParams.toString(),
-    );
+  @Public()
+  @UseGuards(GoogleAuthGuard)
+  @Get('google/login')
+  googleLogin() {}
+
+  @Public()
+  @UseGuards(GoogleAuthGuard)
+  @Get('google/callback')
+  async googleCallback(
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<void> {
+    if (!req.user?.id) return;
+    const response = await this.authService.login(req.user?.id);
+    const redirectUrl =
+      this.configService.get<string>('APP_SCHEME') +
+      '?token=' +
+      response.accessToken +
+      '&refreshToken=' +
+      response.refreshToken;
+    return res.redirect(redirectUrl);
   }
 }

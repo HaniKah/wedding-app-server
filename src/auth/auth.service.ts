@@ -2,30 +2,26 @@ import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { CreateUserDto } from '../types/users/users.dto';
 import * as argon2 from 'argon2';
-import { AuthJwtPayload, CurrentUser } from '../types/auth/auth.dto';
+import { AuthJwtPayload } from '../types/auth/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import refreshJwtConfig from './config/refresh-jwt.config';
 import type { ConfigType } from '@nestjs/config';
+import JwtConfig from './config/jwt.config';
+import { Selectable } from 'kysely';
+import { Users } from 'kysely-codegen';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private jwtService: JwtService,
+    @Inject(JwtConfig.KEY)
+    private jwtConfig: ConfigType<typeof JwtConfig>,
     @Inject(refreshJwtConfig.KEY)
     private refreshTokenConfig: ConfigType<typeof refreshJwtConfig>,
   ) {}
 
-  async validateGoogleUser(googleUser: CreateUserDto) {
-    const user = await this.usersService.findUserByEmail(googleUser.email);
-    if (user) return user;
-    return await this.usersService.createUser(googleUser);
-  }
-
-  async login(userId: number) {
-    // const payload: AuthJwtPayload = { sub: userId };
-    // const token = this.jwtService.sign(payload);
-    // const refreshToken = this.jwtService.sign(payload, this.refreshTokenConfig);
+  async refreshToken(userId: number) {
     const { accessToken, refreshToken } = await this.generateTokens(userId);
     const hashedRefreshToken = await argon2.hash(refreshToken);
     await this.usersService.updateHashedRefreshToken(
@@ -38,17 +34,51 @@ export class AuthService {
       refreshToken,
     };
   }
+
+  async validateGoogleUser(googleUser: CreateUserDto) {
+    const user = await this.usersService.findUserByEmail(googleUser.email);
+    if (user) return user;
+    return await this.usersService.createUser(googleUser);
+  }
+
+  async signOut(userId: number) {
+    await this.usersService.updateHashedRefreshToken(userId, null);
+  }
+
+  async login(id: number) {
+    // const payload: AuthJwtPayload = { sub: userId };
+    // const token = this.jwtService.sign(payload);
+    // const refreshToken = this.jwtService.sign(payload, this.refreshTokenConfig);
+    const { accessToken, refreshToken } = await this.generateTokens(id);
+    const hashedRefreshToken = await argon2.hash(refreshToken);
+    await this.usersService.updateHashedRefreshToken(id, hashedRefreshToken);
+    return {
+      id: id,
+      accessToken,
+      refreshToken,
+    };
+  }
+
   async generateTokens(userId: number) {
     const payload: AuthJwtPayload = { sub: userId };
+
     const [accessToken, refreshToken] = await Promise.all([
-      this.jwtService.signAsync(payload),
-      this.jwtService.signAsync(payload, this.refreshTokenConfig),
+      this.jwtService.signAsync(payload, {
+        secret: this.jwtConfig.secret as string,
+        expiresIn: this.jwtConfig.signOptions?.expiresIn,
+      }),
+      this.jwtService.signAsync(payload, {
+        secret: this.refreshTokenConfig.secret as string,
+        expiresIn: this.refreshTokenConfig.expiresIn,
+      }),
     ]);
+
     return {
       accessToken,
       refreshToken,
     };
   }
+
   async validateRefreshToken(userId: number, refreshToken: string) {
     const user = await this.usersService.findUserById(userId);
     if (!user || !user.refreshToken)
@@ -65,9 +95,9 @@ export class AuthService {
   }
 
   async validateJwtUser(userId: number) {
-    const user = await this.usersService.findUserById(userId);
+    const user: Selectable<Users> =
+      await this.usersService.findUserById(userId);
     if (!user) throw new UnauthorizedException('User not found!');
-    const currentUser: CurrentUser = { id: user.id, role: user.role };
-    return currentUser;
+    return { id: user.id, role: user.role };
   }
 }

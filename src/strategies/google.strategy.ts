@@ -1,37 +1,40 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-google-oauth20';
-import { Inject, Injectable } from '@nestjs/common';
-import googleOauthConfig from '../auth/config/googleOauthConfig';
 import type { ConfigType } from '@nestjs/config';
 import { AuthService } from '../auth/auth.service';
+import googleOauthConfig from '../auth/config/googleOauthConfig';
 import { Role } from '../types/auth/auth.dto';
 
 @Injectable()
-export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
+export class GoogleStrategy extends PassportStrategy(Strategy) {
   constructor(
     @Inject(googleOauthConfig.KEY)
-    private readonly googleConfiguration: ConfigType<typeof googleOauthConfig>,
-    private readonly authService: AuthService,
+    private googleConfiguration: ConfigType<typeof googleOauthConfig>,
+    private authService: AuthService,
   ) {
     super({
-      clientID: googleConfiguration.clientID as string,
-      clientSecret: googleConfiguration.clientSecret as string,
-      callbackURL: googleConfiguration.callbackURL as string,
+      clientID: googleConfiguration.clientID,
+      clientSecret: googleConfiguration.clientSecret,
+      callbackURL: googleConfiguration.callbackURL,
       scope: ['email', 'profile'],
+      state: 'mobile',
     });
   }
 
   async validate(accessToken: string, refreshToken: string, profile: any) {
+    console.log('from the AuthGuard', { profile });
     const user = await this.authService.validateGoogleUser({
-      role: Role.User,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
-      email: profile.email[0],
+      email: profile.emails[0].value,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
       firstName: profile.name.givenName,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
       lastName: profile.name.familyName,
+      role: Role.User,
       password: '',
     });
+    // done(null, user);
     return user;
   }
 }
