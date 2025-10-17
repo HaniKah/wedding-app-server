@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as process from 'node:process';
+import session from 'express-session';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -18,6 +19,20 @@ async function bootstrap() {
     .addTag('wedApp Tag')
     .build();
 
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  app.use(
+    session({
+      secret: process.env.SESSION_SECRET || 'dev-secret',
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        secure: isProduction, // true in production, false for local dev
+        httpOnly: true,
+        sameSite: isProduction ? 'none' : 'lax', // important for cross-origin
+      },
+    }),
+  );
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, documentFactory, {
     jsonDocumentUrl: 'swagger/json',
