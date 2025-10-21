@@ -6,6 +6,8 @@ import { GoogleAuthGuard } from './guards/google-auth/google-auth.guard';
 import { RefreshAuthGuard } from './guards/refresh-auth/refresh-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 import type { Request, Response } from 'express';
+import { ExchangeAuthGuard } from './guards/exchange-auth/exchange-auth.guard';
+import { ExchangeTokenDto } from '../types/auth/auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -39,14 +41,22 @@ export class AuthController {
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<void> {
-    if (!req.user?.id) return;
-    const response = await this.authService.login(req.user?.id);
+    const exchangeToken = await this.authService.generateExchangeToken(
+      req.user.id,
+    );
     const redirectUrl =
       this.configService.get<string>('APP_SCHEME') +
-      '?token=' +
-      response.accessToken +
-      '&refreshToken=' +
-      response.refreshToken;
+      '?exchangeToken=' +
+      exchangeToken;
     return res.redirect(redirectUrl);
+  }
+
+  //a guard that checks whether the exchange token is valid and returns access token and refresh token
+  @Public()
+  @UseGuards(ExchangeAuthGuard)
+  @Post('exchangeToken')
+  async exchangeToken(@Req() req: Request): Promise<ExchangeTokenDto> {
+    const userId = req.user?.id;
+    return await this.authService.login(userId);
   }
 }

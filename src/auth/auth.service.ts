@@ -2,13 +2,14 @@ import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { CreateUserDto } from '../types/users/users.dto';
 import * as argon2 from 'argon2';
-import { AuthJwtPayload } from '../types/auth/auth.dto';
+import { AuthJwtPayload, Role } from '../types/auth/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import refreshJwtConfig from './config/refresh-jwt.config';
 import type { ConfigType } from '@nestjs/config';
 import JwtConfig from './config/jwt.config';
 import { Selectable } from 'kysely';
 import { Users } from 'kysely-codegen';
+import exchangeJwtConfig from './config/exchange-jwt.config';
 
 @Injectable()
 export class AuthService {
@@ -19,6 +20,8 @@ export class AuthService {
     private jwtConfig: ConfigType<typeof JwtConfig>,
     @Inject(refreshJwtConfig.KEY)
     private refreshTokenConfig: ConfigType<typeof refreshJwtConfig>,
+    @Inject(exchangeJwtConfig.KEY)
+    private exchangeTokenConfig: ConfigType<typeof exchangeJwtConfig>,
   ) {}
 
   async refreshToken(userId: number) {
@@ -33,6 +36,14 @@ export class AuthService {
       accessToken,
       refreshToken,
     };
+  }
+
+  async generateExchangeToken(userId: number) {
+    const payload: AuthJwtPayload = { sub: userId, role: Role.User };
+    return await this.jwtService.signAsync(payload, {
+      secret: this.exchangeTokenConfig.secret,
+      expiresIn: this.exchangeTokenConfig?.expiresIn,
+    });
   }
 
   async validateGoogleUser(googleUser: CreateUserDto) {
@@ -60,7 +71,7 @@ export class AuthService {
   }
 
   async generateTokens(userId: number) {
-    const payload: AuthJwtPayload = { sub: userId };
+    const payload: AuthJwtPayload = { sub: userId, role: Role.User };
 
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
@@ -68,7 +79,7 @@ export class AuthService {
         expiresIn: this.jwtConfig.signOptions?.expiresIn,
       }),
       this.jwtService.signAsync(payload, {
-        secret: this.refreshTokenConfig.secret as string,
+        secret: this.refreshTokenConfig.secret,
         expiresIn: this.refreshTokenConfig.expiresIn,
       }),
     ]);

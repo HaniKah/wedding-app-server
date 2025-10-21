@@ -20,7 +20,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
   //this function decodes the jwt token and receives the payload , validate here will assign user object in the request
-  //todo : but here it just checks wether the user exists or not , its that correct ? no need to check the refresh token ?
   validate(payload: AuthJwtPayload) {
     const userId = payload.sub;
     return this.authService.validateJwtUser(userId);

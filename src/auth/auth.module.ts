@@ -8,11 +8,11 @@ import refreshJwtConfig from './config/refresh-jwt.config';
 import { UsersService } from '../users/users.service';
 import jwtConfig from './config/jwt.config';
 import { JwtModule } from '@nestjs/jwt';
-import { APP_GUARD } from '@nestjs/core';
-import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
-import { RolesGuard } from './guards/roles/roles.guard';
 import { JwtStrategy } from '../strategies/jwt.strategy';
 import { RefreshJwtStrategy } from '../strategies/refresh.strategy';
+import exchangeJwtConfig from './config/exchange-jwt.config';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 
 @Module({
   providers: [
@@ -25,10 +25,10 @@ import { RefreshJwtStrategy } from '../strategies/refresh.strategy';
       provide: APP_GUARD,
       useClass: JwtAuthGuard, //@UseGuards(JwtAuthGuard) applied on all API endppints
     },
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: RolesGuard,
+    // },
   ],
   controllers: [AuthController],
   imports: [
@@ -36,6 +36,7 @@ import { RefreshJwtStrategy } from '../strategies/refresh.strategy';
     ConfigModule.forFeature(jwtConfig),
     ConfigModule.forFeature(refreshJwtConfig),
     ConfigModule.forFeature(googleOauthConfig),
+    ConfigModule.forFeature(exchangeJwtConfig),
   ],
 })
 export class AuthModule {}

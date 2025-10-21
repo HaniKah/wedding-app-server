@@ -18,12 +18,10 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       clientSecret: googleConfiguration.clientSecret,
       callbackURL: googleConfiguration.callbackURL,
       scope: ['email', 'profile'],
-      state: 'mobile',
     });
   }
 
   async validate(accessToken: string, refreshToken: string, profile: any) {
-    console.log('from the AuthGuard', { profile });
     const user = await this.authService.validateGoogleUser({
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
       email: profile.emails[0].value,
