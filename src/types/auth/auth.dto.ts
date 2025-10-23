@@ -22,10 +22,7 @@ export type CurrentUser = {
   id: number;
   role: Role;
 };
-export class ExchangeTokenDto {
-  accessToken: string;
-  refreshToken: string;
-}
+
 export enum Provider {
   Google = 'Google',
   Apple = 'Apple',

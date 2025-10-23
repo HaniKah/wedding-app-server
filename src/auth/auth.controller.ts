@@ -7,7 +7,7 @@ import { RefreshAuthGuard } from './guards/refresh-auth/refresh-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 import type { Request, Response } from 'express';
 import { ExchangeAuthGuard } from './guards/exchange-auth/exchange-auth.guard';
-import { ExchangeTokenDto } from '../types/auth/auth.dto';
+import { ExchangeTokenDto } from '../types/auth/exchange.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -56,7 +56,6 @@ export class AuthController {
   @UseGuards(ExchangeAuthGuard)
   @Post('exchangeToken')
   async exchangeToken(@Req() req: Request): Promise<ExchangeTokenDto> {
-    const userId = req.user?.id;
-    return await this.authService.login(userId);
+    return await this.authService.login(req.user.id);
   }
 }

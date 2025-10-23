@@ -22,7 +22,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(accessToken: string, refreshToken: string, profile: any) {
-    const user = await this.authService.validateGoogleUser({
+    return await this.authService.validateGoogleUser({
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
       email: profile.emails[0].value,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
@@ -32,7 +32,5 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       role: Role.User,
       password: '',
     });
-    // done(null, user);
-    return user;
   }
 }

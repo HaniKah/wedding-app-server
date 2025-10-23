@@ -2,10 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { DbService } from '../db/db.service';
 import { Insertable } from 'kysely';
 import { Users } from 'kysely-codegen';
+import { Role } from '../types/auth/auth.dto';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly dbService: DbService) {}
+
+  async updateRoleById(id: number, role: Role) {
+    return await this.dbService.db
+      .updateTable('users')
+      .set('role', role)
+      .where('users.id', '=', id)
+      .executeTakeFirst();
+  }
 
   async findUserByEmail(email: string) {
     return await this.dbService.db

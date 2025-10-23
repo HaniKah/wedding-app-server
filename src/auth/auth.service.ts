@@ -37,7 +37,7 @@ export class AuthService {
   }
 
   async generateExchangeToken(userId: number) {
-    const payload: AuthJwtPayload = { sub: userId, role: Role.User };
+    const payload = { sub: userId };
     return await this.jwtService.signAsync(payload, {
       secret: this.exchangeTokenConfig.secret,
       expiresIn: this.exchangeTokenConfig?.expiresIn,
@@ -78,7 +78,6 @@ export class AuthService {
         expiresIn: this.refreshTokenConfig.expiresIn,
       }),
     ]);
-
     return {
       accessToken,
       refreshToken,
