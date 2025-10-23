@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { PlannerService } from './planner.service';
 import {
   PlaceDetailsDto,
@@ -11,7 +11,6 @@ import {
   UpdateDateRequest,
   WeddingDateDto,
 } from '../types/planner/weddingDateDto';
-import type { Request } from 'express';
 
 @Controller('places')
 export class PlannerController {
@@ -19,7 +18,6 @@ export class PlannerController {
 
   @Get('getPlaces')
   public getPlaces(
-    @Req() req: Request,
     @Query('step') step: WeddingSteps,
   ): Promise<PlacesViewModel> {
     return this.plannerService.getPlaces(step);
@@ -32,10 +30,7 @@ export class PlannerController {
     return await this.plannerService.getPlaceById(placeId);
   }
   @Get('getSteps')
-  public async getSteps(@Req() req: Request): Promise<StepsViewModel> {
-    // const token = ExtractJwt.fromAuthHeaderAsBearerToken();
-    // const tokenName = token.name;
-    // const fromHeader = ExtractJwt.fromHeader('Authorization').name;
+  public async getSteps(): Promise<StepsViewModel> {
     return await this.plannerService.getSteps();
   }
 

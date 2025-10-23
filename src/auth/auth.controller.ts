@@ -16,10 +16,11 @@ export class AuthController {
     private readonly configService: ConfigService,
   ) {}
 
+  @Public()
   @UseGuards(RefreshAuthGuard)
   @Post('refresh')
-  refreshToken(@Req() req: Request) {
-    return this.authService.refreshToken(req.user.id);
+  async refreshToken(@Req() req: Request) {
+    return await this.authService.refreshToken(req.user.id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -51,7 +52,6 @@ export class AuthController {
     return res.redirect(redirectUrl);
   }
 
-  //a guard that checks whether the exchange token is valid and returns access token and refresh token
   @Public()
   @UseGuards(ExchangeAuthGuard)
   @Post('exchangeToken')

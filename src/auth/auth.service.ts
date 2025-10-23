@@ -7,8 +7,6 @@ import { JwtService } from '@nestjs/jwt';
 import refreshJwtConfig from './config/refresh-jwt.config';
 import type { ConfigType } from '@nestjs/config';
 import JwtConfig from './config/jwt.config';
-import { Selectable } from 'kysely';
-import { Users } from 'kysely-codegen';
 import exchangeJwtConfig from './config/exchange-jwt.config';
 
 @Injectable()
@@ -57,9 +55,6 @@ export class AuthService {
   }
 
   async login(id: number) {
-    // const payload: AuthJwtPayload = { sub: userId };
-    // const token = this.jwtService.sign(payload);
-    // const refreshToken = this.jwtService.sign(payload, this.refreshTokenConfig);
     const { accessToken, refreshToken } = await this.generateTokens(id);
     const hashedRefreshToken = await argon2.hash(refreshToken);
     await this.usersService.updateHashedRefreshToken(id, hashedRefreshToken);
@@ -106,9 +101,8 @@ export class AuthService {
   }
 
   async validateJwtUser(userId: number) {
-    const user: Selectable<Users> =
-      await this.usersService.findUserById(userId);
+    const user = await this.usersService.findUserById(userId);
     if (!user) throw new UnauthorizedException('User not found!');
-    return { id: user.id, role: user.role };
+    return { id: user.id, role: user.role as Role };
   }
 }

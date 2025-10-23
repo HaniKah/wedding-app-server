@@ -28,9 +28,9 @@ export class RefreshJwtStrategy extends PassportStrategy(
   // authorization: Bearer sldfk;lsdkf'lskald'sdkf;sdl
 
   validate(req: Request, payload: AuthJwtPayload) {
-    const authHeader = req.get('authorization');
-    if (!authHeader) throw new Error('Authorization header is missing');
-    const refreshToken = authHeader.replace('Bearer', '').trim();
+    const header: string = req.headers.authorization;
+    if (!header) throw new Error('Authorization header is missing');
+    const refreshToken = header.replace('Bearer', '').trim();
     const userId = payload.sub;
     return this.authService.validateRefreshToken(userId, refreshToken);
   }
