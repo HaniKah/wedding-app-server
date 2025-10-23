@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
 import { PlannerService } from './planner.service';
 import {
   PlaceDetailsDto,
@@ -11,6 +11,7 @@ import {
   UpdateDateRequest,
   WeddingDateDto,
 } from '../types/planner/weddingDateDto';
+import type { Request } from 'express';
 
 @Controller('places')
 export class PlannerController {
@@ -30,30 +31,36 @@ export class PlannerController {
     return await this.plannerService.getPlaceById(placeId);
   }
   @Get('getSteps')
-  public async getSteps(): Promise<StepsViewModel> {
-    return await this.plannerService.getSteps();
+  public async getSteps(@Req() req: Request): Promise<StepsViewModel> {
+    const userId = req.user.id;
+    return await this.plannerService.getSteps(userId);
   }
 
   @Post('updatePlaceDetails')
   public async updatePlaceDetails(
     @Body() request: PlaceDetailsRequest,
+    @Req() req: Request,
   ): Promise<void> {
-    await this.plannerService.updateAPlaceDetails(request);
+    await this.plannerService.updateAPlaceDetails(req.user.id, request);
   }
 
   @Get('getWeddingDate')
-  public async getWeddingDate(): Promise<WeddingDateDto> {
-    return await this.plannerService.getWeddingDate();
+  public async getWeddingDate(@Req() req: Request): Promise<WeddingDateDto> {
+    return await this.plannerService.getWeddingDate(req.user.id);
   }
 
   @Post('updateWeddingDate')
   public async updateWeddingDate(
+    @Req() req: Request,
     @Body() date: UpdateDateRequest,
   ): Promise<void> {
-    return await this.plannerService.updateWeddingDate(new Date(date.date));
+    return await this.plannerService.updateWeddingDate(
+      req.user.id,
+      new Date(date.date),
+    );
   }
   @Get('getChecklist')
-  public async getChecklist(): Promise<ChecklistViewModel> {
-    return await this.plannerService.createChecklist();
+  public async getChecklist(@Req() req: Request): Promise<ChecklistViewModel> {
+    return await this.plannerService.createChecklist(req.user.id);
   }
 }

@@ -27,4 +27,11 @@ export class PlansRepositoryService {
       .where('plans.id', '=', planId)
       .executeTakeFirstOrThrow(); // every user should have a plan
   }
+  public async getPlanByUserIdOrThrow(userId: number) {
+    return this.db
+      .selectFrom('plans')
+      .selectAll()
+      .where('plans.userId', '=', userId)
+      .executeTakeFirstOrThrow();
+  }
 }

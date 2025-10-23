@@ -18,35 +18,37 @@ import { stepsInfo } from '../constants/steps-info';
 
 @Injectable()
 export class PlannerService {
-  private readonly planId: number = 1;
-
   constructor(
     private readonly placeDetailsRepositoryService: PlaceDetailsRepositoryService,
     private readonly plansRepositoryService: PlansRepositoryService,
     private readonly placesRepositoryService: PlacesRepositoryService,
   ) {}
 
-  public async updateWeddingDate(date: Date): Promise<void> {
-    await this.plansRepositoryService.updatePlan(this.planId, {
+  public async updateWeddingDate(userId: number, date: Date): Promise<void> {
+    const planRecord =
+      await this.plansRepositoryService.getPlanByUserIdOrThrow(userId);
+    await this.plansRepositoryService.updatePlan(planRecord.id, {
       weddingDate: date,
     });
   }
 
-  public async getWeddingDate(): Promise<WeddingDateDto> {
-    const plan = await this.plansRepositoryService.getPlanByIdOrThrow(
-      this.planId,
-    );
+  public async getWeddingDate(userId: number): Promise<WeddingDateDto> {
+    const planRecord =
+      await this.plansRepositoryService.getPlanByUserIdOrThrow(userId);
     return {
-      date: plan?.weddingDate?.toLocaleDateString('en-CA') || null,
+      date: planRecord?.weddingDate?.toLocaleDateString('en-CA') || null,
     };
   }
 
   public async updateAPlaceDetails(
+    userId: number,
     request: PlaceDetailsRequest,
   ): Promise<void> {
     if (request.picked) {
+      const planRecord =
+        await this.plansRepositoryService.getPlanByUserIdOrThrow(userId);
       await this.placeDetailsRepositoryService.removeAllPicked(
-        this.planId,
+        planRecord.id,
         request.step,
       );
     }
@@ -66,9 +68,12 @@ export class PlannerService {
         },
       );
     } else {
+      const planRecord =
+        await this.plansRepositoryService.getPlanByUserIdOrThrow(userId);
+
       //todo optimization: here we are updating unnecessary fields
       await this.placeDetailsRepositoryService.createPlaceDetails({
-        planId: this.planId,
+        planId: planRecord.id,
         placeId: request.placeId,
         step: request.step,
         picked: request.picked,
@@ -115,16 +120,17 @@ export class PlannerService {
     };
   }
 
-  public async getSteps(): Promise<StepsViewModel> {
+  public async getSteps(userId: number): Promise<StepsViewModel> {
     //todo : ignored steps are not implemented yet
     const stepsList: WeddingSteps[] = Object.values(WeddingSteps);
-
+    const planRecord =
+      await this.plansRepositoryService.getPlanByUserIdOrThrow(userId);
     const completedStepsRecord =
       await this.placeDetailsRepositoryService.getPlaceDetailsOfCompletedSteps(
-        this.planId,
+        planRecord.id,
       );
 
-    const weddingDate = await this.getWeddingDate();
+    const weddingDate = await this.getWeddingDate(userId);
     let note: string;
 
     const dtoList = await Promise.all(
@@ -159,16 +165,18 @@ export class PlannerService {
     };
   }
 
-  public async createChecklist(): Promise<ChecklistViewModel> {
+  public async createChecklist(userId: number): Promise<ChecklistViewModel> {
     //todo : ignored steps are not implemented yet
     const stepsList: WeddingSteps[] = Object.values(WeddingSteps);
+    const planRecord =
+      await this.plansRepositoryService.getPlanByUserIdOrThrow(userId);
 
     const completedStepsRecord =
       await this.placeDetailsRepositoryService.getPlaceDetailsOfCompletedSteps(
-        this.planId,
+        planRecord.id,
       );
 
-    const weddingDate: WeddingDateDto = await this.getWeddingDate();
+    const weddingDate: WeddingDateDto = await this.getWeddingDate(userId);
 
     let placeName: string | null = null;
     let placeId: number | null = null;
