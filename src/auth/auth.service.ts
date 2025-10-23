@@ -8,11 +8,13 @@ import refreshJwtConfig from './config/refresh-jwt.config';
 import type { ConfigType } from '@nestjs/config';
 import JwtConfig from './config/jwt.config';
 import exchangeJwtConfig from './config/exchange-jwt.config';
+import { PlansRepositoryService } from '../planner/plans.repository.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
+    private readonly plansRepositoryService: PlansRepositoryService,
     private jwtService: JwtService,
     @Inject(JwtConfig.KEY)
     private jwtConfig: ConfigType<typeof JwtConfig>,
@@ -47,7 +49,11 @@ export class AuthService {
   async validateGoogleUser(googleUser: CreateUserDto) {
     const user = await this.usersService.findUserByEmail(googleUser.email);
     if (user) return user;
-    return await this.usersService.createUser(googleUser);
+    const userRecord = await this.usersService.createUser(googleUser);
+    // todo : solve the catch error thing , https://www.youtube.com/watch?v=AdmGHwvgaVs&t=72s
+    await this.plansRepositoryService.createPlan(userRecord.id);
+
+    return userRecord;
   }
 
   async signOut(userId: number) {

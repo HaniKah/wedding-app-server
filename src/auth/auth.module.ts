@@ -13,12 +13,14 @@ import { RefreshJwtStrategy } from '../strategies/refresh.strategy';
 import exchangeJwtConfig from './config/exchange-jwt.config';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
+import { PlansRepositoryService } from '../planner/plans.repository.service';
 
 @Module({
   providers: [
     AuthService,
     GoogleStrategy,
     UsersService,
+    PlansRepositoryService,
     JwtStrategy,
     RefreshJwtStrategy,
     {

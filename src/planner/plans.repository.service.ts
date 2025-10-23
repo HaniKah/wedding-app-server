@@ -11,6 +11,12 @@ export class PlansRepositoryService {
   constructor(private readonly dbService: DbService) {
     this.db = dbService.db;
   }
+  public async createPlan(userId: number) {
+    await this.db
+      .insertInto('plans')
+      .values({ userId: userId })
+      .executeTakeFirstOrThrow();
+  }
 
   public async updatePlan(id: number, plan: Updateable<Plans>): Promise<void> {
     await this.db
