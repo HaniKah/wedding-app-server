@@ -60,8 +60,8 @@ pids
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 .note
-/googlePlace.json
-/googlePhoto.json
+/dummy-googlePlace.json
+/dummy-googlePhoto.json
 
 # certificate
 /cert
