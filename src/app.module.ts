@@ -8,6 +8,7 @@ import { GuestsModule } from './guests/guests.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { PlacesModule } from './places/places.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UsersModule } from './users/users.module';
     AuthModule,
     UsersModule,
     UsersModule,
+    PlacesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
