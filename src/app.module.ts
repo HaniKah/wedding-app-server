@@ -9,6 +9,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { PlacesModule } from './places/places.module';
+import { MinioModule } from './minio/minio.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { PlacesModule } from './places/places.module';
     UsersModule,
     UsersModule,
     PlacesModule,
+    MinioModule,
   ],
   controllers: [AppController],
   providers: [AppService],

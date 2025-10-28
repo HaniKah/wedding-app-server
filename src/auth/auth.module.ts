@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { ConfigModule } from '@nestjs/config';
-import googleOauthConfig from './config/googleOauthConfig';
+import googleOauthConfig from './config/googleOauth.config';
 import { GoogleStrategy } from '../strategies/google.strategy';
 import refreshJwtConfig from './config/refresh-jwt.config';
 import { UsersService } from '../users/users.service';
