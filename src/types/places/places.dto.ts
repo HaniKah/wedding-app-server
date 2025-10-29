@@ -5,7 +5,7 @@ export class CreatePlaceRequest {
   @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
   type: WeddingSteps;
   placeInfo: CreatePlaceInfo;
-  location: CreatePlaceLocation;
+  location: CreatePlaceLocation | undefined;
   @ApiProperty({ type: 'array', items: { type: 'string', format: 'binary' } })
   files: any[];
 }
