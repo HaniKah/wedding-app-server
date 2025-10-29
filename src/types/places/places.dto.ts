@@ -6,17 +6,19 @@ export class CreatePlaceRequest {
   type: WeddingSteps;
   placeInfo: CreatePlaceInfo;
   location: CreatePlaceLocation;
+  @ApiProperty({ type: 'array', items: { type: 'string', format: 'binary' } })
+  files: any[];
 }
-type CreatePlaceInfo = {
+class CreatePlaceInfo {
   name: string;
   phoneNumber: string;
   facebook: string | null;
   instagram: string | null;
   tiktok: string | null;
   website: string | null;
-};
+}
 
-type CreatePlaceLocation = {
+class CreatePlaceLocation {
   streetName: string;
   city: string;
   country: string;
@@ -24,4 +26,4 @@ type CreatePlaceLocation = {
   lat: number | null;
   lng: number | null;
   googleId: string | null;
-};
+}
