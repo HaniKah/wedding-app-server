@@ -2,9 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { CreatePlaceDto, CreatePlaceRequest } from '../types/places/places.dto';
 import { PlacesRepositoryService } from './places.repository.service';
 import { MinioService } from '../minio/minio.service';
-import { v4 } from 'uuid';
-import { BucketName, PhotoSize } from '../types/photos/photos.dto';
-import sharp from 'sharp';
 
 @Injectable()
 export class PlacesService {
@@ -36,83 +33,5 @@ export class PlacesService {
     return {
       id: placeRecord.id,
     };
-  }
-
-  public async uploadFiles(placeId: number, files: Array<Express.Multer.File>) {
-    const bucketExists: boolean = await this.minioService.minio.bucketExists(
-      BucketName.PlacesOriginal,
-    );
-
-    if (!bucketExists) {
-      await this.minioService.minio.makeBucket(
-        BucketName.PlacesOriginal,
-        'jordan',
-      );
-    }
-    for (const file of files) {
-      const objectName: string = await this.uploadObject(
-        placeId,
-        file,
-        BucketName.PlacesOriginal,
-      );
-      await this.storePhotoInfo(placeId, objectName, BucketName.PlacesOriginal);
-    }
-  }
-  private async storePhotoInfo(
-    placeId: number,
-    objectName: string,
-    bucketName: BucketName,
-    photoSize: PhotoSize = PhotoSize.Original,
-  ) {
-    await this.placesRepositoryService.createPhoto({
-      placeId: placeId,
-      objectKey: objectName,
-      size: photoSize,
-      bucketName: bucketName,
-    });
-  }
-
-  private async getObject(
-    objectKey: string,
-    bucketName: string,
-  ): Promise<string> {
-    return await this.minioService.minio.presignedGetObject(
-      bucketName,
-      objectKey,
-    );
-  }
-
-  private async uploadObject(
-    placeId: number,
-    file: Express.Multer.File,
-    bucketName: string,
-  ) {
-    let fileBuffer: Buffer<ArrayBufferLike>;
-    let fileExtension: string;
-    const fileSize: number = file.size; // todo : to be changed for creating thumbnails
-
-    if (file.mimetype === 'image/heic') {
-      fileBuffer = await sharp(file.buffer).jpeg().toBuffer();
-      fileExtension = 'jpeg';
-    } else {
-      fileBuffer = file.buffer;
-      fileExtension = file.originalname.split('.').pop();
-    }
-
-    const uuid = v4();
-    const objectName = `${PhotoSize.Original}/${placeId}/${uuid}.${fileExtension}`;
-    const metadata = {
-      fileName: file.filename,
-      size: fileSize,
-      photoSize: PhotoSize.Original,
-    };
-    await this.minioService.minio.putObject(
-      bucketName,
-      objectName,
-      fileBuffer,
-      fileSize,
-      metadata,
-    );
-    return objectName;
   }
 }
