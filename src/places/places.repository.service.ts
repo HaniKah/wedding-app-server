@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DbService } from '../db/db.service';
 
-import { Places } from 'kysely-codegen';
+import { Photos, Places } from 'kysely-codegen';
 import { Insertable } from 'kysely';
 
 @Injectable()
@@ -13,5 +13,9 @@ export class PlacesRepositoryService {
       .values(data)
       .returning('id')
       .executeTakeFirst();
+  }
+
+  public async createPhoto(data: Insertable<Photos>) {
+    await this.db.db.insertInto('photos').values(data).execute();
   }
 }

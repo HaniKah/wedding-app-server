@@ -5,7 +5,8 @@
       "place_details.step": "WeddingSteps",
       "places.step": "WeddingSteps",
       "guests.couple_side": "CoupleSide",
-      "photos.size": "PhotoSize"
+      "photos.size": "PhotoSize",
+      "photos.bucket_name": "BucketName"
     }
   },
   "defaultSchemas": ["planner"],

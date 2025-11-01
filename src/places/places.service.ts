@@ -50,8 +50,26 @@ export class PlacesService {
       );
     }
     for (const file of files) {
-      await this.uploadObject(placeId, file, BucketName.PlacesOriginal);
+      const objectName: string = await this.uploadObject(
+        placeId,
+        file,
+        BucketName.PlacesOriginal,
+      );
+      await this.storePhotoInfo(placeId, objectName, BucketName.PlacesOriginal);
     }
+  }
+  private async storePhotoInfo(
+    placeId: number,
+    objectName: string,
+    bucketName: BucketName,
+    photoSize: PhotoSize = PhotoSize.Original,
+  ) {
+    await this.placesRepositoryService.createPhoto({
+      placeId: placeId,
+      objectKey: objectName,
+      size: photoSize,
+      bucketName: bucketName,
+    });
   }
 
   private async getObject(
@@ -95,5 +113,6 @@ export class PlacesService {
       fileSize,
       metadata,
     );
+    return objectName;
   }
 }
