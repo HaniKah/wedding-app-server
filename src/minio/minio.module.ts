@@ -6,5 +6,6 @@ import MinioConfig from './config/minio.config';
 @Module({
   providers: [MinioService],
   imports: [ConfigModule.forFeature(MinioConfig)],
+  exports: [MinioService],
 })
 export class MinioModule {}

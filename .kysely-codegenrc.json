@@ -4,12 +4,11 @@
       "users.role": "Role",
       "place_details.step": "WeddingSteps",
       "places.step": "WeddingSteps",
-      "guests.couple_side": "CoupleSide"
+      "guests.couple_side": "CoupleSide",
+      "photos.size": "PhotoSize"
     }
   },
-  "defaultSchemas": [
-    "planner"
-  ],
+  "defaultSchemas": ["planner"],
   "camelCase": true,
   "dialect": "postgres"
 }

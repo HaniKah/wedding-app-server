@@ -5,17 +5,23 @@ export class CreatePlaceRequest {
   @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
   type: WeddingSteps;
   placeInfo: CreatePlaceInfo;
-  location: CreatePlaceLocation | undefined;
-  @ApiProperty({ type: 'array', items: { type: 'string', format: 'binary' } })
-  files: any[];
+  location?: CreatePlaceLocation;
+}
+// export class UploadFileRequest {
+//   @ApiProperty({ type: 'array', items: { type: 'string', format: 'binary' } })
+//   files: any[];
+// }
+
+export class CreatePlaceDto {
+  id: number;
 }
 class CreatePlaceInfo {
   name: string;
   phoneNumber: string;
-  facebook: string | null;
-  instagram: string | null;
-  tiktok: string | null;
-  website: string | null;
+  facebook?: string;
+  instagram?: string;
+  tiktok?: string;
+  website?: string;
 }
 
 class CreatePlaceLocation {
@@ -23,7 +29,7 @@ class CreatePlaceLocation {
   city: string;
   country: string;
   postalCode: string;
-  lat: number | null;
-  lng: number | null;
-  googleId: string | null;
+  lat?: number;
+  lng?: number;
+  googleId?: string;
 }
