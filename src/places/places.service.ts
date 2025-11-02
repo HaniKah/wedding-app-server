@@ -1,13 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePlaceDto, CreatePlaceRequest } from '../types/places/places.dto';
 import { PlacesRepositoryService } from './places.repository.service';
-import { MinioService } from '../minio/minio.service';
 
 @Injectable()
 export class PlacesService {
   constructor(
     private readonly placesRepositoryService: PlacesRepositoryService,
-    private readonly minioService: MinioService,
   ) {}
   public async createPlace(
     userId: number,
