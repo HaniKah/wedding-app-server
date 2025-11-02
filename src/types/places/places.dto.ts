@@ -7,10 +7,18 @@ export class CreatePlaceRequest {
   placeInfo: CreatePlaceInfo;
   location?: CreatePlaceLocation;
 }
-// export class UploadFileRequest {
-//   @ApiProperty({ type: 'array', items: { type: 'string', format: 'binary' } })
-//   files: any[];
-// }
+
+export class VendorPlaceDto {
+  id: number;
+  name: string;
+  streetName: string;
+  website: string;
+  facebook: string;
+  tiktok: string;
+  instagram: string;
+  phoneNumber: string;
+  photos: string[];
+}
 
 export class CreatePlaceDto {
   id: number;
