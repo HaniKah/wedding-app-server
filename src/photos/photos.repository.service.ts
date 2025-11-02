@@ -10,4 +10,11 @@ export class PhotosRepositoryService {
   public async createPhoto(data: Insertable<Photos>) {
     await this.db.db.insertInto('photos').values(data).execute();
   }
+  public async getPhotosByPlaceId(placeId: number) {
+    return await this.db.db
+      .selectFrom('photos')
+      .selectAll()
+      .where('placeId', '=', placeId)
+      .execute();
+  }
 }

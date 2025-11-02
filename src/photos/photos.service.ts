@@ -11,6 +11,16 @@ export class PhotosService {
     private readonly photosRepositoryService: PhotosRepositoryService,
   ) {}
 
+  public async getPhotosByPlaceId(placeId: number): Promise<string[]> {
+    const photos =
+      await this.photosRepositoryService.getPhotosByPlaceId(placeId);
+    return Promise.all(
+      photos.map(async (p) => {
+        return await this.getObject(p.objectKey, p.bucketName);
+      }),
+    );
+  }
+
   public async uploadFiles(placeId: number, files: Array<Express.Multer.File>) {
     const bucketExists: boolean = await this.minioService.minio.bucketExists(
       BucketName.PlacesOriginal,

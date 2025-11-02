@@ -14,4 +14,11 @@ export class PlacesRepositoryService {
       .returning('id')
       .executeTakeFirst();
   }
+  public async getAllPlacesByUserId(userId: number) {
+    return await this.db.db
+      .selectFrom('places')
+      .selectAll()
+      .where('userId', '=', userId)
+      .execute();
+  }
 }

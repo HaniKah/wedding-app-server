@@ -8,14 +8,18 @@ export class CreatePlaceRequest {
   location?: CreatePlaceLocation;
 }
 
+export class VendorPlaceViewModel {
+  result: VendorPlaceDto[];
+}
+
 export class VendorPlaceDto {
   id: number;
   name: string;
-  streetName: string;
-  website: string;
-  facebook: string;
-  tiktok: string;
-  instagram: string;
+  streetName?: string;
+  website?: string;
+  facebook?: string;
+  tiktok?: string;
+  instagram?: string;
   phoneNumber: string;
   photos: string[];
 }

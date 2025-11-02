@@ -1,11 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { CreatePlaceDto, CreatePlaceRequest } from '../types/places/places.dto';
+import {
+  CreatePlaceDto,
+  CreatePlaceRequest,
+  VendorPlaceViewModel,
+} from '../types/places/places.dto';
 import { PlacesRepositoryService } from './places.repository.service';
+import { PhotosService } from '../photos/photos.service';
 
 @Injectable()
 export class PlacesService {
   constructor(
     private readonly placesRepositoryService: PlacesRepositoryService,
+    private readonly photosService: PhotosService,
   ) {}
   public async createPlace(
     userId: number,
@@ -30,6 +36,31 @@ export class PlacesService {
     });
     return {
       id: placeRecord.id,
+    };
+  }
+
+  public async getPlaces(userId: number): Promise<VendorPlaceViewModel> {
+    const places =
+      await this.placesRepositoryService.getAllPlacesByUserId(userId);
+
+    const viewModel = await Promise.all(
+      places.map(async (p) => {
+        const photos = await this.photosService.getPhotosByPlaceId(p.id);
+        return {
+          id: p.id,
+          phoneNumber: p.phoneNumber,
+          streetName: p.streetName,
+          facebook: p.facebook,
+          instagram: p.instagram,
+          website: p.website,
+          name: p.name,
+          tiktok: p.tiktok,
+          photos: photos,
+        };
+      }),
+    );
+    return {
+      result: viewModel,
     };
   }
 }

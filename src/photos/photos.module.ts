@@ -8,5 +8,6 @@ import { MinioModule } from '../minio/minio.module';
   providers: [PhotosService, PhotosRepositoryService],
   controllers: [PhotosController],
   imports: [MinioModule],
+  exports: [PhotosService],
 })
 export class PhotosModule {}
