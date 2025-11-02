@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { BucketName, PhotoSize } from '../types/photos/photos.dto';
-import convert from 'heic-convert';
 import { v4 } from 'uuid';
 import { MinioService } from '../minio/minio.service';
 import { PhotosRepositoryService } from './photos.repository.service';
@@ -61,35 +60,20 @@ export class PhotosService {
     file: Express.Multer.File,
     bucketName: string,
   ) {
-    let fileBuffer: ArrayBufferLike;
-    let fileExtension: string;
-    const fileSize: number = file.size; // todo : to be changed for creating thumbnails
-
-    if (file.mimetype === 'image/heic') {
-      fileBuffer = await convert({
-        buffer: file.buffer.buffer, // the HEIC file buffer
-        format: 'JPEG', // output format
-        quality: 1, // the jpeg compression quality, between 0 and 1
-      });
-
-      fileExtension = 'jpeg';
-    } else {
-      fileBuffer = file.buffer.buffer;
-      fileExtension = file.originalname.split('.').pop();
-    }
+    const fileExtension: string = file.originalname.split('.').pop();
 
     const uuid = v4();
     const objectName = `${PhotoSize.Original}/${placeId}/${uuid}.${fileExtension}`;
     const metadata = {
       fileName: file.filename,
-      size: fileSize,
+      size: file.size, // todo : to be changed for creating thumbnails
       photoSize: PhotoSize.Original,
     };
     await this.minioService.minio.putObject(
       bucketName,
       objectName,
-      Buffer.from(fileBuffer),
-      fileSize,
+      file.buffer,
+      file.size,
       metadata,
     );
     return objectName;
