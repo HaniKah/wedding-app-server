@@ -3,9 +3,12 @@ import { BucketName, PhotoSize } from '../types/photos/photos.dto';
 import { v4 } from 'uuid';
 import { MinioService } from '../minio/minio.service';
 import { PhotosRepositoryService } from './photos.repository.service';
+import sharp from 'sharp';
 
 @Injectable()
 export class PhotosService {
+  private;
+
   constructor(
     private readonly minioService: MinioService,
     private readonly photosRepositoryService: PhotosRepositoryService,
@@ -21,31 +24,39 @@ export class PhotosService {
     );
   }
 
-  public async uploadFiles(placeId: number, files: Array<Express.Multer.File>) {
+  public async uploadFiles(
+    placeId: number,
+    files: Array<Express.Multer.File>,
+    bucketName: BucketName,
+    photoSize: PhotoSize[],
+  ) {
+    //check bucket exists
     const bucketExists: boolean = await this.minioService.minio.bucketExists(
-      BucketName.PlacesOriginal,
+      BucketName.Places,
     );
 
     if (!bucketExists) {
-      await this.minioService.minio.makeBucket(
-        BucketName.PlacesOriginal,
-        'jordan',
-      );
+      await this.minioService.minio.makeBucket(BucketName.Places, 'jordan');
     }
-    for (const file of files) {
-      const objectName: string = await this.uploadObject(
-        placeId,
-        file,
-        BucketName.PlacesOriginal,
-      );
-      await this.storePhotoInfo(placeId, objectName, BucketName.PlacesOriginal);
+
+    for (const size of photoSize) {
+      for (const file of files) {
+        const objectName: string = await this.uploadObject(
+          placeId,
+          file,
+          bucketName,
+          size,
+        );
+        await this.storePhotoInfo(placeId, objectName, bucketName, size);
+      }
     }
   }
+
   private async storePhotoInfo(
     placeId: number,
     objectName: string,
     bucketName: BucketName,
-    photoSize: PhotoSize = PhotoSize.Original,
+    photoSize: PhotoSize,
   ) {
     await this.photosRepositoryService.createPhoto({
       placeId: placeId,
@@ -69,23 +80,43 @@ export class PhotosService {
     placeId: number,
     file: Express.Multer.File,
     bucketName: string,
+    photoSize: PhotoSize,
   ) {
     const fileExtension: string = file.originalname.split('.').pop();
-
     const uuid = v4();
-    const objectName = `${PhotoSize.Original}/${placeId}/${uuid}.${fileExtension}`;
+    const objectName = `${placeId}/${photoSize}/${uuid}.${fileExtension}`;
+    const { data, info } = await this.resizeFile(photoSize, file);
+
     const metadata = {
       fileName: file.filename,
-      size: file.size, // todo : to be changed for creating thumbnails
-      photoSize: PhotoSize.Original,
+      photoSize: photoSize,
+      size: info.size,
     };
+
     await this.minioService.minio.putObject(
       bucketName,
       objectName,
-      file.buffer,
-      file.size,
+      data,
+      info.size,
       metadata,
     );
     return objectName;
+  }
+
+  private async resizeFile(fileSize: PhotoSize, file: Express.Multer.File) {
+    let width: number;
+    switch (fileSize) {
+      case PhotoSize.Large:
+        width = 1200;
+        break;
+      case PhotoSize.Medium:
+        width = 600;
+        break;
+      case PhotoSize.Small:
+        width = 300;
+    }
+    return await sharp(file.buffer)
+      .resize({ width: width, withoutEnlargement: true })
+      .toBuffer({ resolveWithObject: true });
   }
 }

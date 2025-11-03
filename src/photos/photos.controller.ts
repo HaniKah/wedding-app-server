@@ -8,6 +8,7 @@ import {
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { PhotosService } from './photos.service';
+import { BucketName, PhotoSize } from '../types/photos/photos.dto';
 
 @Controller('photos')
 export class PhotosController {
@@ -21,6 +22,9 @@ export class PhotosController {
     @Body() placeId: { placeId: string },
   ): Promise<void> {
     const id = parseInt(placeId.placeId);
-    await this.photosService.uploadFiles(id, files);
+    await this.photosService.uploadFiles(id, files, BucketName.Places, [
+      PhotoSize.Small,
+      PhotoSize.Large,
+    ]);
   }
 }
