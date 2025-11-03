@@ -7,16 +7,44 @@ import sharp from 'sharp';
 
 @Injectable()
 export class PhotosService {
-  private;
-
   constructor(
     private readonly minioService: MinioService,
     private readonly photosRepositoryService: PhotosRepositoryService,
   ) {}
+  public async getMainPhotoOrFirstByPlaceId(
+    placeId: number,
+    photoSize: PhotoSize,
+  ): Promise<string> {
+    const photoRecord = await this.photosRepositoryService.getMainPhoto(
+      placeId,
+      photoSize,
+    );
+    if (photoRecord) {
+      return await this.getObject(
+        photoRecord.objectKey,
+        photoRecord.bucketName,
+      );
+    } else {
+      const photos = await this.photosRepositoryService.getPhotosByPlaceId(
+        placeId,
+        photoSize,
+      );
+      if (photos) {
+        return await this.getObject(photos[0].objectKey, photos[0].bucketName);
+      } else {
+        return this.fallbackPhoto();
+      }
+    }
+  }
 
-  public async getPhotosByPlaceId(placeId: number): Promise<string[]> {
-    const photos =
-      await this.photosRepositoryService.getPhotosByPlaceId(placeId);
+  public async getPhotosByPlaceId(
+    placeId: number,
+    photoSize: PhotoSize,
+  ): Promise<string[]> {
+    const photos = await this.photosRepositoryService.getPhotosByPlaceId(
+      placeId,
+      photoSize,
+    );
     return Promise.all(
       photos.map(async (p) => {
         return await this.getObject(p.objectKey, p.bucketName);
@@ -52,6 +80,11 @@ export class PhotosService {
     }
   }
 
+  private fallbackPhoto(): string {
+    //todo : to be changed
+    return 'https://i.ibb.co/2222222/placeholder.jpg';
+  }
+
   private async storePhotoInfo(
     placeId: number,
     objectName: string,
@@ -68,7 +101,7 @@ export class PhotosService {
 
   private async getObject(
     objectKey: string,
-    bucketName: string,
+    bucketName: BucketName,
   ): Promise<string> {
     return await this.minioService.minio.presignedGetObject(
       bucketName,

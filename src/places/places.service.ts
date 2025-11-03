@@ -6,6 +6,7 @@ import {
 } from '../types/places/places.dto';
 import { PlacesRepositoryService } from './places.repository.service';
 import { PhotosService } from '../photos/photos.service';
+import { PhotoSize } from '../types/photos/photos.dto';
 
 @Injectable()
 export class PlacesService {
@@ -13,6 +14,7 @@ export class PlacesService {
     private readonly placesRepositoryService: PlacesRepositoryService,
     private readonly photosService: PhotosService,
   ) {}
+
   public async createPlace(
     userId: number,
     data: CreatePlaceRequest,
@@ -45,17 +47,16 @@ export class PlacesService {
 
     const viewModel = await Promise.all(
       places.map(async (p) => {
-        const photos = await this.photosService.getPhotosByPlaceId(p.id);
+        const photo: string =
+          await this.photosService.getMainPhotoOrFirstByPlaceId(
+            p.id,
+            PhotoSize.Small,
+          );
         return {
           id: p.id,
-          phoneNumber: p.phoneNumber,
-          streetName: p.streetName,
-          facebook: p.facebook,
-          instagram: p.instagram,
-          website: p.website,
           name: p.name,
-          tiktok: p.tiktok,
-          photos: photos,
+          streetName: p.streetName,
+          thumbnail: photo,
         };
       }),
     );
