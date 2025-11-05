@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {
   CreatePlaceDto,
   CreatePlaceRequest,
+  VendorPlaceDto,
   VendorPlaceViewModel,
 } from '../types/places/places.dto';
 import { PlacesRepositoryService } from './places.repository.service';
@@ -45,7 +46,7 @@ export class PlacesService {
     const places =
       await this.placesRepositoryService.getAllPlacesByUserId(userId);
 
-    const viewModel = await Promise.all(
+    const viewModel: VendorPlaceDto[] = await Promise.all(
       places.map(async (p) => {
         const photo: string =
           await this.photosService.getMainPhotoOrFirstByPlaceId(

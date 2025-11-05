@@ -13,7 +13,7 @@ import {
 } from '../types/planner/weddingDateDto';
 import type { Request } from 'express';
 
-@Controller('places')
+@Controller('planner')
 export class PlannerController {
   constructor(private readonly plannerService: PlannerService) {}
 

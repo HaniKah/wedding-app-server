@@ -29,7 +29,7 @@ export class PhotosService {
         placeId,
         photoSize,
       );
-      if (photos) {
+      if (photos.length > 0) {
         return await this.getObject(photos[0].objectKey, photos[0].bucketName);
       } else {
         return this.fallbackPhoto();
@@ -82,7 +82,7 @@ export class PhotosService {
 
   private fallbackPhoto(): string {
     //todo : to be changed
-    return 'https://i.ibb.co/2222222/placeholder.jpg';
+    return 'https://placehold.co/600x400';
   }
 
   private async storePhotoInfo(
