@@ -46,7 +46,7 @@ export const stepsInfo: Record<WeddingSteps, StepsInfo> = {
     title: 'Car',
     description: 'Book the wedding car or transportation.',
   },
-  [WeddingSteps.HotelAfterWedding]: {
+  [WeddingSteps.Hotel]: {
     title: 'Hotel After Wedding',
     description: 'Reserve a hotel stay for after the wedding.',
   },

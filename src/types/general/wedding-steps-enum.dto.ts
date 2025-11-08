@@ -10,7 +10,7 @@ export enum WeddingSteps {
   DancingCourse = 'DancingCourse',
   Aarada = 'Aarada',
   Car = 'Car',
-  HotelAfterWedding = 'HotelAfterWedding',
+  Hotel = 'Hotel',
   Giveaways = 'Giveaways',
   MusiciansAndPerformers = 'MusiciansAndPerformers',
   Jewelry = 'Jewelry',
