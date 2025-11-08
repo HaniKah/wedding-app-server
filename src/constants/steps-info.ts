@@ -2,10 +2,6 @@ import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
 import { StepsInfo } from '../types/planner/steps.dto';
 
 export const stepsInfo: Record<WeddingSteps, StepsInfo> = {
-  [WeddingSteps.Date]: {
-    title: 'Date',
-    description: 'Choose and confirm the wedding date.',
-  },
   [WeddingSteps.Host]: {
     title: 'Host',
     description: 'Select the master of ceremonies or wedding host.',
@@ -78,7 +74,11 @@ export const stepsInfo: Record<WeddingSteps, StepsInfo> = {
     title: 'Cosmetic Clinics',
     description: 'Book beauty or cosmetic treatments ahead of the wedding.',
   },
-  [WeddingSteps.ExtraDecorations]: {
+  [WeddingSteps.Fireworks]: {
+    title: 'Fireworks',
+    description: 'Lighten up your wedding day with fireworks.',
+  },
+  [WeddingSteps.Extra]: {
     title: 'Extra Decorations',
     description: 'Arrange any additional or custom decorations.',
   },

@@ -130,17 +130,13 @@ export class PlannerService {
         planRecord.id,
       );
 
-    const weddingDate = await this.getWeddingDate(userId);
     let note: string;
 
     const dtoList = await Promise.all(
       stepsList.map(async (step) => {
         let isCompleted: boolean = false;
         const pickedPlace = completedStepsRecord.find((s) => s.step === step);
-        if (step === WeddingSteps.Date && weddingDate.date) {
-          note = weddingDate.date;
-          isCompleted = true;
-        } else if (pickedPlace && pickedPlace.placeId) {
+        if (pickedPlace && pickedPlace.placeId) {
           const placeDetails = await this.getPlaceById(pickedPlace.placeId);
           note = placeDetails.name;
           isCompleted = true;
@@ -176,8 +172,6 @@ export class PlannerService {
         planRecord.id,
       );
 
-    const weddingDate: WeddingDateDto = await this.getWeddingDate(userId);
-
     let placeName: string | null = null;
     let placeId: number | null = null;
 
@@ -186,11 +180,6 @@ export class PlannerService {
         let isCompleted: boolean = false;
 
         const found = completedStepsRecord.find((s) => s.step === step);
-
-        if (step === WeddingSteps.Date) {
-          isCompleted = weddingDate.date !== null;
-          placeName = weddingDate.date;
-        }
 
         if (found && found.placeId) {
           const placeDetails = await this.getPlaceById(found.placeId);
