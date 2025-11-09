@@ -30,10 +30,7 @@ export const stepsInfo: Record<WeddingSteps, StepsInfo> = {
     title: 'Catering',
     description: 'Choose a catering service for food and drinks.',
   },
-  [WeddingSteps.Coordinator]: {
-    title: 'Coordinator',
-    description: 'Hire a wedding coordinator to manage the event.',
-  },
+
   [WeddingSteps.DancingCourse]: {
     title: 'Dancing Course',
     description: 'Take dancing lessons for the first dance.',
@@ -46,10 +43,7 @@ export const stepsInfo: Record<WeddingSteps, StepsInfo> = {
     title: 'Car',
     description: 'Book the wedding car or transportation.',
   },
-  [WeddingSteps.Hotel]: {
-    title: 'Hotel After Wedding',
-    description: 'Reserve a hotel stay for after the wedding.',
-  },
+
   [WeddingSteps.Giveaways]: {
     title: 'Giveaways',
     description: 'Prepare wedding favors or giveaways for guests.',
