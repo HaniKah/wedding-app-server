@@ -1,6 +1,11 @@
 import { WeddingSteps } from '../general/wedding-steps-enum.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
+export enum SearchFilter {
+  MyPick = 'MyPick',
+  MyFavourite = 'MyFavourite',
+  onSale = 'onSale',
+}
 export class PlacesDto {
   id: number;
   name?: string | null;

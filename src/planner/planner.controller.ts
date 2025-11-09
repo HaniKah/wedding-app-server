@@ -4,6 +4,7 @@ import {
   PlaceDetailsDto,
   PlaceDetailsRequest,
   PlacesViewModel,
+  SearchFilter,
 } from '../types/planner/places.dto';
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
 import { ChecklistViewModel, StepsViewModel } from '../types/planner/steps.dto';
@@ -12,16 +13,23 @@ import {
   WeddingDateDto,
 } from '../types/planner/weddingDateDto';
 import type { Request } from 'express';
+import { ApiQuery } from '@nestjs/swagger';
 
 @Controller('planner')
 export class PlannerController {
   constructor(private readonly plannerService: PlannerService) {}
 
   @Get('getPlaces')
+  @ApiQuery({ name: 'search', required: false })
+  @ApiQuery({ name: 'step', required: true, enum: WeddingSteps })
+  @ApiQuery({ name: 'filter', required: false, enum: SearchFilter })
   public getPlaces(
-    @Query('step') step: WeddingSteps,
+    @Query('step')
+    step: WeddingSteps,
+    @Query('search') search?: string,
+    @Query('filter') filter?: SearchFilter,
   ): Promise<PlacesViewModel> {
-    return this.plannerService.getPlaces(step);
+    return this.plannerService.getPlaces(step, search, filter);
   }
 
   @Get('getPlaceById')

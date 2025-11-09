@@ -3,6 +3,7 @@ import {
   PlaceDetailsDto,
   PlaceDetailsRequest,
   PlacesViewModel,
+  SearchFilter,
 } from '../types/planner/places.dto';
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
 import {
@@ -83,8 +84,15 @@ export class PlannerService {
     }
   }
 
-  public async getPlaces(step: WeddingSteps): Promise<PlacesViewModel> {
-    const placesRecord = await this.placesRepositoryService.getAllPlaces(step);
+  public async getPlaces(
+    step: WeddingSteps,
+    searchQuery?: string,
+    filter?: SearchFilter,
+  ): Promise<PlacesViewModel> {
+    const placesRecord = await this.placesRepositoryService.getAllPlaces(
+      step,
+      searchQuery,
+    );
     const list = placesRecord.map((r) => {
       return {
         id: r.id,

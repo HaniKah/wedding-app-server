@@ -4,6 +4,7 @@ import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
 import { Kysely } from 'kysely';
 import { DB } from 'kysely-codegen';
 import { DbService } from '../db/db.service';
+import { SearchFilter } from '../types/planner/places.dto';
 
 @Injectable()
 export class PlacesRepositoryService {
@@ -13,11 +14,44 @@ export class PlacesRepositoryService {
     this.db = dbService.db;
   }
 
-  public async getAllPlaces(step: WeddingSteps) {
+  public async getAllPlaces(
+    step: WeddingSteps,
+    userId: number,
+    searchQuery?: string,
+    filter?: SearchFilter,
+  ) {
+    const planRecord = await this.db
+      .selectFrom('plans')
+      .selectAll()
+      .where('plans.userId', '=', userId)
+      .executeTakeFirst();
+
+    if (!planRecord) return [];
+
+    const placeDetails = this.db
+      .selectFrom('placeDetails')
+      .select(['id', 'placeId', 'picked', 'favourite'])
+      .where('placeDetails.planId', '=', planRecord.id)
+      .as('placeDetails');
+
     return await this.db
       .selectFrom('places')
       .selectAll()
+      .innerJoin(placeDetails, 'places.id', 'placeDetails.placeId')
+      .select([
+        'placeDetails.picked as picked ',
+        'placeDetails.favourite as favourite',
+      ])
       .where('step', '=', step)
+      .$if(!!searchQuery, (eb) =>
+        eb.where((eb) => eb.or([eb('name', 'ilike', `%${searchQuery}%`)])),
+      )
+      .$if(filter == SearchFilter.MyFavourite, (qb) =>
+        qb.where('favourite', '=', true),
+      )
+      .$if(filter === SearchFilter.MyPick, (qbb) =>
+        qbb.where('picked', '=', true),
+      )
       .execute();
   }
 
