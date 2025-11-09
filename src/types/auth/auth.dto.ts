@@ -18,10 +18,10 @@ export type AuthJwtPayload = {
   sub: number;
   role: Role;
 };
-export type CurrentUser = {
+export class CurrentUser {
   id: number;
   role: Role;
-};
+}
 
 export enum Provider {
   Google = 'Google',

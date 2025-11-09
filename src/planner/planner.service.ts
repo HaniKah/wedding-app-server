@@ -85,13 +85,16 @@ export class PlannerService {
   }
 
   public async getPlaces(
+    userId: number,
     step: WeddingSteps,
     searchQuery?: string,
     filter?: SearchFilter,
   ): Promise<PlacesViewModel> {
     const placesRecord = await this.placesRepositoryService.getAllPlaces(
+      userId,
       step,
       searchQuery,
+      filter,
     );
     const list = placesRecord.map((r) => {
       return {

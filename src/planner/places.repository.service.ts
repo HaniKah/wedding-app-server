@@ -15,8 +15,8 @@ export class PlacesRepositoryService {
   }
 
   public async getAllPlaces(
-    step: WeddingSteps,
     userId: number,
+    step: WeddingSteps,
     searchQuery?: string,
     filter?: SearchFilter,
   ) {

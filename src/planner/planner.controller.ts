@@ -14,6 +14,8 @@ import {
 } from '../types/planner/weddingDateDto';
 import type { Request } from 'express';
 import { ApiQuery } from '@nestjs/swagger';
+import { User } from '../decorators/user.decorator';
+import { CurrentUser } from '../types/auth/auth.dto';
 
 @Controller('planner')
 export class PlannerController {
@@ -24,12 +26,13 @@ export class PlannerController {
   @ApiQuery({ name: 'step', required: true, enum: WeddingSteps })
   @ApiQuery({ name: 'filter', required: false, enum: SearchFilter })
   public getPlaces(
+    @User() user: CurrentUser,
     @Query('step')
     step: WeddingSteps,
     @Query('search') search?: string,
     @Query('filter') filter?: SearchFilter,
   ): Promise<PlacesViewModel> {
-    return this.plannerService.getPlaces(step, search, filter);
+    return this.plannerService.getPlaces(user.id, step, search, filter);
   }
 
   @Get('getPlaceById')
