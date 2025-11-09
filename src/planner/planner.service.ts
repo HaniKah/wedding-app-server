@@ -90,18 +90,22 @@ export class PlannerService {
     searchQuery?: string,
     filter?: SearchFilter,
   ): Promise<PlacesViewModel> {
-    const placesRecord = await this.placesRepositoryService.getAllPlaces(
-      userId,
-      step,
-      searchQuery,
-      filter,
-    );
-    const list = placesRecord.map((r) => {
+    const placesAndPlaceDetailsRecord =
+      await this.placesRepositoryService.getAllPlaces(
+        userId,
+        step,
+        searchQuery,
+        filter,
+      );
+    const list = placesAndPlaceDetailsRecord.map((r) => {
       return {
         id: r.id,
         step: step,
         name: r.name,
         formattedAddress: r.streetName,
+        picked: r.picked,
+        favourite: r.favourite,
+        filter: filter,
       };
     });
     return { places: list };

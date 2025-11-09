@@ -12,6 +12,10 @@ export class PlacesDto {
   formattedAddress?: string | null;
   @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
   step: WeddingSteps;
+  picked: boolean;
+  favourite: boolean;
+  @ApiProperty({ enum: SearchFilter, enumName: 'SearchFilter' })
+  filter?: SearchFilter;
 }
 export class PlaceDetailsDto {
   id: number;

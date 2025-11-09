@@ -39,7 +39,7 @@ export class PlacesRepositoryService {
       .selectAll()
       .innerJoin(placeDetails, 'places.id', 'placeDetails.placeId')
       .select([
-        'placeDetails.picked as picked ',
+        'placeDetails.picked as picked',
         'placeDetails.favourite as favourite',
       ])
       .where('step', '=', step)
