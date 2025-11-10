@@ -5,6 +5,7 @@ import { GoogleApiModule } from '../google-api/google-api.module';
 import { PlaceDetailsRepositoryService } from './place-details.repository.service';
 import { PlansRepositoryService } from './plans.repository.service';
 import { PlacesRepositoryService } from './places.repository.service';
+import { PhotosModule } from '../photos/photos.module';
 
 @Module({
   providers: [
@@ -15,6 +16,6 @@ import { PlacesRepositoryService } from './places.repository.service';
   ],
   controllers: [PlannerController],
   exports: [PlannerService],
-  imports: [GoogleApiModule],
+  imports: [GoogleApiModule, PhotosModule],
 })
 export class PlannerModule {}
