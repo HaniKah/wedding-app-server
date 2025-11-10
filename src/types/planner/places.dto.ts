@@ -16,6 +16,7 @@ export class PlacesDto {
   favourite: boolean;
   @ApiProperty({ enum: SearchFilter, enumName: 'SearchFilter' })
   filter?: SearchFilter;
+  mainPhoto: string;
 }
 export class PlaceDetailsDto {
   id: number;

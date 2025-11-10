@@ -16,6 +16,8 @@ import { PlansRepositoryService } from './plans.repository.service';
 import { PlaceDetailsRepositoryService } from './place-details.repository.service';
 import { PlacesRepositoryService } from './places.repository.service';
 import { stepsInfo } from '../constants/steps-info';
+import { PhotosService } from '../photos/photos.service';
+import { PhotoSize } from '../types/photos/photos.dto';
 
 @Injectable()
 export class PlannerService {
@@ -23,6 +25,7 @@ export class PlannerService {
     private readonly placeDetailsRepositoryService: PlaceDetailsRepositoryService,
     private readonly plansRepositoryService: PlansRepositoryService,
     private readonly placesRepositoryService: PlacesRepositoryService,
+    private readonly photosService: PhotosService,
   ) {}
 
   public async updateWeddingDate(userId: number, date: Date): Promise<void> {
@@ -97,17 +100,28 @@ export class PlannerService {
         searchQuery,
         filter,
       );
-    const list = placesAndPlaceDetailsRecord.map((r) => {
-      return {
-        id: r.id,
-        step: step,
-        name: r.name,
-        formattedAddress: r.streetName,
-        picked: r.picked,
-        favourite: r.favourite,
-        filter: filter,
-      };
-    });
+
+    const list = await Promise.all(
+      placesAndPlaceDetailsRecord.map(async (r) => {
+        const mainPhoto: string =
+          await this.photosService.getMainPhotoOrFirstByPlaceId(
+            r.id,
+            PhotoSize.Small,
+          );
+
+        return {
+          id: r.id,
+          step: step,
+          name: r.name,
+          formattedAddress: r.streetName,
+          picked: r.picked,
+          favourite: r.favourite,
+          filter: filter,
+          mainPhoto: mainPhoto,
+        };
+      }),
+    );
+
     return { places: list };
   }
 
