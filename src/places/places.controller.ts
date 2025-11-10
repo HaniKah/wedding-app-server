@@ -6,6 +6,8 @@ import {
 } from '../types/places/places.dto';
 import { PlacesService } from './places.service';
 import type { Request } from 'express';
+import { User } from '../decorators/user.decorator';
+import { CurrentUser } from '../types/auth/auth.dto';
 
 @Controller('places')
 export class PlacesController {
@@ -20,7 +22,9 @@ export class PlacesController {
   }
 
   @Get('getPlaces')
-  public async getPlaces(@Req() req: Request): Promise<VendorPlaceViewModel> {
-    return await this.placesService.getPlaces(req.user.id);
+  public async getPlaces(
+    @User() user: CurrentUser,
+  ): Promise<VendorPlaceViewModel> {
+    return await this.placesService.getPlaces(user.id);
   }
 }
