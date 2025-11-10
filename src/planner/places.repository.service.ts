@@ -30,14 +30,14 @@ export class PlacesRepositoryService {
 
     const placeDetails = this.db
       .selectFrom('placeDetails')
-      .select(['id', 'placeId', 'picked', 'favourite'])
+      .select(['placeId', 'picked', 'favourite'])
       .where('placeDetails.planId', '=', planRecord.id)
       .as('placeDetails');
 
     return await this.db
       .selectFrom('places')
       .selectAll()
-      .innerJoin(placeDetails, 'places.id', 'placeDetails.placeId')
+      .leftJoin(placeDetails, 'placeDetails.placeId', 'places.id')
       .select([
         'placeDetails.picked as picked',
         'placeDetails.favourite as favourite',
@@ -52,6 +52,7 @@ export class PlacesRepositoryService {
       .$if(filter === SearchFilter.MyPick, (qbb) =>
         qbb.where('picked', '=', true),
       )
+
       .execute();
   }
 
