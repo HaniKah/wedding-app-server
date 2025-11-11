@@ -15,8 +15,11 @@ export class PlacesDto {
   picked: boolean;
   favourite: boolean;
   @ApiProperty({ enum: SearchFilter, enumName: 'SearchFilter' })
-  filter?: SearchFilter;
   mainPhoto: string;
+  price: string | null;
+  max_price: string | null;
+  min_price: string | null;
+  currency: string | null;
 }
 export class PlaceDetailsDto {
   id: number;
@@ -27,9 +30,10 @@ export class PlaceDetailsDto {
   tiktok: string | null;
   instagram: string | null;
   phoneNumber: string | null;
-  minCost: number | null;
-  maxCost: number | null;
-  cost: number | null;
+  minPrice: string | null;
+  maxPrice: string | null;
+  price: string | null;
+  currency: string | null;
   @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
   step: WeddingSteps;
   picked: boolean;
@@ -38,6 +42,7 @@ export class PlaceDetailsDto {
 }
 export class PlacesViewModel {
   places: PlacesDto[];
+  filter?: SearchFilter;
 }
 
 //coming from google places api , a fetchName is used to fetch from the places photos api

@@ -116,13 +116,16 @@ export class PlannerService {
           formattedAddress: r.streetName,
           picked: r.picked,
           favourite: r.favourite,
-          filter: filter,
           mainPhoto: mainPhoto,
+          price: r.price,
+          max_price: r.maxPrice,
+          min_price: r.minPrice,
+          currency: r.currency,
         };
       }),
     );
 
-    return { places: list };
+    return { places: list, filter: filter };
   }
 
   public async getPlaceById(id: number): Promise<PlaceDetailsDto> {
@@ -139,9 +142,10 @@ export class PlannerService {
       facebook: place?.facebook,
       instagram: place?.instagram,
       tiktok: place?.tiktok,
-      minCost: place.minCost,
-      maxCost: place.maxCost,
-      cost: place.cost,
+      price: place.price,
+      maxPrice: place.maxPrice,
+      minPrice: place.minPrice,
+      currency: place.currency,
       step: place.step as WeddingSteps,
       picked: details?.picked || false,
       favourite: details?.favourite || false,
