@@ -21,6 +21,7 @@ export class PlacesDto {
   min_price: string | null;
   currency: string | null;
 }
+
 export class PlaceDetailsDto {
   id: number;
   name: string;

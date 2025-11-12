@@ -9,6 +9,9 @@
       "photos.bucket_name": "BucketName"
     }
   },
+  "typeMapping": {
+    "numrange": "NumRange"
+  },
   "defaultSchemas": ["planner"],
   "camelCase": true,
   "dialect": "postgres"

@@ -36,6 +36,7 @@ export class PlacesService {
       instagram: data.placeInfo.instagram,
       tiktok: data.placeInfo.tiktok,
       website: data.placeInfo.website,
+      priceRange: data.placeInfo.priceRange,
     });
     return {
       id: placeRecord.id,
@@ -57,6 +58,7 @@ export class PlacesService {
           id: p.id,
           name: p.name,
           streetName: p.streetName,
+          priceRange: p.priceRange,
           thumbnail: photo,
         };
       }),

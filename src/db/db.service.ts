@@ -9,6 +9,7 @@ import {
   PostgresDialect,
   WithSchemaPlugin,
 } from 'kysely';
+import { NumRangeTransformerPlugin } from '../db-utils/numrange-transformer-plugin';
 
 @Injectable()
 export class DbService {
@@ -21,7 +22,11 @@ export class DbService {
           connectionString: this.configService.get<string>('DATABASE_URL'),
         }),
       }),
-      plugins: [new CamelCasePlugin(), new WithSchemaPlugin('planner')],
+      plugins: [
+        new CamelCasePlugin(),
+        new WithSchemaPlugin('planner'),
+        new NumRangeTransformerPlugin(),
+      ],
     });
   }
 }
