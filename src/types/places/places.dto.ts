@@ -17,7 +17,7 @@ export class VendorPlaceDto {
   id: number;
   name: string;
   streetName?: string;
-  priceRange: NumRange;
+  prices: PlacePrice;
   thumbnail: string;
 }
 
@@ -42,4 +42,14 @@ class CreatePlaceLocation {
   lat?: number;
   lng?: number;
   googleId?: string;
+}
+
+export class PlacePrice {
+  price: string | undefined;
+  priceRange: PriceRange | undefined;
+  currency: string;
+}
+export class PriceRange {
+  min: string;
+  max: string;
 }

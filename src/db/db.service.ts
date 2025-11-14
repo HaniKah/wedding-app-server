@@ -25,7 +25,7 @@ export class DbService {
       plugins: [
         new CamelCasePlugin(),
         new WithSchemaPlugin('planner'),
-        new NumRangeTransformerPlugin(),
+        new NumRangeTransformerPlugin(['priceRange']),
       ],
     });
   }
