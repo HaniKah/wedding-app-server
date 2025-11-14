@@ -9,7 +9,7 @@ import {
   PostgresDialect,
   WithSchemaPlugin,
 } from 'kysely';
-import { NumRangeTransformerPlugin } from '../db-utils/numrange-transformer-plugin';
+import { PriceRangeTransformerPlugin } from '../db-utils/priceRange-transformer-plugin';
 
 @Injectable()
 export class DbService {
@@ -25,7 +25,7 @@ export class DbService {
       plugins: [
         new CamelCasePlugin(),
         new WithSchemaPlugin('planner'),
-        new NumRangeTransformerPlugin(['priceRange']),
+        new PriceRangeTransformerPlugin(),
       ],
     });
   }

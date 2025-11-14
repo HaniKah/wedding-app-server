@@ -10,8 +10,6 @@ export class Money {
     this.currency = currency;
   }
 
-  // --- Arithmetic ---
-
   // --- Formatting ---
   get getFormatted(): string {
     return this.formatMoney(this.value);
@@ -44,6 +42,9 @@ export class Money {
 
   private formatMoney(amount: Decimal): string {
     const formatter = new Intl.NumberFormat('en-JO', {
+      // style: 'currency',
+      // currency: this.currency,
+      minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     });
     return formatter.format(amount.toNumber());

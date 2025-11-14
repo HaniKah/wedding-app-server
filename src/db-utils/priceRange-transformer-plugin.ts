@@ -8,14 +8,9 @@ import {
   UnknownRow,
   ValuesNode,
 } from 'kysely';
+import { NumRangeDto } from '../types/general/numrange.dto';
 
-export class NumRangeTransformerPlugin implements KyselyPlugin {
-  private readonly lookupFields = ['priceRange'];
-
-  constructor(fields: string[]) {
-    this.lookupFields.push(...fields);
-  }
-
+export class PriceRangeTransformerPlugin implements KyselyPlugin {
   transformQuery(args: PluginTransformQueryArgs): RootOperationNode {
     const transformer = new NumRangeValueTransformer();
     return transformer.transformNode(args.node, args.queryId);
@@ -28,16 +23,12 @@ export class NumRangeTransformerPlugin implements KyselyPlugin {
 
     result.rows.forEach((row) => {
       if (row)
-        //todo exaggerating with checks here, simplify it
-        this.lookupFields.forEach((f) => {
-          if (Object.prototype.hasOwnProperty.call(row, f))
-            if (this.isNumRangeString(row[f])) {
-              const list: string[] = (row.priceRange as string)
-                .slice(1, -1)
-                .split(',');
-              row.priceRange = { min: list[0], max: list[1] };
-            }
-        });
+        if (this.isNumRangeString(row.priceRange)) {
+          const list: string[] = (row.priceRange as string)
+            .slice(1, -1)
+            .split(',');
+          row.priceRange = new NumRangeDto(list[0], list[1]);
+        }
     });
     return args.result;
   }
@@ -58,7 +49,7 @@ class NumRangeValueTransformer extends OperationNodeTransformer {
       'max' in value &&
       typeof value.max === 'string'
 
-      // value instanceof NumRange
+      // value instanceof NumRangeDto
     );
   }
   override transformValues(node: ValuesNode): ValuesNode {

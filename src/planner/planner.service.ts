@@ -5,6 +5,7 @@ import {
   PlacesViewModel,
   SearchFilter,
 } from '../types/planner/places.dto';
+import { PlacePrice } from '../types/places/places.dto';
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
 import {
   ChecklistDto,
@@ -18,6 +19,7 @@ import { PlacesRepositoryService } from './places.repository.service';
 import { stepsInfo } from '../constants/steps-info';
 import { PhotosService } from '../photos/photos.service';
 import { PhotoSize } from '../types/photos/photos.dto';
+import { Money } from '../common/Money';
 
 @Injectable()
 export class PlannerService {
@@ -109,6 +111,14 @@ export class PlannerService {
             PhotoSize.Small,
           );
 
+        const placePrice: PlacePrice = {
+          priceRange: {
+            min: new Money(r.priceRange.min).getFormatted,
+            max: new Money(r.priceRange.max).getFormatted,
+          },
+          currency: r.currency,
+        };
+
         return {
           id: r.id,
           step: step,
@@ -117,10 +127,7 @@ export class PlannerService {
           picked: r.picked,
           favourite: r.favourite,
           mainPhoto: mainPhoto,
-          price: r.price,
-          max_price: r.maxPrice,
-          min_price: r.minPrice,
-          currency: r.currency,
+          price: placePrice,
         };
       }),
     );
@@ -133,6 +140,14 @@ export class PlannerService {
     const details =
       await this.placeDetailsRepositoryService.getPlaceDetailsByPlaceId(id);
 
+    const price: PlacePrice = {
+      priceRange: {
+        min: new Money(place.priceRange.min).getFormatted,
+        max: new Money(place.priceRange.max).getFormatted,
+      },
+      currency: place.currency,
+    };
+
     return {
       id: place.id,
       name: place.name,
@@ -142,9 +157,7 @@ export class PlannerService {
       facebook: place?.facebook,
       instagram: place?.instagram,
       tiktok: place?.tiktok,
-      price: place.price,
-      maxPrice: place.maxPrice,
-      minPrice: place.minPrice,
+      price: price,
       currency: place.currency,
       step: place.step as WeddingSteps,
       picked: details?.picked || false,

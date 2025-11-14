@@ -3,14 +3,12 @@ import {
   CreatePlaceDto,
   CreatePlaceRequest,
   PlacePrice,
-  PriceRange,
   VendorPlaceDto,
   VendorPlaceViewModel,
 } from '../types/places/places.dto';
 import { PlacesRepositoryService } from './places.repository.service';
 import { PhotosService } from '../photos/photos.service';
 import { PhotoSize } from '../types/photos/photos.dto';
-import { NumRange } from '../types/general/NumRange';
 import { Money } from '../common/Money';
 
 @Injectable()
@@ -58,34 +56,24 @@ export class PlacesService {
             p.id,
             PhotoSize.Small,
           );
+        const price: PlacePrice = {
+          priceRange: {
+            min: new Money(p.priceRange.min).getFormatted,
+            max: new Money(p.priceRange.max).getFormatted,
+          },
+          currency: p.currency,
+        };
         return {
           id: p.id,
           name: p.name,
           streetName: p.streetName,
-          prices: this.createPrice(p.priceRange),
+          prices: price,
           thumbnail: photo,
         };
       }),
     );
     return {
       result: viewModel,
-    };
-  }
-  private createPrice(range: NumRange): PlacePrice {
-    let price: string | undefined;
-    let priceRange: PriceRange | undefined;
-    if (range.min === range.max) {
-      price = new Money(range.min).getFormatted;
-    } else {
-      priceRange = {
-        min: new Money(range.min).getFormatted,
-        max: new Money(range.max).getFormatted,
-      };
-    }
-    return {
-      price,
-      priceRange,
-      currency: 'JOD',
     };
   }
 }

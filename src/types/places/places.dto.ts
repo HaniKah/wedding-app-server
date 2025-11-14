@@ -1,6 +1,6 @@
 import { WeddingSteps } from '../general/wedding-steps-enum.dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { NumRange } from '../general/NumRange';
+import { NumRangeDto } from '../general/numrange.dto';
 
 export class CreatePlaceRequest {
   @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
@@ -24,6 +24,7 @@ export class VendorPlaceDto {
 export class CreatePlaceDto {
   id: number;
 }
+
 class CreatePlaceInfo {
   name: string;
   phoneNumber: string;
@@ -31,7 +32,7 @@ class CreatePlaceInfo {
   instagram?: string;
   tiktok?: string;
   website?: string;
-  priceRange: NumRange;
+  priceRange: NumRangeDto;
 }
 
 class CreatePlaceLocation {
@@ -45,11 +46,11 @@ class CreatePlaceLocation {
 }
 
 export class PlacePrice {
-  price: string | undefined;
-  priceRange: PriceRange | undefined;
+  priceRange: PlacePriceRange;
   currency: string;
 }
-export class PriceRange {
+
+export class PlacePriceRange {
   min: string;
   max: string;
 }

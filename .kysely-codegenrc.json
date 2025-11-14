@@ -10,7 +10,7 @@
     }
   },
   "typeMapping": {
-    "numrange": "NumRange"
+    "numrange": "NumRangeDto"
   },
   "defaultSchemas": ["planner"],
   "camelCase": true,
