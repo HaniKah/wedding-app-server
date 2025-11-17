@@ -42,6 +42,7 @@ export class PlacesRepositoryService {
         'placeDetails.picked as picked',
         'placeDetails.favourite as favourite',
       ])
+      .where('published', '=', true)
       .where('step', '=', step)
       .$if(!!searchQuery, (eb) =>
         eb.where((eb) => eb.or([eb('name', 'ilike', `%${searchQuery}%`)])),

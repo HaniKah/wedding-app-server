@@ -128,6 +128,7 @@ export class PlannerService {
           favourite: r.favourite,
           mainPhoto: mainPhoto,
           price: placePrice,
+          isPublished: r.published,
         };
       }),
     );

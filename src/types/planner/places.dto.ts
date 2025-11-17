@@ -18,6 +18,7 @@ export class PlacesDto {
   @ApiProperty({ enum: SearchFilter, enumName: 'SearchFilter' })
   mainPhoto: string;
   price: PlacePrice;
+  isPublished: boolean;
 }
 
 export class PlaceDetailsDto {
