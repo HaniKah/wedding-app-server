@@ -3,6 +3,7 @@ import {
   CreatePlaceDto,
   CreatePlaceRequest,
   PlacePrice,
+  PlaceStatus,
   VendorPlaceDto,
   VendorPlaceViewModel,
 } from '../types/places/places.dto';
@@ -17,6 +18,12 @@ export class PlacesService {
     private readonly placesRepositoryService: PlacesRepositoryService,
     private readonly photosService: PhotosService,
   ) {}
+
+  public async updateStatus(placeId: number, status: PlaceStatus) {
+    await this.placesRepositoryService.updateStatusById(placeId, {
+      status: status,
+    });
+  }
 
   public async createPlace(
     userId: number,
@@ -69,6 +76,7 @@ export class PlacesService {
           streetName: p.streetName,
           prices: price,
           thumbnail: photo,
+          status: p.status,
         };
       }),
     );

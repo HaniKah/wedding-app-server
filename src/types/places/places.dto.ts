@@ -2,6 +2,12 @@ import { WeddingSteps } from '../general/wedding-steps-enum.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { NumRangeDto } from '../general/numrange.dto';
 
+export enum PlaceStatus {
+  Incomplete = 'Incomplete',
+  Unpublished = 'Unpublished', // dont change this value , its default entry for db
+  Published = 'Published',
+}
+
 export class CreatePlaceRequest {
   @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
   type: WeddingSteps;
@@ -19,6 +25,9 @@ export class VendorPlaceDto {
   streetName?: string;
   prices: PlacePrice;
   thumbnail: string;
+
+  @ApiProperty({ enum: PlaceStatus, enumName: 'PlaceStatus' })
+  status: PlaceStatus;
 }
 
 export class CreatePlaceDto {
@@ -53,4 +62,10 @@ export class PlacePrice {
 export class PlacePriceRange {
   min: string;
   max: string;
+}
+
+export class PublishPlaceRequest {
+  placeId: number;
+  @ApiProperty({ enum: PlaceStatus, enumName: 'PlaceStatus' })
+  status: PlaceStatus;
 }

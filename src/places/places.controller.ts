@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post, Req } from '@nestjs/common';
 import {
   CreatePlaceDto,
   CreatePlaceRequest,
+  PublishPlaceRequest,
   VendorPlaceViewModel,
 } from '../types/places/places.dto';
 import { PlacesService } from './places.service';
@@ -26,5 +27,9 @@ export class PlacesController {
     @User() user: CurrentUser,
   ): Promise<VendorPlaceViewModel> {
     return await this.placesService.getPlaces(user.id);
+  }
+  @Post('toggleStatus')
+  public async toggleStatus(@Body() body: PublishPlaceRequest): Promise<void> {
+    await this.placesService.updateStatus(body.placeId, body.status);
   }
 }

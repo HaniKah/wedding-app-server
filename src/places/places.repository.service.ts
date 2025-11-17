@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DbService } from '../db/db.service';
 
 import { Places } from 'kysely-codegen';
-import { Insertable } from 'kysely';
+import { Insertable, Updateable } from 'kysely';
 
 @Injectable()
 export class PlacesRepositoryService {
@@ -20,5 +20,12 @@ export class PlacesRepositoryService {
       .selectAll()
       .where('userId', '=', userId)
       .execute();
+  }
+  public async updateStatusById(placeId: number, data: Updateable<Places>) {
+    await this.db.db
+      .updateTable('places')
+      .where('id', '=', placeId)
+      .set(data)
+      .executeTakeFirst();
   }
 }
