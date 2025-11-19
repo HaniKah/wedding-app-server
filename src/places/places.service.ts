@@ -4,6 +4,7 @@ import {
   CreatePlaceRequest,
   PlacePrice,
   PlaceStatus,
+  VendorPlaceDetailsDto,
   VendorPlaceDto,
   VendorPlaceViewModel,
 } from '../types/places/places.dto';
@@ -18,6 +19,39 @@ export class PlacesService {
     private readonly placesRepositoryService: PlacesRepositoryService,
     private readonly photosService: PhotosService,
   ) {}
+
+  public async getPlaceDetails(
+    placeId: number,
+  ): Promise<VendorPlaceDetailsDto> {
+    const p = await this.placesRepositoryService.getPlaceById(placeId);
+
+    const mainPhoto: string =
+      await this.photosService.getMainPhotoOrFirstByPlaceId(
+        p.id,
+        PhotoSize.Medium,
+      );
+
+    const priceRange = {
+      priceRange: {
+        min: new Money(p.priceRange.min).getFormatted,
+        max: new Money(p.priceRange.max).getFormatted,
+      },
+      currency: p.currency,
+    };
+    return {
+      id: p.id,
+      name: p.name,
+      streetName: p.streetName,
+      phoneNumber: p.phoneNumber,
+      facebook: p.facebook,
+      instagram: p.instagram,
+      tiktok: p.tiktok,
+      website: p.website,
+      placePrice: priceRange,
+      status: p.status,
+      mainPhoto: mainPhoto,
+    };
+  }
 
   public async updateStatus(placeId: number, status: PlaceStatus) {
     await this.placesRepositoryService.updateStatusById(placeId, {

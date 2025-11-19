@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
 import {
   CreatePlaceDto,
   CreatePlaceRequest,
   PublishPlaceRequest,
+  VendorPlaceDetailsDto,
   VendorPlaceViewModel,
 } from '../types/places/places.dto';
 import { PlacesService } from './places.service';
@@ -31,5 +32,12 @@ export class PlacesController {
   @Post('toggleStatus')
   public async toggleStatus(@Body() body: PublishPlaceRequest): Promise<void> {
     await this.placesService.updateStatus(body.placeId, body.status);
+  }
+
+  @Get('getPlaceDetails')
+  public async getPlaceDetails(
+    @Query('id') id: number,
+  ): Promise<VendorPlaceDetailsDto> {
+    return await this.placesService.getPlaceDetails(id);
   }
 }

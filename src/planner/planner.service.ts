@@ -69,7 +69,6 @@ export class PlannerService {
         {
           step: request.step,
           picked: request.picked,
-          cost: request.cost,
           notes: request.notes,
         },
       );
@@ -84,7 +83,6 @@ export class PlannerService {
         step: request.step,
         picked: request.picked,
         favourite: request.favorite,
-        cost: request.cost,
       });
     }
   }

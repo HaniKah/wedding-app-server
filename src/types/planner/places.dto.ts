@@ -23,14 +23,14 @@ export class PlacesDto {
 export class PlaceDetailsDto {
   id: number;
   name: string;
-  address: string | null;
-  website: string | null;
-  facebook: string | null;
-  tiktok: string | null;
-  instagram: string | null;
-  phoneNumber: string | null;
+  address?: string;
+  website?: string;
+  facebook?: string;
+  tiktok?: string;
+  instagram?: string;
+  phoneNumber: string;
   price: PlacePrice;
-  currency: string | null;
+  currency: string;
   @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
   step: WeddingSteps;
   picked: boolean;
@@ -57,7 +57,6 @@ export class AuthorAttributionDto {
 
 export class PlaceDetailsRequest {
   placeId: number;
-  cost: number | null;
   notes: string | null;
   favorite: boolean;
   picked: boolean;

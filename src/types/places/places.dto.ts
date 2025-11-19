@@ -59,7 +59,7 @@ export class PlacePrice {
   currency: string;
 }
 
-export class PlacePriceRange {
+class PlacePriceRange {
   min: string;
   max: string;
 }
@@ -68,4 +68,21 @@ export class PublishPlaceRequest {
   placeId: number;
   @ApiProperty({ enum: PlaceStatus, enumName: 'PlaceStatus' })
   status: PlaceStatus;
+}
+export class VendorPlaceDetailsRequest {
+  id: number;
+}
+export class VendorPlaceDetailsDto {
+  id: number;
+  name: string;
+  streetName?: string;
+  phoneNumber: string;
+  facebook?: string;
+  instagram?: string;
+  tiktok?: string;
+  website?: string;
+  placePrice: PlacePrice;
+  @ApiProperty({ enum: PlaceStatus, enumName: 'PlaceStatus' })
+  status: PlaceStatus;
+  mainPhoto: string;
 }

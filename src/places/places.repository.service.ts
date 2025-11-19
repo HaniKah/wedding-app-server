@@ -7,6 +7,14 @@ import { Insertable, Updateable } from 'kysely';
 @Injectable()
 export class PlacesRepositoryService {
   constructor(private readonly db: DbService) {}
+
+  public async getPlaceById(placeId: number) {
+    return await this.db.db
+      .selectFrom('places')
+      .selectAll()
+      .where('id', '=', placeId)
+      .executeTakeFirst();
+  }
   public async createPlace(data: Insertable<Places>) {
     return await this.db.db
       .insertInto('places')
