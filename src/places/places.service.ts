@@ -49,6 +49,7 @@ export class PlacesService {
       website: p.website,
       placePrice: priceRange,
       status: p.status,
+      description: p.description,
       mainPhoto: mainPhoto,
     };
   }
@@ -80,6 +81,8 @@ export class PlacesService {
       tiktok: data.placeInfo.tiktok,
       website: data.placeInfo.website,
       priceRange: data.placeInfo.priceRange,
+      currency: 'JOD',
+      description: data.description,
     });
     return {
       id: placeRecord.id,

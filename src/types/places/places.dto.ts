@@ -85,5 +85,6 @@ export class VendorPlaceDetailsDto {
   placePrice: PlacePrice;
   @ApiProperty({ enum: PlaceStatus, enumName: 'PlaceStatus' })
   status: PlaceStatus;
+  description?: string;
   mainPhoto: string;
 }
