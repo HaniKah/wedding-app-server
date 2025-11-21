@@ -12,6 +12,7 @@ export class CreatePlaceRequest {
   @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
   type: WeddingSteps;
   placeInfo: CreatePlaceInfo;
+  description?: string;
   location?: CreatePlaceLocation;
 }
 

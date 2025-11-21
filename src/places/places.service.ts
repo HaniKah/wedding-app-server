@@ -28,7 +28,7 @@ export class PlacesService {
     const mainPhoto: string =
       await this.photosService.getMainPhotoOrFirstByPlaceId(
         p.id,
-        PhotoSize.Medium,
+        PhotoSize.Small,
       );
 
     const priceRange = {
