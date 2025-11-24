@@ -138,6 +138,12 @@ export class PlannerService {
     const details =
       await this.placeDetailsRepositoryService.getPlaceDetailsByPlaceId(id);
 
+    const mainPhoto: string =
+      await this.photosService.getMainPhotoOrFirstByPlaceId(
+        place.id,
+        PhotoSize.Small,
+      );
+
     const price: PlacePrice = {
       priceRange: {
         min: new Money(place.priceRange.min).getFormatted,
@@ -161,6 +167,7 @@ export class PlannerService {
       picked: details?.picked || false,
       favourite: details?.favourite || false,
       notes: details?.notes || null,
+      mainPhoto: mainPhoto,
     };
   }
 

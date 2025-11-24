@@ -36,6 +36,7 @@ export class PlaceDetailsDto {
   picked: boolean;
   favourite: boolean;
   notes: string | null;
+  mainPhoto: string;
 }
 export class PlacesViewModel {
   places: PlacesDto[];
