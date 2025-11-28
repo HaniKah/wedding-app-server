@@ -15,13 +15,23 @@ export class PlacesRepositoryService {
       .where('id', '=', placeId)
       .executeTakeFirst();
   }
+
+  public async updatePlace(placeId: number, data: Updateable<Places>) {
+    await this.db.db
+      .updateTable('places')
+      .set(data)
+      .where('id', '=', placeId)
+      .returning('id')
+      .executeTakeFirst();
+  }
   public async createPlace(data: Insertable<Places>) {
     return await this.db.db
       .insertInto('places')
       .values(data)
-      .returning('id')
+      .returning(['id', 'step'])
       .executeTakeFirst();
   }
+
   public async getAllPlacesByUserId(userId: number) {
     return await this.db.db
       .selectFrom('places')
@@ -29,6 +39,7 @@ export class PlacesRepositoryService {
       .where('userId', '=', userId)
       .execute();
   }
+
   public async updateStatusById(placeId: number, data: Updateable<Places>) {
     await this.db.db
       .updateTable('places')

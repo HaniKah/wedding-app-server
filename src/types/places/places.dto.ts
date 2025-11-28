@@ -8,12 +8,21 @@ export enum PlaceStatus {
   Published = 'Published',
 }
 
-export class CreatePlaceRequest {
+export enum CreatePlaceSteps {
+  PickPlaceType = 'PickPlaceType',
+  FillPlaceInfo = 'FillPlaceInfo',
+  AddDescription = 'AddDescription',
+  PickPlaceLocation = 'PickPlaceLocation',
+}
+
+export class CreateOrUpdatePlaceRequest {
+  placeId: number | undefined;
   @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
-  type: WeddingSteps;
-  placeInfo: CreatePlaceInfo;
+  weddingStep: WeddingSteps;
+  placeInfo: UpdatePlaceInfo;
   description?: string;
-  location?: CreatePlaceLocation;
+  location?: UpdatePlaceLocation;
+  createStep: CreatePlaceSteps;
 }
 
 export class VendorPlaceViewModel {
@@ -32,10 +41,16 @@ export class VendorPlaceDto {
 }
 
 export class CreatePlaceDto {
-  id: number;
+  placeId: number | undefined;
+  @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
+  weddingStep: WeddingSteps;
+  step: CreatePlaceSteps;
+  placeInfo?: UpdatePlaceInfo;
+  description?: string;
+  location?: UpdatePlaceLocation;
 }
 
-class CreatePlaceInfo {
+export class UpdatePlaceInfo {
   name: string;
   phoneNumber: string;
   facebook?: string;
@@ -45,7 +60,7 @@ class CreatePlaceInfo {
   priceRange: NumRangeDto;
 }
 
-class CreatePlaceLocation {
+export class UpdatePlaceLocation {
   streetName: string;
   city: string;
   country: string;

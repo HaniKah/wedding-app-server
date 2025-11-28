@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import {
+  CreateOrUpdatePlaceRequest,
   CreatePlaceDto,
-  CreatePlaceRequest,
+  CreatePlaceSteps,
   PlacePrice,
   PlaceStatus,
+  UpdatePlaceInfo,
+  UpdatePlaceLocation,
   VendorPlaceDetailsDto,
   VendorPlaceDto,
   VendorPlaceViewModel,
@@ -12,6 +15,9 @@ import { PlacesRepositoryService } from './places.repository.service';
 import { PhotosService } from '../photos/photos.service';
 import { PhotoSize } from '../types/photos/photos.dto';
 import { Money } from '../common/Money';
+import { Places } from 'kysely-codegen';
+import { Selectable } from 'kysely';
+import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
 
 @Injectable()
 export class PlacesService {
@@ -62,31 +68,33 @@ export class PlacesService {
 
   public async createPlace(
     userId: number,
-    data: CreatePlaceRequest,
-  ): Promise<CreatePlaceDto> {
-    const placeRecord = await this.placesRepositoryService.createPlace({
-      userId: userId,
-      step: data.type,
-      name: data.placeInfo.name,
-      phoneNumber: data.placeInfo.phoneNumber,
-      streetName: data.location?.streetName,
-      lng: data.location?.lng,
-      lat: data.location?.lat,
-      city: data.location?.city,
-      googleId: data.location?.googleId,
-      country: data.location?.country,
-      postalCode: data.location?.postalCode,
-      facebook: data.placeInfo.facebook,
-      instagram: data.placeInfo.instagram,
-      tiktok: data.placeInfo.tiktok,
-      website: data.placeInfo.website,
-      priceRange: data.placeInfo.priceRange,
-      currency: 'JOD',
-      description: data.description,
+    data: CreateOrUpdatePlaceRequest,
+  ): Promise<VendorPlaceDetailsDto> {
+    const createdPlaceRecord = await this.placesRepositoryService.createPlace({
+      userId,
+      step: data.weddingStep,
     });
-    return {
-      id: placeRecord.id,
-    };
+    return this.getPlaceDetails(createdPlaceRecord.id);
+  }
+
+  public async updatePlace(
+    data: CreateOrUpdatePlaceRequest,
+  ): Promise<VendorPlaceDetailsDto> {
+    switch (data.createStep) {
+      case CreatePlaceSteps.PickPlaceType:
+        await this.updatePlaceType(data.placeId, data.weddingStep);
+        break;
+      case CreatePlaceSteps.FillPlaceInfo:
+        await this.updatePlaceInfo(data.placeId, data.placeInfo);
+        break;
+      case CreatePlaceSteps.PickPlaceLocation:
+        await this.updatePlaceLocation(data.placeId, data.location);
+        break;
+      case CreatePlaceSteps.AddDescription:
+        await this.updateDescription(data.placeId, data.description);
+        break;
+    }
+    return await this.getPlaceDetails(data.placeId);
   }
 
   public async getPlaces(userId: number): Promise<VendorPlaceViewModel> {
@@ -119,6 +127,56 @@ export class PlacesService {
     );
     return {
       result: viewModel,
+    };
+  }
+
+  private async updatePlaceLocation(
+    placeId: number,
+    location: UpdatePlaceLocation,
+  ) {
+    await this.placesRepositoryService.updatePlace(placeId, {
+      country: location.country,
+      lat: location.lat,
+      lng: location.lng,
+      streetName: location.streetName,
+      city: location.city,
+      googleId: location.googleId,
+      postalCode: location.postalCode,
+    });
+  }
+
+  private async updateDescription(placeId: number, description: string) {
+    await this.placesRepositoryService.updatePlace(placeId, {
+      description: description,
+    });
+  }
+
+  private async updatePlaceInfo(placeId: number, data: UpdatePlaceInfo) {
+    await this.placesRepositoryService.updatePlace(placeId, {
+      name: data.name,
+      phoneNumber: data.phoneNumber,
+      priceRange: data.priceRange,
+      facebook: data.facebook,
+      instagram: data.instagram,
+      tiktok: data.tiktok,
+      website: data.website,
+    });
+  }
+
+  private async updatePlaceType(placeId: number, weddingStep: WeddingSteps) {
+    await this.placesRepositoryService.updatePlace(placeId, {
+      step: weddingStep,
+    });
+  }
+
+  private createPlaceDto(
+    record: Selectable<Places>,
+    step: CreatePlaceSteps,
+  ): CreatePlaceDto {
+    return {
+      step: step,
+      placeId: record.id,
+      weddingStep: record.step,
     };
   }
 }
