@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import {
+  CreateOrUpdatePlaceDto,
   CreateOrUpdatePlaceRequest,
-  CreatePlaceDto,
   CreatePlaceSteps,
   PlacePrice,
   PlaceStatus,
@@ -15,8 +15,6 @@ import { PlacesRepositoryService } from './places.repository.service';
 import { PhotosService } from '../photos/photos.service';
 import { PhotoSize } from '../types/photos/photos.dto';
 import { Money } from '../common/Money';
-import { Places } from 'kysely-codegen';
-import { Selectable } from 'kysely';
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
 
 @Injectable()
@@ -69,17 +67,17 @@ export class PlacesService {
   public async createPlace(
     userId: number,
     data: CreateOrUpdatePlaceRequest,
-  ): Promise<VendorPlaceDetailsDto> {
+  ): Promise<CreateOrUpdatePlaceDto> {
     const createdPlaceRecord = await this.placesRepositoryService.createPlace({
       userId,
       step: data.weddingStep,
     });
-    return this.getPlaceDetails(createdPlaceRecord.id);
+    return await this.organizePlaceDetailsForStep(createdPlaceRecord.id);
   }
 
   public async updatePlace(
     data: CreateOrUpdatePlaceRequest,
-  ): Promise<VendorPlaceDetailsDto> {
+  ): Promise<CreateOrUpdatePlaceDto> {
     switch (data.createStep) {
       case CreatePlaceSteps.PickPlaceType:
         await this.updatePlaceType(data.placeId, data.weddingStep);
@@ -94,7 +92,7 @@ export class PlacesService {
         await this.updateDescription(data.placeId, data.description);
         break;
     }
-    return await this.getPlaceDetails(data.placeId);
+    return await this.organizePlaceDetailsForStep(data.placeId);
   }
 
   public async getPlaces(userId: number): Promise<VendorPlaceViewModel> {
@@ -169,14 +167,34 @@ export class PlacesService {
     });
   }
 
-  private createPlaceDto(
-    record: Selectable<Places>,
-    step: CreatePlaceSteps,
-  ): CreatePlaceDto {
+  private async organizePlaceDetailsForStep(
+    placeId: number,
+  ): Promise<CreateOrUpdatePlaceDto> {
+    const r = await this.placesRepositoryService.getPlaceById(placeId);
     return {
-      step: step,
-      placeId: record.id,
-      weddingStep: record.step,
+      placeId: placeId,
+      weddingStep: r.step,
+      placeInfo: {
+        name: r.name,
+        phoneNumber: r.phoneNumber,
+        priceRange: r.priceRange,
+        website: r.website,
+        tiktok: r.tiktok,
+        instagram: r.instagram,
+        facebook: r.facebook,
+      },
+
+      description: r.description,
+
+      location: {
+        streetName: r.streetName,
+        city: r.city,
+        country: r.country,
+        postalCode: r.postalCode,
+        googleId: r.googleId,
+        lat: r.lat,
+        lng: r.lng,
+      },
     };
   }
 }

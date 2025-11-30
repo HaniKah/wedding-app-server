@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
 import {
+  CreateOrUpdatePlaceDto,
   CreateOrUpdatePlaceRequest,
   PublishPlaceRequest,
   VendorPlaceDetailsDto,
@@ -18,7 +19,7 @@ export class PlacesController {
   public async createOrUpdatePlace(
     @Req() req: Request,
     @Body() body: CreateOrUpdatePlaceRequest,
-  ): Promise<VendorPlaceDetailsDto> {
+  ): Promise<CreateOrUpdatePlaceDto> {
     if (body.placeId) {
       return await this.placesService.updatePlace(body);
     } else {
