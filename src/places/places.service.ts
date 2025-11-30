@@ -1,14 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import {
-  CreateOrUpdatePlaceDto,
-  CreateOrUpdatePlaceRequest,
+  CreatePlaceRequest,
   CreatePlaceSteps,
   PlacePrice,
   PlaceStatus,
-  UpdatePlaceInfo,
   UpdatePlaceLocation,
+  UpdatePlaceRequest,
   VendorPlaceDetailsDto,
-  VendorPlaceDto,
+  VendorPlaceDetailsViewModel,
+  VendorPlaceInfo,
+  VendorPlaceListDto,
+  VendorPlaceSocialMedia,
   VendorPlaceViewModel,
 } from '../types/places/places.dto';
 import { PlacesRepositoryService } from './places.repository.service';
@@ -16,6 +18,9 @@ import { PhotosService } from '../photos/photos.service';
 import { PhotoSize } from '../types/photos/photos.dto';
 import { Money } from '../common/Money';
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
+import { Places } from 'kysely-codegen';
+import { Selectable } from 'kysely';
+import { PhotosDto } from '../types/planner/photos.dto';
 
 @Injectable()
 export class PlacesService {
@@ -26,35 +31,22 @@ export class PlacesService {
 
   public async getPlaceDetails(
     placeId: number,
-  ): Promise<VendorPlaceDetailsDto> {
-    const p = await this.placesRepositoryService.getPlaceById(placeId);
+  ): Promise<VendorPlaceDetailsViewModel> {
+    const placeRecord =
+      await this.placesRepositoryService.getPlaceById(placeId);
 
-    const mainPhoto: string =
+    const mainPhoto: PhotosDto =
       await this.photosService.getMainPhotoOrFirstByPlaceId(
-        p.id,
+        placeRecord.id,
         PhotoSize.Small,
       );
 
-    const priceRange = {
-      priceRange: {
-        min: new Money(p.priceRange.min).getFormatted,
-        max: new Money(p.priceRange.max).getFormatted,
-      },
-      currency: p.currency,
-    };
+    const details: VendorPlaceDetailsDto =
+      this.organizePlaceDetails(placeRecord);
+
     return {
-      id: p.id,
-      name: p.name,
-      streetName: p.streetName,
-      phoneNumber: p.phoneNumber,
-      facebook: p.facebook,
-      instagram: p.instagram,
-      tiktok: p.tiktok,
-      website: p.website,
-      placePrice: priceRange,
-      status: p.status,
-      description: p.description,
-      mainPhoto: mainPhoto,
+      place: details,
+      photos: [mainPhoto],
     };
   }
 
@@ -66,42 +58,78 @@ export class PlacesService {
 
   public async createPlace(
     userId: number,
-    data: CreateOrUpdatePlaceRequest,
-  ): Promise<CreateOrUpdatePlaceDto> {
+    data: CreatePlaceRequest,
+  ): Promise<VendorPlaceDetailsViewModel> {
     const createdPlaceRecord = await this.placesRepositoryService.createPlace({
       userId,
       step: data.weddingStep,
     });
-    return await this.organizePlaceDetailsForStep(createdPlaceRecord.id);
+
+    const details: VendorPlaceDetailsDto =
+      this.organizePlaceDetails(createdPlaceRecord);
+
+    return {
+      place: details,
+      photos: [],
+    };
   }
 
   public async updatePlace(
-    data: CreateOrUpdatePlaceRequest,
-  ): Promise<CreateOrUpdatePlaceDto> {
+    data: UpdatePlaceRequest,
+  ): Promise<VendorPlaceDetailsViewModel> {
+    const photos = await this.photosService.getPhotosByPlaceId(
+      data.placeId,
+      PhotoSize.Small,
+    );
+
+    let updatedPlaceRecord: Selectable<Places>;
     switch (data.createStep) {
       case CreatePlaceSteps.PickPlaceType:
-        await this.updatePlaceType(data.placeId, data.weddingStep);
+        updatedPlaceRecord = await this.updatePlaceType(
+          data.placeId,
+          data.weddingStep,
+        );
         break;
       case CreatePlaceSteps.FillPlaceInfo:
-        await this.updatePlaceInfo(data.placeId, data.placeInfo);
+        updatedPlaceRecord = await this.updatePlaceInfo(
+          data.placeId,
+          data.placeInfo,
+        );
+        break;
+      case CreatePlaceSteps.AddSocialMedia:
+        updatedPlaceRecord = await this.updateSocialMedia(
+          data.placeId,
+          data.socialMedia,
+        );
         break;
       case CreatePlaceSteps.PickPlaceLocation:
-        await this.updatePlaceLocation(data.placeId, data.location);
+        updatedPlaceRecord = await this.updatePlaceLocation(
+          data.placeId,
+          data.location,
+        );
         break;
       case CreatePlaceSteps.AddDescription:
-        await this.updateDescription(data.placeId, data.description);
+        updatedPlaceRecord = await this.updateDescription(
+          data.placeId,
+          data.description,
+        );
         break;
     }
-    return await this.organizePlaceDetailsForStep(data.placeId);
+    const details: VendorPlaceDetailsDto =
+      this.organizePlaceDetails(updatedPlaceRecord);
+    return {
+      place: details,
+      photos: photos,
+    };
   }
 
   public async getPlaces(userId: number): Promise<VendorPlaceViewModel> {
     const places =
       await this.placesRepositoryService.getAllPlacesByUserId(userId);
 
-    const viewModel: VendorPlaceDto[] = await Promise.all(
+    const viewModel: VendorPlaceListDto[] = await Promise.all(
       places.map(async (p) => {
-        const photo: string =
+        const photo: PhotosDto =
           await this.photosService.getMainPhotoOrFirstByPlaceId(
             p.id,
             PhotoSize.Small,
@@ -128,11 +156,45 @@ export class PlacesService {
     };
   }
 
+  private organizePlaceDetails(
+    details: Selectable<Places>,
+  ): VendorPlaceDetailsDto {
+    return {
+      placeId: details.id,
+      weddingStep: details.step,
+
+      placeInfo: {
+        name: details.name,
+        phoneNumber: details.phoneNumber,
+        priceRange: details.priceRange,
+      },
+
+      socialMedia: {
+        website: details.website,
+        tiktok: details.tiktok,
+        instagram: details.instagram,
+        facebook: details.facebook,
+      },
+
+      description: details.description,
+
+      location: {
+        streetName: details.streetName,
+        city: details.city,
+        country: details.country,
+        postalCode: details.postalCode,
+        googleId: details.googleId,
+        lat: details.lat,
+        lng: details.lng,
+      },
+    };
+  }
+
   private async updatePlaceLocation(
     placeId: number,
     location: UpdatePlaceLocation,
   ) {
-    await this.placesRepositoryService.updatePlace(placeId, {
+    return await this.placesRepositoryService.updatePlace(placeId, {
       country: location.country,
       lat: location.lat,
       lng: location.lng,
@@ -144,57 +206,37 @@ export class PlacesService {
   }
 
   private async updateDescription(placeId: number, description: string) {
-    await this.placesRepositoryService.updatePlace(placeId, {
+    return await this.placesRepositoryService.updatePlace(placeId, {
       description: description,
     });
   }
 
-  private async updatePlaceInfo(placeId: number, data: UpdatePlaceInfo) {
-    await this.placesRepositoryService.updatePlace(placeId, {
+  private async updatePlaceInfo(placeId: number, data: VendorPlaceInfo) {
+    return await this.placesRepositoryService.updatePlace(placeId, {
       name: data.name,
       phoneNumber: data.phoneNumber,
       priceRange: data.priceRange,
-      facebook: data.facebook,
-      instagram: data.instagram,
-      tiktok: data.tiktok,
-      website: data.website,
     });
   }
 
-  private async updatePlaceType(placeId: number, weddingStep: WeddingSteps) {
-    await this.placesRepositoryService.updatePlace(placeId, {
+  private async updateSocialMedia(
+    placeId: number,
+    data: VendorPlaceSocialMedia,
+  ) {
+    return await this.placesRepositoryService.updatePlace(placeId, {
+      website: data.website,
+      tiktok: data.tiktok,
+      instagram: data.instagram,
+      facebook: data.facebook,
+    });
+  }
+
+  private async updatePlaceType(
+    placeId: number,
+    weddingStep: WeddingSteps,
+  ): Promise<Selectable<Places>> {
+    return await this.placesRepositoryService.updatePlace(placeId, {
       step: weddingStep,
     });
-  }
-
-  private async organizePlaceDetailsForStep(
-    placeId: number,
-  ): Promise<CreateOrUpdatePlaceDto> {
-    const r = await this.placesRepositoryService.getPlaceById(placeId);
-    return {
-      placeId: placeId,
-      weddingStep: r.step,
-      placeInfo: {
-        name: r.name,
-        phoneNumber: r.phoneNumber,
-        priceRange: r.priceRange,
-        website: r.website,
-        tiktok: r.tiktok,
-        instagram: r.instagram,
-        facebook: r.facebook,
-      },
-
-      description: r.description,
-
-      location: {
-        streetName: r.streetName,
-        city: r.city,
-        country: r.country,
-        postalCode: r.postalCode,
-        googleId: r.googleId,
-        lat: r.lat,
-        lng: r.lng,
-      },
-    };
   }
 }

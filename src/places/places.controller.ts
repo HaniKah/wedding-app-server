@@ -1,13 +1,12 @@
-import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import {
-  CreateOrUpdatePlaceDto,
-  CreateOrUpdatePlaceRequest,
+  CreatePlaceRequest,
   PublishPlaceRequest,
-  VendorPlaceDetailsDto,
+  UpdatePlaceRequest,
+  VendorPlaceDetailsViewModel,
   VendorPlaceViewModel,
 } from '../types/places/places.dto';
 import { PlacesService } from './places.service';
-import type { Request } from 'express';
 import { User } from '../decorators/user.decorator';
 import { CurrentUser } from '../types/auth/auth.dto';
 
@@ -15,16 +14,19 @@ import { CurrentUser } from '../types/auth/auth.dto';
 export class PlacesController {
   constructor(private readonly placesService: PlacesService) {}
 
-  @Post('createOrUpdate')
-  public async createOrUpdatePlace(
-    @Req() req: Request,
-    @Body() body: CreateOrUpdatePlaceRequest,
-  ): Promise<CreateOrUpdatePlaceDto> {
-    if (body.placeId) {
-      return await this.placesService.updatePlace(body);
-    } else {
-      return await this.placesService.createPlace(req.user.id, body);
-    }
+  @Post('createPlace')
+  public async createPlace(
+    @User() user: CurrentUser,
+    @Body() body: CreatePlaceRequest,
+  ): Promise<VendorPlaceDetailsViewModel> {
+    return await this.placesService.createPlace(user.id, body);
+  }
+
+  @Post('updatePlace')
+  public async updatePlace(
+    @Body() body: UpdatePlaceRequest,
+  ): Promise<VendorPlaceDetailsViewModel> {
+    return await this.placesService.updatePlace(body);
   }
 
   @Get('getPlaces')
@@ -33,6 +35,7 @@ export class PlacesController {
   ): Promise<VendorPlaceViewModel> {
     return await this.placesService.getPlaces(user.id);
   }
+
   @Post('toggleStatus')
   public async toggleStatus(@Body() body: PublishPlaceRequest): Promise<void> {
     await this.placesService.updateStatus(body.placeId, body.status);
@@ -41,7 +44,8 @@ export class PlacesController {
   @Get('getPlaceDetails')
   public async getPlaceDetails(
     @Query('id') id: number,
-  ): Promise<VendorPlaceDetailsDto> {
+  ): Promise<VendorPlaceDetailsViewModel | null> {
+    if (!id) return null;
     return await this.placesService.getPlaceDetails(id);
   }
 }

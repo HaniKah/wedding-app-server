@@ -20,6 +20,7 @@ import { stepsInfo } from '../constants/steps-info';
 import { PhotosService } from '../photos/photos.service';
 import { PhotoSize } from '../types/photos/photos.dto';
 import { Money } from '../common/Money';
+import { PhotosDto } from '../types/planner/photos.dto';
 
 @Injectable()
 export class PlannerService {
@@ -103,7 +104,7 @@ export class PlannerService {
 
     const list = await Promise.all(
       placesAndPlaceDetailsRecord.map(async (r) => {
-        const mainPhoto: string =
+        const mainPhoto: PhotosDto =
           await this.photosService.getMainPhotoOrFirstByPlaceId(
             r.id,
             PhotoSize.Small,
@@ -138,7 +139,7 @@ export class PlannerService {
     const details =
       await this.placeDetailsRepositoryService.getPlaceDetailsByPlaceId(id);
 
-    const mainPhoto: string =
+    const mainPhoto: PhotosDto =
       await this.photosService.getMainPhotoOrFirstByPlaceId(
         place.id,
         PhotoSize.Small,

@@ -17,18 +17,18 @@ export class PlacesRepositoryService {
   }
 
   public async updatePlace(placeId: number, data: Updateable<Places>) {
-    await this.db.db
+    return await this.db.db
       .updateTable('places')
       .set(data)
       .where('id', '=', placeId)
-      .returning('id')
+      .returningAll()
       .executeTakeFirst();
   }
   public async createPlace(data: Insertable<Places>) {
     return await this.db.db
       .insertInto('places')
       .values(data)
-      .returning(['id', 'step'])
+      .returningAll()
       .executeTakeFirst();
   }
 

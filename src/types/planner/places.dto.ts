@@ -1,6 +1,7 @@
 import { WeddingSteps } from '../general/wedding-steps-enum.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { PlacePrice } from '../places/places.dto';
+import { PhotosDto } from './photos.dto';
 
 export enum SearchFilter {
   MyPick = 'MyPick',
@@ -16,7 +17,7 @@ export class PlacesDto {
   picked: boolean;
   favourite: boolean;
   @ApiProperty({ enum: SearchFilter, enumName: 'SearchFilter' })
-  mainPhoto: string;
+  mainPhoto: PhotosDto;
   price: PlacePrice;
 }
 
@@ -36,7 +37,7 @@ export class PlaceDetailsDto {
   picked: boolean;
   favourite: boolean;
   notes: string | null;
-  mainPhoto: string;
+  mainPhoto: PhotosDto;
 }
 export class PlacesViewModel {
   places: PlacesDto[];
@@ -44,7 +45,7 @@ export class PlacesViewModel {
 }
 
 //coming from google places api , a fetchName is used to fetch from the places photos api
-export class PlacePhotoDto {
+export class googlePhotosDto {
   photoRef: string;
   width: number | null;
   height: number | null;
