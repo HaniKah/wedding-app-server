@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import {
-  CreatePlaceRequest,
   CreatePlaceSteps,
   PlacePrice,
   PlaceStatus,
@@ -10,7 +9,6 @@ import {
   VendorPlaceInfo,
   VendorPlaceListDto,
   VendorPlaceLocation,
-  VendorPlaceSocialMedia,
   VendorPlaceViewModel,
 } from '../types/places/places.dto';
 import { PlacesRepositoryService } from './places.repository.service';
@@ -58,18 +56,15 @@ export class PlacesService {
 
   public async createPlace(
     userId: number,
-    data: CreatePlaceRequest,
+    data: UpdatePlaceRequest,
   ): Promise<VendorPlaceDetailsViewModel> {
     const createdPlaceRecord = await this.placesRepositoryService.createPlace({
       userId,
       step: data.weddingStep,
     });
 
-    const details: VendorPlaceDetailsDto =
-      this.organizePlaceDetails(createdPlaceRecord);
-
     return {
-      place: details,
+      place: this.organizePlaceDetails(createdPlaceRecord),
       photos: [],
     };
   }
@@ -96,12 +91,7 @@ export class PlacesService {
           data.placeInfo,
         );
         break;
-      case CreatePlaceSteps.AddSocialMedia:
-        updatedPlaceRecord = await this.updateSocialMedia(
-          data.placeId,
-          data.socialMedia,
-        );
-        break;
+
       case CreatePlaceSteps.PickPlaceLocation:
         updatedPlaceRecord = await this.updatePlaceLocation(
           data.placeId,
@@ -167,9 +157,6 @@ export class PlacesService {
         name: details.name,
         phoneNumber: details.phoneNumber,
         priceRange: details.priceRange,
-      },
-
-      socialMedia: {
         website: details.website,
         tiktok: details.tiktok,
         instagram: details.instagram,
@@ -216,18 +203,6 @@ export class PlacesService {
       name: data.name,
       phoneNumber: data.phoneNumber,
       priceRange: data.priceRange,
-    });
-  }
-
-  private async updateSocialMedia(
-    placeId: number,
-    data: VendorPlaceSocialMedia,
-  ) {
-    return await this.placesRepositoryService.updatePlace(placeId, {
-      website: data.website,
-      tiktok: data.tiktok,
-      instagram: data.instagram,
-      facebook: data.facebook,
     });
   }
 
