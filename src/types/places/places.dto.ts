@@ -23,7 +23,7 @@ export class UpdatePlaceRequest {
   placeInfo?: VendorPlaceInfo;
   socialMedia?: VendorPlaceSocialMedia;
   description?: string;
-  location?: UpdatePlaceLocation;
+  location?: VendorPlaceLocation;
   @ApiProperty({ enum: CreatePlaceSteps, enumName: 'CreatePlaceSteps' })
   createStep: CreatePlaceSteps;
 }
@@ -45,7 +45,7 @@ export class VendorPlaceDetailsDto {
   placeInfo?: VendorPlaceInfo;
   socialMedia: VendorPlaceSocialMedia;
   description?: string;
-  location?: UpdatePlaceLocation;
+  location?: VendorPlaceLocation;
 }
 
 export class VendorPlaceInfo {
@@ -61,7 +61,7 @@ export class VendorPlaceSocialMedia {
   website?: string;
 }
 
-export class UpdatePlaceLocation {
+export class VendorPlaceLocation {
   streetName: string;
   city: string;
   country: string;

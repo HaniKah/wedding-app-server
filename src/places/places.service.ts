@@ -4,12 +4,12 @@ import {
   CreatePlaceSteps,
   PlacePrice,
   PlaceStatus,
-  UpdatePlaceLocation,
   UpdatePlaceRequest,
   VendorPlaceDetailsDto,
   VendorPlaceDetailsViewModel,
   VendorPlaceInfo,
   VendorPlaceListDto,
+  VendorPlaceLocation,
   VendorPlaceSocialMedia,
   VendorPlaceViewModel,
 } from '../types/places/places.dto';
@@ -192,7 +192,7 @@ export class PlacesService {
 
   private async updatePlaceLocation(
     placeId: number,
-    location: UpdatePlaceLocation,
+    location: VendorPlaceLocation,
   ) {
     return await this.placesRepositoryService.updatePlace(placeId, {
       country: location.country,
