@@ -14,8 +14,13 @@ export class Money {
   get getFormatted(): string {
     return this.formatMoney(this.value);
   }
+
   get getCurrency(): string {
     return this.currency;
+  }
+
+  static of(value: string | number) {
+    return new Money(value);
   }
 
   add(money: Money): Money {

@@ -13,14 +13,6 @@ import { CurrentUser } from '../types/auth/auth.dto';
 export class PlacesController {
   constructor(private readonly placesService: PlacesService) {}
 
-  // @Post('createPlace')
-  // public async createPlace(
-  //   @User() user: CurrentUser,
-  //   @Body() body: CreatePlaceRequest,
-  // ): Promise<VendorPlaceDetailsViewModel> {
-  //   return await this.placesService.createPlace(user.id, body);
-  // }
-
   @Post('updatePlace')
   public async updatePlace(
     @User() user: CurrentUser,
@@ -50,6 +42,7 @@ export class PlacesController {
     @Query('id') id: number,
   ): Promise<VendorPlaceDetailsViewModel | null> {
     if (!id) return null;
-    return await this.placesService.getPlaceDetails(id);
+    const result = await this.placesService.getPlaceDetails(id);
+    return result;
   }
 }
