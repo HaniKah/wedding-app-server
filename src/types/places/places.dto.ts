@@ -12,6 +12,7 @@ export enum CreatePlaceSteps {
   PickPlaceType = 'PickPlaceType',
   FillPlaceInfo = 'FillPlaceInfo',
   AddDescription = 'AddDescription',
+  AddSocialMedia = 'AddSocialMedia',
   PickPlaceLocation = 'PickPlaceLocation',
 }
 
@@ -20,6 +21,7 @@ export class UpdatePlaceRequest {
   @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
   weddingStep?: WeddingSteps;
   placeInfo?: VendorPlaceInfo;
+  socialMedia?: VendorPlaceSocialMedia;
   description?: string;
   location?: VendorPlaceLocation;
   @ApiProperty({ enum: CreatePlaceSteps, enumName: 'CreatePlaceSteps' })
@@ -41,6 +43,7 @@ export class VendorPlaceDetailsDto {
   @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
   weddingStep: WeddingSteps;
   placeInfo?: VendorPlaceInfo;
+  socialMedia: VendorPlaceSocialMedia;
   description?: string;
   location?: VendorPlaceLocation;
 }
@@ -49,6 +52,9 @@ export class VendorPlaceInfo {
   name: string;
   phoneNumber: string;
   priceRange: PlacePrice;
+}
+
+export class VendorPlaceSocialMedia {
   facebook?: string;
   instagram?: string;
   tiktok?: string;
@@ -71,8 +77,8 @@ export class PlacePrice {
 }
 
 class PlacePriceRange {
-  min?: string;
-  max?: string;
+  min: string;
+  max: string;
 }
 
 export class PublishPlaceRequest {

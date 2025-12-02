@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import {
+  CreatePlaceRequest,
   PublishPlaceRequest,
   UpdatePlaceRequest,
   VendorPlaceDetailsViewModel,
@@ -13,24 +14,19 @@ import { CurrentUser } from '../types/auth/auth.dto';
 export class PlacesController {
   constructor(private readonly placesService: PlacesService) {}
 
-  // @Post('createPlace')
-  // public async createPlace(
-  //   @User() user: CurrentUser,
-  //   @Body() body: CreatePlaceRequest,
-  // ): Promise<VendorPlaceDetailsViewModel> {
-  //   return await this.placesService.createPlace(user.id, body);
-  // }
+  @Post('createPlace')
+  public async createPlace(
+    @User() user: CurrentUser,
+    @Body() body: CreatePlaceRequest,
+  ): Promise<VendorPlaceDetailsViewModel> {
+    return await this.placesService.createPlace(user.id, body);
+  }
 
   @Post('updatePlace')
   public async updatePlace(
-    @User() user: CurrentUser,
     @Body() body: UpdatePlaceRequest,
   ): Promise<VendorPlaceDetailsViewModel> {
-    if (body.placeId) {
-      return await this.placesService.updatePlace(body);
-    } else {
-      return await this.placesService.createPlace(user.id, body);
-    }
+    return await this.placesService.updatePlace(body);
   }
 
   @Get('getPlaces')
