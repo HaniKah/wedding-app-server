@@ -4,7 +4,6 @@ import { v4 } from 'uuid';
 import { MinioService } from '../minio/minio.service';
 import { PhotosRepositoryService } from './photos.repository.service';
 import sharp from 'sharp';
-import { PhotosDto } from '../types/planner/photos.dto';
 
 @Injectable()
 export class PhotosService {
@@ -15,34 +14,25 @@ export class PhotosService {
   public async getMainPhotoOrFirstByPlaceId(
     placeId: number,
     photoSize: PhotoSize,
-  ): Promise<PhotosDto> {
+  ): Promise<string> {
     const photoRecord = await this.photosRepositoryService.getMainPhoto(
       placeId,
       photoSize,
     );
     if (photoRecord) {
-      return {
-        uri: await this.getObject(
-          photoRecord.objectKey,
-          photoRecord.bucketName,
-        ),
-        main: photoRecord.main,
-      };
+      return await this.getObject(
+        photoRecord.objectKey,
+        photoRecord.bucketName,
+      );
     } else {
       const photos = await this.photosRepositoryService.getPhotosByPlaceId(
         placeId,
         photoSize,
       );
       if (photos.length > 0) {
-        return {
-          uri: await this.getObject(photos[0].objectKey, photos[0].bucketName),
-          main: photos[0].main,
-        };
+        return await this.getObject(photos[0].objectKey, photos[0].bucketName);
       } else {
-        return {
-          uri: this.fallbackPhoto(),
-          main: false,
-        };
+        return this.fallbackPhoto();
       }
     }
   }
@@ -50,17 +40,14 @@ export class PhotosService {
   public async getPhotosByPlaceId(
     placeId: number,
     photoSize: PhotoSize,
-  ): Promise<PhotosDto[]> {
+  ): Promise<string[]> {
     const photos = await this.photosRepositoryService.getPhotosByPlaceId(
       placeId,
       photoSize,
     );
     return Promise.all(
       photos.map(async (p) => {
-        return {
-          uri: await this.getObject(p.objectKey, p.bucketName),
-          main: p.main,
-        };
+        return await this.getObject(p.objectKey, p.bucketName);
       }),
     );
   }

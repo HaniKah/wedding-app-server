@@ -1,6 +1,6 @@
 import { WeddingSteps } from '../general/wedding-steps-enum.dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { PhotosDto } from '../planner/photos.dto';
+import { NumRangeDto } from '../general/numrange.dto';
 
 export enum PlaceStatus {
   Incomplete = 'Incomplete',
@@ -12,53 +12,37 @@ export enum CreatePlaceSteps {
   PickPlaceType = 'PickPlaceType',
   FillPlaceInfo = 'FillPlaceInfo',
   AddDescription = 'AddDescription',
-  AddSocialMedia = 'AddSocialMedia',
   PickPlaceLocation = 'PickPlaceLocation',
 }
 
-export class UpdatePlaceRequest {
+export class CreateOrUpdatePlaceRequest {
   placeId?: number;
   @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
   weddingStep?: WeddingSteps;
-  placeInfo?: VendorPlaceInfo;
-  socialMedia?: VendorPlaceSocialMedia;
+  placeInfo?: UpdatePlaceInfo;
   description?: string;
   location?: UpdatePlaceLocation;
   @ApiProperty({ enum: CreatePlaceSteps, enumName: 'CreatePlaceSteps' })
   createStep: CreatePlaceSteps;
 }
 
-export class CreatePlaceRequest {
-  @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
-  weddingStep?: WeddingSteps;
-}
-
-export class VendorPlaceDetailsViewModel {
-  place: VendorPlaceDetailsDto;
-  photos: VendorPlacePhoto[];
-}
-
-export class VendorPlaceDetailsDto {
+export class CreateOrUpdatePlaceDto {
   placeId: number;
   @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
   weddingStep: WeddingSteps;
-  placeInfo?: VendorPlaceInfo;
-  socialMedia: VendorPlaceSocialMedia;
+  placeInfo?: UpdatePlaceInfo;
   description?: string;
   location?: UpdatePlaceLocation;
 }
 
-export class VendorPlaceInfo {
+export class UpdatePlaceInfo {
   name: string;
   phoneNumber: string;
-  priceRange: PlacePrice;
-}
-
-export class VendorPlaceSocialMedia {
   facebook?: string;
   instagram?: string;
   tiktok?: string;
   website?: string;
+  priceRange: NumRangeDto;
 }
 
 export class UpdatePlaceLocation {
@@ -87,21 +71,31 @@ export class PublishPlaceRequest {
   status: PlaceStatus;
 }
 
-export class VendorPlacePhoto {
-  uri: string;
-  main: boolean;
+export class VendorPlaceDetailsDto {
+  id: number;
+  name: string;
+  streetName?: string;
+  phoneNumber: string;
+  facebook?: string;
+  instagram?: string;
+  tiktok?: string;
+  website?: string;
+  placePrice: PlacePrice;
+  @ApiProperty({ enum: PlaceStatus, enumName: 'PlaceStatus' })
+  status: PlaceStatus;
+  description?: string;
+  mainPhoto: string;
+}
+export class VendorPlaceViewModel {
+  result: VendorPlaceDto[];
 }
 
-export class VendorPlaceListDto {
+export class VendorPlaceDto {
   id: number;
   name: string;
   streetName?: string;
   prices: PlacePrice;
-  thumbnail: PhotosDto;
+  thumbnail: string;
   @ApiProperty({ enum: PlaceStatus, enumName: 'PlaceStatus' })
   status: PlaceStatus;
-}
-
-export class VendorPlaceViewModel {
-  result: VendorPlaceListDto[];
 }
