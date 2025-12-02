@@ -16,20 +16,35 @@ export enum CreatePlaceSteps {
 }
 
 export class CreateOrUpdatePlaceRequest {
-  placeId?: number;
+  placeId: number | undefined;
   @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
-  weddingStep?: WeddingSteps;
-  placeInfo?: UpdatePlaceInfo;
+  weddingStep: WeddingSteps;
+  placeInfo: UpdatePlaceInfo;
   description?: string;
   location?: UpdatePlaceLocation;
-  @ApiProperty({ enum: CreatePlaceSteps, enumName: 'CreatePlaceSteps' })
   createStep: CreatePlaceSteps;
 }
 
-export class CreateOrUpdatePlaceDto {
-  placeId: number;
+export class VendorPlaceViewModel {
+  result: VendorPlaceDto[];
+}
+
+export class VendorPlaceDto {
+  id: number;
+  name: string;
+  streetName?: string;
+  prices: PlacePrice;
+  thumbnail: string;
+
+  @ApiProperty({ enum: PlaceStatus, enumName: 'PlaceStatus' })
+  status: PlaceStatus;
+}
+
+export class CreatePlaceDto {
+  placeId: number | undefined;
   @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
   weddingStep: WeddingSteps;
+  step: CreatePlaceSteps;
   placeInfo?: UpdatePlaceInfo;
   description?: string;
   location?: UpdatePlaceLocation;
@@ -70,7 +85,9 @@ export class PublishPlaceRequest {
   @ApiProperty({ enum: PlaceStatus, enumName: 'PlaceStatus' })
   status: PlaceStatus;
 }
-
+export class VendorPlaceDetailsRequest {
+  id: number;
+}
 export class VendorPlaceDetailsDto {
   id: number;
   name: string;
@@ -85,17 +102,4 @@ export class VendorPlaceDetailsDto {
   status: PlaceStatus;
   description?: string;
   mainPhoto: string;
-}
-export class VendorPlaceViewModel {
-  result: VendorPlaceDto[];
-}
-
-export class VendorPlaceDto {
-  id: number;
-  name: string;
-  streetName?: string;
-  prices: PlacePrice;
-  thumbnail: string;
-  @ApiProperty({ enum: PlaceStatus, enumName: 'PlaceStatus' })
-  status: PlaceStatus;
 }
