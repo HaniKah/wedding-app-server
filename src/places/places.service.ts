@@ -156,13 +156,7 @@ export class PlacesService {
       placeInfo: {
         name: details.name,
         phoneNumber: details.phoneNumber,
-        priceRange: {
-          priceRange: {
-            min: details.priceRange.min,
-            max: details.priceRange.max,
-          },
-          currency: details.currency,
-        },
+        priceRange: details.priceRange,
         website: details.website,
         tiktok: details.tiktok,
         instagram: details.instagram,
