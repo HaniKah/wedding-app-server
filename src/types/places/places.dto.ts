@@ -3,10 +3,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { NumRangeDto } from '../general/numrange.dto';
 
 export enum PlaceStatus {
-  Incomplete = 'Incomplete',
   Unpublished = 'Unpublished', // dont change this value , its default entry for db
   Published = 'Published',
-  Promoted = 'Promoted',
 }
 
 export class CreatePlaceRequest {
