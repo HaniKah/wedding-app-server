@@ -17,7 +17,14 @@ export class CreatePlaceRequest {
 }
 
 export class VendorPlaceViewModel {
-  result: VendorPlaceDto[];
+  published: {
+    title: PlaceStatus;
+    data: VendorPlaceDto[];
+  };
+  unpublished: {
+    title: PlaceStatus;
+    data: VendorPlaceDto[];
+  };
 }
 
 export class VendorPlaceDto {

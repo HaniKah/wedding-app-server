@@ -93,7 +93,7 @@ export class PlacesService {
     const places =
       await this.placesRepositoryService.getAllPlacesByUserId(userId);
 
-    const viewModel: VendorPlaceDto[] = await Promise.all(
+    const placesDto: VendorPlaceDto[] = await Promise.all(
       places.map(async (p) => {
         const photo: string =
           await this.photosService.getMainPhotoOrFirstByPlaceId(
@@ -117,8 +117,29 @@ export class PlacesService {
         };
       }),
     );
+    const [published, unpublished] = placesDto.reduce(
+      (
+        [published, unpublished]: [VendorPlaceDto[], VendorPlaceDto[]],
+        place,
+      ) => {
+        if (place.status === PlaceStatus.Published) {
+          published.push(place);
+        } else {
+          unpublished.push(place);
+        }
+        return [published, unpublished];
+      },
+      [[], []],
+    );
     return {
-      result: viewModel,
+      published: {
+        title: PlaceStatus.Published,
+        data: published,
+      },
+      unpublished: {
+        title: PlaceStatus.Unpublished,
+        data: unpublished,
+      },
     };
   }
 }
