@@ -15,7 +15,7 @@ import {
 import { WeddingDateDto } from '../types/planner/weddingDateDto';
 import { PlansRepositoryService } from './plans.repository.service';
 import { PlaceDetailsRepositoryService } from './place-details.repository.service';
-import { PlacesRepositoryService } from './places.repository.service';
+import { PlannerRepositoryService } from './planner.repository.service';
 import { stepsInfo } from '../constants/steps-info';
 import { PhotosService } from '../photos/photos.service';
 import { PhotoSize } from '../types/photos/photos.dto';
@@ -26,7 +26,7 @@ export class PlannerService {
   constructor(
     private readonly placeDetailsRepositoryService: PlaceDetailsRepositoryService,
     private readonly plansRepositoryService: PlansRepositoryService,
-    private readonly placesRepositoryService: PlacesRepositoryService,
+    private readonly placesRepositoryService: PlannerRepositoryService,
     private readonly photosService: PhotosService,
   ) {}
 

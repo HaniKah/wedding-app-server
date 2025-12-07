@@ -7,7 +7,7 @@ import { DbService } from '../db/db.service';
 import { SearchFilter } from '../types/planner/places.dto';
 
 @Injectable()
-export class PlacesRepositoryService {
+export class PlannerRepositoryService {
   private readonly db: Kysely<DB>;
 
   constructor(private readonly dbService: DbService) {
@@ -44,6 +44,7 @@ export class PlacesRepositoryService {
       ])
       .where('status', '=', 'Published')
       .where('step', '=', step)
+      .where('places.deletedAt', 'is', null)
       .$if(!!searchQuery, (eb) =>
         eb.where((eb) => eb.or([eb('name', 'ilike', `%${searchQuery}%`)])),
       )
