@@ -1,6 +1,8 @@
 import {
   Body,
   Controller,
+  Get,
+  Param,
   Post,
   UploadedFiles,
   UseInterceptors,
@@ -26,5 +28,12 @@ export class PhotosController {
       PhotoSize.Small,
       PhotoSize.Large,
     ]);
+  }
+  @Get(':id')
+  public async getPhotos(@Param('id') id: string): Promise<string[]> {
+    return await this.photosService.getPhotosByPlaceId(
+      Number(id),
+      PhotoSize.Small,
+    );
   }
 }
