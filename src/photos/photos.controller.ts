@@ -11,6 +11,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { PhotosService } from './photos.service';
 import { BucketName, PhotoSize } from '../types/photos/photos.dto';
+import { PhotosDto } from '../types/planner/photos.dto';
 
 @Controller('photos')
 export class PhotosController {
@@ -30,10 +31,10 @@ export class PhotosController {
     ]);
   }
   @Get(':id')
-  public async getPhotos(@Param('id') id: string): Promise<string[]> {
+  public async getPhotos(@Param('id') id: string): Promise<PhotosDto[]> {
     return await this.photosService.getPhotosByPlaceId(
       Number(id),
-      PhotoSize.Small,
+      PhotoSize.Large,
     );
   }
 }

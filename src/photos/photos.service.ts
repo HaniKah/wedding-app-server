@@ -4,6 +4,7 @@ import { v4 } from 'uuid';
 import { MinioService } from '../minio/minio.service';
 import { PhotosRepositoryService } from './photos.repository.service';
 import sharp from 'sharp';
+import { PhotosDto } from '../types/planner/photos.dto';
 
 @Injectable()
 export class PhotosService {
@@ -40,14 +41,17 @@ export class PhotosService {
   public async getPhotosByPlaceId(
     placeId: number,
     photoSize: PhotoSize,
-  ): Promise<string[]> {
+  ): Promise<PhotosDto[]> {
     const photos = await this.photosRepositoryService.getPhotosByPlaceId(
       placeId,
       photoSize,
     );
     return Promise.all(
       photos.map(async (p) => {
-        return await this.getObject(p.objectKey, p.bucketName);
+        const uri: string = await this.getObject(p.objectKey, p.bucketName);
+        return {
+          uri: uri,
+        };
       }),
     );
   }
