@@ -8,6 +8,14 @@ import { Insertable, Updateable } from 'kysely';
 export class PlacesRepositoryService {
   constructor(private readonly db: DbService) {}
 
+  public async deletePlace(placeId: number) {
+    await this.db.db
+      .updateTable('places')
+      .set('deletedAt', new Date().toISOString())
+      .where('places.id', '=', placeId)
+      .executeTakeFirstOrThrow();
+  }
+
   public async getPlaceById(placeId: number) {
     return await this.db.db
       .selectFrom('places')
@@ -27,6 +35,7 @@ export class PlacesRepositoryService {
       .selectFrom('places')
       .selectAll()
       .where('userId', '=', userId)
+      .where('deletedAt', 'is', null)
       .execute();
   }
   public async updateStatusById(placeId: number, data: Updateable<Places>) {

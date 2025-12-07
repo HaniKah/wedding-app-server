@@ -20,6 +20,10 @@ export class PlacesService {
     private readonly photosService: PhotosService,
   ) {}
 
+  public async deletePlace(placeId: number) {
+    await this.placesRepositoryService.deletePlace(placeId);
+  }
+
   public async getPlaceDetails(
     placeId: number,
   ): Promise<VendorPlaceDetailsDto> {

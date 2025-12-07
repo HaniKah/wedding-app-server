@@ -6,7 +6,9 @@ export enum PlaceStatus {
   Unpublished = 'Unpublished', // dont change this value , its default entry for db
   Published = 'Published',
 }
-
+export class DeletePlaceRequest {
+  id: number;
+}
 export class CreatePlaceRequest {
   @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
   type: WeddingSteps;

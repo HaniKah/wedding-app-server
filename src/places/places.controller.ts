@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
 import {
   CreatePlaceDto,
   CreatePlaceRequest,
+  DeletePlaceRequest,
   PublishPlaceRequest,
   VendorPlaceDetailsDto,
   VendorPlaceViewModel,
@@ -14,6 +15,11 @@ import { CurrentUser } from '../types/auth/auth.dto';
 @Controller('places')
 export class PlacesController {
   constructor(private readonly placesService: PlacesService) {}
+
+  @Post('delete')
+  public async deletePlace(@Body() body: DeletePlaceRequest) {
+    return await this.placesService.deletePlace(body.id);
+  }
 
   @Post('create')
   public async createPlace(
