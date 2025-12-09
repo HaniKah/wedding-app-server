@@ -4,7 +4,10 @@ export class Money {
   private value: Decimal;
   private currency: string;
 
-  constructor(value: string | number, currency = 'JOD') {
+  constructor(value: string | number | null, currency = 'JOD') {
+    if (!value) {
+      return null;
+    }
     // Always create Decimal from string to avoid JS float issues
     this.value = new Decimal(value);
     this.currency = currency;

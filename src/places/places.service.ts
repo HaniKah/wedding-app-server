@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import {
-  CreatePlaceDto,
   CreatePlaceRequest,
-  PlacePrice,
+  CreatePlaceSteps,
   PlaceStatus,
+  UpdatePlaceRequest,
   VendorPlaceDetailsDto,
   VendorPlaceDto,
   VendorPlaceViewModel,
@@ -11,7 +11,6 @@ import {
 import { PlacesRepositoryService } from './places.repository.service';
 import { PhotosService } from '../photos/photos.service';
 import { PhotoSize } from '../types/photos/photos.dto';
-import { Money } from '../common/Money';
 
 @Injectable()
 export class PlacesService {
@@ -19,6 +18,45 @@ export class PlacesService {
     private readonly placesRepositoryService: PlacesRepositoryService,
     private readonly photosService: PhotosService,
   ) {}
+
+  public async editPlace(
+    req: UpdatePlaceRequest,
+  ): Promise<VendorPlaceDetailsDto> {
+    switch (req.createStep) {
+      case CreatePlaceSteps.PickPlaceType:
+        await this.placesRepositoryService.updatePlace(req.id, {
+          step: req.type,
+        });
+        break;
+      case CreatePlaceSteps.FillPlaceInfo:
+        await this.placesRepositoryService.updatePlace(req.id, {
+          name: req.placeInfo.name,
+          phoneNumber: req.placeInfo.phoneNumber,
+          facebook: req.placeInfo.facebook,
+          instagram: req.placeInfo.instagram,
+          tiktok: req.placeInfo.tiktok,
+          website: req.placeInfo.website,
+          priceRange: req.placeInfo.priceRange,
+        });
+        break;
+      case CreatePlaceSteps.PickPlaceLocation:
+        await this.placesRepositoryService.updatePlace(req.id, {
+          streetName: req.location?.streetName,
+          lng: req.location?.lng,
+          lat: req.location?.lat,
+          city: req.location?.city,
+          googleId: req.location?.googleId,
+          country: req.location?.country,
+          postalCode: req.location?.postalCode,
+        });
+        break;
+      case CreatePlaceSteps.AddDescription:
+        await this.placesRepositoryService.updatePlace(req.id, {
+          description: req.description,
+        });
+    }
+    return await this.getPlaceDetails(req.id);
+  }
 
   public async deletePlace(placeId: number) {
     await this.placesRepositoryService.deletePlace(placeId);
@@ -35,13 +73,6 @@ export class PlacesService {
         PhotoSize.Small,
       );
 
-    const priceRange = {
-      priceRange: {
-        min: new Money(p.priceRange.min).getFormatted,
-        max: new Money(p.priceRange.max).getFormatted,
-      },
-      currency: p.currency,
-    };
     return {
       id: p.id,
       name: p.name,
@@ -51,15 +82,16 @@ export class PlacesService {
       instagram: p.instagram,
       tiktok: p.tiktok,
       website: p.website,
-      placePrice: priceRange,
+      currency: p.currency,
       status: p.status,
       description: p.description,
       mainPhoto: mainPhoto,
+      step: p.step,
     };
   }
 
   public async updateStatus(placeId: number, status: PlaceStatus) {
-    await this.placesRepositoryService.updateStatusById(placeId, {
+    await this.placesRepositoryService.updatePlace(placeId, {
       status: status,
     });
   }
@@ -67,30 +99,12 @@ export class PlacesService {
   public async createPlace(
     userId: number,
     data: CreatePlaceRequest,
-  ): Promise<CreatePlaceDto> {
+  ): Promise<VendorPlaceDetailsDto> {
     const placeRecord = await this.placesRepositoryService.createPlace({
       userId: userId,
-      step: data.type,
-      name: data.placeInfo.name,
-      phoneNumber: data.placeInfo.phoneNumber,
-      streetName: data.location?.streetName,
-      lng: data.location?.lng,
-      lat: data.location?.lat,
-      city: data.location?.city,
-      googleId: data.location?.googleId,
-      country: data.location?.country,
-      postalCode: data.location?.postalCode,
-      facebook: data.placeInfo.facebook,
-      instagram: data.placeInfo.instagram,
-      tiktok: data.placeInfo.tiktok,
-      website: data.placeInfo.website,
-      priceRange: data.placeInfo.priceRange,
-      currency: 'JOD',
-      description: data.description,
+      step: data.step,
     });
-    return {
-      id: placeRecord.id,
-    };
+    return await this.getPlaceDetails(placeRecord.id);
   }
 
   public async getPlaces(userId: number): Promise<VendorPlaceViewModel> {
@@ -104,19 +118,13 @@ export class PlacesService {
             p.id,
             PhotoSize.Small,
           );
-        const price: PlacePrice = {
-          priceRange: {
-            min: new Money(p.priceRange.min).getFormatted,
-            max: new Money(p.priceRange.max).getFormatted,
-          },
-          currency: p.currency,
-        };
+
         return {
           id: p.id,
           name: p.name,
           streetName: p.streetName,
-          prices: price,
           thumbnail: photo,
+          currency: p.currency,
           status: p.status,
         };
       }),

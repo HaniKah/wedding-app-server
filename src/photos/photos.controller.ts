@@ -31,7 +31,7 @@ export class PhotosController {
     ]);
   }
   @Get(':id')
-  public async getPhotos(@Param('id') id: string): Promise<PhotosDto[]> {
+  public async getPhotos(@Param('id') id: number): Promise<PhotosDto[]> {
     return await this.photosService.getPhotosByPlaceId(
       Number(id),
       PhotoSize.Large,

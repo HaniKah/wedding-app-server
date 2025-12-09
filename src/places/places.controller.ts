@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
 import {
-  CreatePlaceDto,
   CreatePlaceRequest,
   DeletePlaceRequest,
   PublishPlaceRequest,
+  UpdatePlaceRequest,
   VendorPlaceDetailsDto,
   VendorPlaceViewModel,
 } from '../types/places/places.dto';
@@ -25,8 +25,15 @@ export class PlacesController {
   public async createPlace(
     @Req() req: Request,
     @Body() body: CreatePlaceRequest,
-  ): Promise<CreatePlaceDto> {
+  ): Promise<VendorPlaceDetailsDto> {
     return await this.placesService.createPlace(req.user.id, body);
+  }
+
+  @Post('update')
+  public async updatePlace(
+    @Body() body: UpdatePlaceRequest,
+  ): Promise<VendorPlaceDetailsDto> {
+    return await this.placesService.editPlace(body);
   }
 
   @Get('getPlaces')
@@ -35,6 +42,7 @@ export class PlacesController {
   ): Promise<VendorPlaceViewModel> {
     return await this.placesService.getPlaces(user.id);
   }
+
   @Post('toggleStatus')
   public async toggleStatus(@Body() body: PublishPlaceRequest): Promise<void> {
     await this.placesService.updateStatus(body.placeId, body.status);

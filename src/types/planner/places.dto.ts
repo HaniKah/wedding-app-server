@@ -1,6 +1,5 @@
 import { WeddingSteps } from '../general/wedding-steps-enum.dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { PlacePrice } from '../places/places.dto';
 
 export enum SearchFilter {
   MyPick = 'MyPick',
@@ -17,7 +16,6 @@ export class PlacesDto {
   favourite: boolean;
   @ApiProperty({ enum: SearchFilter, enumName: 'SearchFilter' })
   mainPhoto: string;
-  price: PlacePrice;
 }
 
 export class PlaceDetailsDto {
@@ -29,7 +27,6 @@ export class PlaceDetailsDto {
   tiktok?: string;
   instagram?: string;
   phoneNumber: string;
-  price: PlacePrice;
   currency: string;
   @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
   step: WeddingSteps;

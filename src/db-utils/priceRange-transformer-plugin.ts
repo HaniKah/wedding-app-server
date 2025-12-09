@@ -1,3 +1,4 @@
+//Deprecated , was used for numrange transformation : we couldn't transform UPDATE queries from NumrangeDto (ts)  to numrange (postgres)
 import {
   KyselyPlugin,
   OperationNodeTransformer,

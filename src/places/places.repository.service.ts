@@ -38,7 +38,7 @@ export class PlacesRepositoryService {
       .where('deletedAt', 'is', null)
       .execute();
   }
-  public async updateStatusById(placeId: number, data: Updateable<Places>) {
+  public async updatePlace(placeId: number, data: Updateable<Places>) {
     await this.db.db
       .updateTable('places')
       .where('id', '=', placeId)
