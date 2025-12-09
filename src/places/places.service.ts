@@ -36,7 +36,8 @@ export class PlacesService {
           instagram: req.placeInfo.instagram,
           tiktok: req.placeInfo.tiktok,
           website: req.placeInfo.website,
-          priceRange: req.placeInfo.priceRange,
+          minPrice: req.placeInfo.minPrice,
+          maxPrice: req.placeInfo.maxPrice,
         });
         break;
       case CreatePlaceSteps.PickPlaceLocation:
@@ -87,6 +88,8 @@ export class PlacesService {
       description: p.description,
       mainPhoto: mainPhoto,
       step: p.step,
+      minPrice: p.minPrice,
+      maxPrice: p.maxPrice,
     };
   }
 
@@ -126,6 +129,8 @@ export class PlacesService {
           thumbnail: photo,
           currency: p.currency,
           status: p.status,
+          minPrice: p.minPrice,
+          maxPrice: p.maxPrice,
         };
       }),
     );

@@ -16,6 +16,8 @@ export class PlacesDto {
   favourite: boolean;
   @ApiProperty({ enum: SearchFilter, enumName: 'SearchFilter' })
   mainPhoto: string;
+  minPrice: string;
+  maxPrice: string;
 }
 
 export class PlaceDetailsDto {
@@ -34,6 +36,8 @@ export class PlaceDetailsDto {
   favourite: boolean;
   notes: string | null;
   mainPhoto: string;
+  maxPrice: string;
+  minPrice: string;
 }
 export class PlacesViewModel {
   places: PlacesDto[];

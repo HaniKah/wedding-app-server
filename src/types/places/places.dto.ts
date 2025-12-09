@@ -1,6 +1,5 @@
 import { WeddingSteps } from '../general/wedding-steps-enum.dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { NumRangeDto } from '../general/numrange.dto';
 
 export enum CreatePlaceSteps {
   PickPlaceType = 'PickPlaceType',
@@ -52,6 +51,8 @@ export class VendorPlaceDto {
   thumbnail: string;
   @ApiProperty({ enum: PlaceStatus, enumName: 'PlaceStatus' })
   status: PlaceStatus;
+  minPrice: string;
+  maxPrice: string;
 }
 
 class PlaceInfo {
@@ -61,7 +62,8 @@ class PlaceInfo {
   instagram?: string;
   tiktok?: string;
   website?: string;
-  priceRange?: NumRangeDto;
+  minPrice?: string;
+  maxPrice?: string;
 }
 
 class PlaceLocation {
@@ -96,4 +98,6 @@ export class VendorPlaceDetailsDto {
   status: PlaceStatus;
   description?: string;
   mainPhoto: string;
+  minPrice: string;
+  maxPrice: string;
 }

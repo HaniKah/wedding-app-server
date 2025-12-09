@@ -115,6 +115,8 @@ export class PlannerService {
           picked: r.picked,
           favourite: r.favourite,
           mainPhoto: mainPhoto,
+          maxPrice: r.maxPrice,
+          minPrice: r.minPrice,
         };
       }),
     );
@@ -148,6 +150,8 @@ export class PlannerService {
       favourite: details?.favourite || false,
       notes: details?.notes || null,
       mainPhoto: mainPhoto,
+      maxPrice: place.maxPrice,
+      minPrice: place.minPrice,
     };
   }
 
