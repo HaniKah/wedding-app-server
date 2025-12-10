@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import {
   CreatePlaceRequest,
-  CreatePlaceSteps,
   PlaceStatus,
   UpdatePlaceRequest,
+  UpdateStep,
   VendorPlaceDetailsDto,
   VendorPlaceDto,
   VendorPlaceViewModel,
@@ -22,13 +22,13 @@ export class PlacesService {
   public async editPlace(
     req: UpdatePlaceRequest,
   ): Promise<VendorPlaceDetailsDto> {
-    switch (req.createStep) {
-      case CreatePlaceSteps.PickPlaceType:
+    switch (req.updateStep) {
+      case UpdateStep.PickPlaceType:
         await this.placesRepositoryService.updatePlace(req.id, {
           step: req.type,
         });
         break;
-      case CreatePlaceSteps.FillPlaceInfo:
+      case UpdateStep.FillPlaceInfo:
         await this.placesRepositoryService.updatePlace(req.id, {
           name: req.placeInfo.name,
           phoneNumber: req.placeInfo.phoneNumber,
@@ -40,7 +40,7 @@ export class PlacesService {
           maxPrice: req.placeInfo.maxPrice,
         });
         break;
-      case CreatePlaceSteps.PickPlaceLocation:
+      case UpdateStep.PickPlaceLocation:
         await this.placesRepositoryService.updatePlace(req.id, {
           streetName: req.location?.streetName,
           lng: req.location?.lng,
@@ -51,7 +51,7 @@ export class PlacesService {
           postalCode: req.location?.postalCode,
         });
         break;
-      case CreatePlaceSteps.AddDescription:
+      case UpdateStep.AddDescription:
         await this.placesRepositoryService.updatePlace(req.id, {
           description: req.description,
         });
@@ -105,7 +105,23 @@ export class PlacesService {
   ): Promise<VendorPlaceDetailsDto> {
     const placeRecord = await this.placesRepositoryService.createPlace({
       userId: userId,
-      step: data.step,
+      step: data.type,
+      name: data.placeInfo.name,
+      phoneNumber: data.placeInfo.phoneNumber,
+      country: data.location?.country,
+      streetName: data.location?.streetName,
+      lng: data.location?.lng,
+      lat: data.location?.lat,
+      city: data.location?.city,
+      googleId: data.location?.googleId,
+      postalCode: data.location?.postalCode,
+      facebook: data.placeInfo.facebook,
+      instagram: data.placeInfo.instagram,
+      tiktok: data.placeInfo.tiktok,
+      website: data.placeInfo.website,
+      description: data.description,
+      minPrice: data.placeInfo.minPrice,
+      maxPrice: data.placeInfo.maxPrice,
     });
     return await this.getPlaceDetails(placeRecord.id);
   }

@@ -1,7 +1,7 @@
 import { WeddingSteps } from '../general/wedding-steps-enum.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
-export enum CreatePlaceSteps {
+export enum UpdateStep {
   PickPlaceType = 'PickPlaceType',
   FillPlaceInfo = 'FillPlaceInfo',
   AddDescription = 'AddDescription',
@@ -19,8 +19,8 @@ export class DeletePlaceRequest {
 
 export class UpdatePlaceRequest {
   id: number;
-  @ApiProperty({ enum: CreatePlaceSteps, enumName: 'CreatePlaceSteps' })
-  createStep: CreatePlaceSteps;
+  @ApiProperty({ enum: UpdateStep, enumName: 'UpdateStep' })
+  updateStep: UpdateStep;
   @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
   type?: WeddingSteps;
   placeInfo?: PlaceInfo;
@@ -29,7 +29,11 @@ export class UpdatePlaceRequest {
 }
 
 export class CreatePlaceRequest {
-  step: WeddingSteps;
+  @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
+  type?: WeddingSteps;
+  placeInfo?: PlaceInfo;
+  description?: string;
+  location?: PlaceLocation;
 }
 
 export class VendorPlaceViewModel {
