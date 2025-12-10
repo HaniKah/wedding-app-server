@@ -122,6 +122,7 @@ export class PlacesService {
       description: data.description,
       minPrice: data.placeInfo.minPrice,
       maxPrice: data.placeInfo.maxPrice,
+      currency: 'JOD',
     });
     return await this.getPlaceDetails(placeRecord.id);
   }

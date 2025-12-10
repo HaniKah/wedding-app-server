@@ -117,6 +117,7 @@ export class PlannerService {
           mainPhoto: mainPhoto,
           maxPrice: r.maxPrice,
           minPrice: r.minPrice,
+          currency: r.currency,
         };
       }),
     );

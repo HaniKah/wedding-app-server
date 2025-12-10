@@ -18,6 +18,7 @@ export class PlacesDto {
   mainPhoto: string;
   minPrice: string;
   maxPrice: string;
+  currency: string;
 }
 
 export class PlaceDetailsDto {
