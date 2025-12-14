@@ -6,6 +6,7 @@ export enum UpdateStep {
   FillPlaceInfo = 'FillPlaceInfo',
   AddDescription = 'AddDescription',
   PickPlaceLocation = 'PickPlaceLocation',
+  UploadImages = 'UploadImages',
 }
 
 export enum PlaceStatus {
@@ -18,9 +19,9 @@ export class DeletePlaceRequest {
 }
 
 export class UpdatePlaceRequest {
-  id: number;
+  id?: number;
   @ApiProperty({ enum: UpdateStep, enumName: 'UpdateStep' })
-  updateStep: UpdateStep;
+  updateStep?: UpdateStep;
   @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
   type?: WeddingSteps;
   placeInfo?: PlaceInfo;

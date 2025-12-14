@@ -106,23 +106,6 @@ export class PlacesService {
     const placeRecord = await this.placesRepositoryService.createPlace({
       userId: userId,
       step: data.type,
-      name: data.placeInfo.name,
-      phoneNumber: data.placeInfo.phoneNumber,
-      country: data.location?.country,
-      streetName: data.location?.streetName,
-      lng: data.location?.lng,
-      lat: data.location?.lat,
-      city: data.location?.city,
-      googleId: data.location?.googleId,
-      postalCode: data.location?.postalCode,
-      facebook: data.placeInfo.facebook,
-      instagram: data.placeInfo.instagram,
-      tiktok: data.placeInfo.tiktok,
-      website: data.placeInfo.website,
-      description: data.description,
-      minPrice: data.placeInfo.minPrice,
-      maxPrice: data.placeInfo.maxPrice,
-      currency: 'JOD',
     });
     return await this.getPlaceDetails(placeRecord.id);
   }
