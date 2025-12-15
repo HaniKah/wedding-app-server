@@ -14,6 +14,14 @@ export enum PlaceStatus {
   Published = 'Published',
 }
 
+export enum PriceType {
+  None = 'None',
+  PerPerson = 'PerPerson',
+  PerHour = 'PerHour',
+  PerItem = 'PerItem',
+  PerEvent = 'PerEvent',
+}
+
 export class DeletePlaceRequest {
   id: number;
 }
@@ -69,6 +77,7 @@ class PlaceInfo {
   website?: string;
   minPrice?: string;
   maxPrice?: string;
+  priceType?: PriceType;
 }
 
 class PlaceLocation {
@@ -105,4 +114,6 @@ export class VendorPlaceDetailsDto {
   mainPhoto: string;
   minPrice: string;
   maxPrice: string;
+  @ApiProperty({ enum: PriceType, enumName: 'PriceType' })
+  priceType: PriceType;
 }

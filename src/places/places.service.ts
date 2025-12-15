@@ -38,6 +38,7 @@ export class PlacesService {
           website: req.placeInfo.website,
           minPrice: req.placeInfo.minPrice,
           maxPrice: req.placeInfo.maxPrice,
+          priceType: req.placeInfo.priceType,
         });
         break;
       case UpdateStep.PickPlaceLocation:
@@ -90,6 +91,7 @@ export class PlacesService {
       step: p.step,
       minPrice: p.minPrice,
       maxPrice: p.maxPrice,
+      priceType: p.priceType,
     };
   }
 
