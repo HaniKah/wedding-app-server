@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
 
 import { Insertable, Kysely, Updateable } from 'kysely';
-import { DB, PlaceDetails } from 'kysely-codegen';
+import { DB, PlaceFilter } from 'kysely-codegen';
 import { DbService } from '../db/db.service';
 
 @Injectable()
@@ -14,7 +14,7 @@ export class PlaceDetailsRepositoryService {
   }
   public async removeAllPicked(planId: number, step: WeddingSteps) {
     await this.db
-      .updateTable('placeDetails')
+      .updateTable('placeFilter')
       .set('picked', false)
       .where('step', '=', step)
       .where('planId', '=', planId)
@@ -22,7 +22,7 @@ export class PlaceDetailsRepositoryService {
   }
   public async getPlaceDetailsOfCompletedSteps(planId: number) {
     return await this.db
-      .selectFrom('placeDetails')
+      .selectFrom('placeFilter')
       .selectAll()
       .where('planId', '=', planId)
       .where('picked', '=', true)
@@ -31,7 +31,7 @@ export class PlaceDetailsRepositoryService {
 
   public async getPlaceDetails(planId: number) {
     return await this.db
-      .selectFrom('placeDetails')
+      .selectFrom('placeFilter')
       .selectAll()
       .where('planId', '=', planId)
       .execute();
@@ -39,22 +39,22 @@ export class PlaceDetailsRepositoryService {
 
   public async getPlaceDetailsByPlaceId(placeId: number) {
     return await this.db
-      .selectFrom('placeDetails')
+      .selectFrom('placeFilter')
       .selectAll()
       .where('placeId', '=', placeId)
       .executeTakeFirst();
   }
 
-  public async createPlaceDetails(place: Insertable<PlaceDetails>) {
-    await this.db.insertInto('placeDetails').values(place).executeTakeFirst();
+  public async createPlaceDetails(place: Insertable<PlaceFilter>) {
+    await this.db.insertInto('placeFilter').values(place).executeTakeFirst();
   }
 
   public async updatePlaceDetailsById(
     id: number,
-    place: Updateable<PlaceDetails>,
+    place: Updateable<PlaceFilter>,
   ) {
     await this.db
-      .updateTable('placeDetails')
+      .updateTable('placeFilter')
       .set(place)
       .where('id', '=', id)
       .executeTakeFirst();

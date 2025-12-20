@@ -28,19 +28,19 @@ export class PlannerRepositoryService {
 
     if (!planRecord) return [];
 
-    const placeDetails = this.db
-      .selectFrom('placeDetails')
+    const placeFilter = this.db
+      .selectFrom('placeFilter')
       .select(['placeId', 'picked', 'favourite'])
-      .where('placeDetails.planId', '=', planRecord.id)
-      .as('placeDetails');
+      .where('placeFilter.planId', '=', planRecord.id)
+      .as('placeFilter');
 
     return await this.db
       .selectFrom('places')
       .selectAll()
-      .leftJoin(placeDetails, 'placeDetails.placeId', 'places.id')
+      .leftJoin(placeFilter, 'placeFilter.placeId', 'places.id')
       .select([
-        'placeDetails.picked as picked',
-        'placeDetails.favourite as favourite',
+        'placeFilter.picked as picked',
+        'placeFilter.favourite as favourite',
       ])
       .where('status', '=', 'Published')
       .where('step', '=', step)
