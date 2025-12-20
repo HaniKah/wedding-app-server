@@ -57,12 +57,12 @@ export class PlannerService {
       );
     }
     const details =
-      await this.placeDetailsRepositoryService.getPlaceDetailsByPlaceId(
+      await this.placeDetailsRepositoryService.getPlaceFilterByPlaceId(
         request.placeId,
       );
     if (details) {
       //todo optimization: here we are updating unnecessary fields
-      await this.placeDetailsRepositoryService.updatePlaceDetailsById(
+      await this.placeDetailsRepositoryService.updatePlaceFilterById(
         details.id,
         {
           step: request.step,
@@ -75,7 +75,7 @@ export class PlannerService {
         await this.plansRepositoryService.getPlanByUserIdOrThrow(userId);
 
       //todo optimization: here we are updating unnecessary fields
-      await this.placeDetailsRepositoryService.createPlaceDetails({
+      await this.placeDetailsRepositoryService.createPlaceFilter({
         planId: planRecord.id,
         placeId: request.placeId,
         step: request.step,
@@ -128,7 +128,7 @@ export class PlannerService {
   public async getPlaceById(id: number): Promise<PlaceDetailsDto> {
     const place = await this.placesRepositoryService.getPlaceByIdOrThrow(id);
     const details =
-      await this.placeDetailsRepositoryService.getPlaceDetailsByPlaceId(id);
+      await this.placeDetailsRepositoryService.getPlaceFilterByPlaceId(id);
 
     const mainPhoto: string =
       await this.photosService.getMainPhotoOrFirstByPlaceId(
@@ -162,7 +162,7 @@ export class PlannerService {
     const planRecord =
       await this.plansRepositoryService.getPlanByUserIdOrThrow(userId);
     const completedStepsRecord =
-      await this.placeDetailsRepositoryService.getPlaceDetailsOfCompletedSteps(
+      await this.placeDetailsRepositoryService.getPlaceFilterOfCompletedSteps(
         planRecord.id,
       );
 
@@ -204,7 +204,7 @@ export class PlannerService {
       await this.plansRepositoryService.getPlanByUserIdOrThrow(userId);
 
     const completedStepsRecord =
-      await this.placeDetailsRepositoryService.getPlaceDetailsOfCompletedSteps(
+      await this.placeDetailsRepositoryService.getPlaceFilterOfCompletedSteps(
         planRecord.id,
       );
 

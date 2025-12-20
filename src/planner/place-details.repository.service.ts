@@ -20,7 +20,7 @@ export class PlaceDetailsRepositoryService {
       .where('planId', '=', planId)
       .execute();
   }
-  public async getPlaceDetailsOfCompletedSteps(planId: number) {
+  public async getPlaceFilterOfCompletedSteps(planId: number) {
     return await this.db
       .selectFrom('placeFilter')
       .selectAll()
@@ -29,7 +29,7 @@ export class PlaceDetailsRepositoryService {
       .execute();
   }
 
-  public async getPlaceDetails(planId: number) {
+  public async getPlaceFilter(planId: number) {
     return await this.db
       .selectFrom('placeFilter')
       .selectAll()
@@ -37,7 +37,7 @@ export class PlaceDetailsRepositoryService {
       .execute();
   }
 
-  public async getPlaceDetailsByPlaceId(placeId: number) {
+  public async getPlaceFilterByPlaceId(placeId: number) {
     return await this.db
       .selectFrom('placeFilter')
       .selectAll()
@@ -45,11 +45,11 @@ export class PlaceDetailsRepositoryService {
       .executeTakeFirst();
   }
 
-  public async createPlaceDetails(place: Insertable<PlaceFilter>) {
+  public async createPlaceFilter(place: Insertable<PlaceFilter>) {
     await this.db.insertInto('placeFilter').values(place).executeTakeFirst();
   }
 
-  public async updatePlaceDetailsById(
+  public async updatePlaceFilterById(
     id: number,
     place: Updateable<PlaceFilter>,
   ) {
