@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { DB } from 'kysely-codegen';
+import { DB } from 'src/types/db/db';
 import { ConfigService } from '@nestjs/config';
 import { Pool } from 'pg';
 import {
