@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DbService } from '../db/db.service';
 import { Insertable, Kysely, Updateable } from 'kysely';
-import { DB, Guests } from 'kysely-codegen';
+import { DB, Guests } from 'src/types/db/db';
 
 @Injectable()
 export class GuestsRepositoryService {

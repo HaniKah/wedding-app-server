@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DbService } from '../db/db.service';
 import { Insertable } from 'kysely';
-import { Users } from 'kysely-codegen';
+import { Users } from 'src/types/db/db';
 import { Role } from '../types/auth/auth.dto';
 
 @Injectable()

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
 import { Kysely, Updateable } from 'kysely';
-import { DB, Plans } from 'kysely-codegen';
 import { DbService } from '../db/db.service';
+import { DB, Plans } from 'src/types/db/db';
 
 @Injectable()
 export class PlansRepositoryService {

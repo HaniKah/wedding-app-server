@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
 
 import { Insertable, Kysely, Updateable } from 'kysely';
-import { DB, PlaceFilter } from 'kysely-codegen';
+import { DB, PlaceFilter } from 'src/types/db/db';
 import { DbService } from '../db/db.service';
 
 @Injectable()

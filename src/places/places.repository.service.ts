@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DbService } from '../db/db.service';
 
-import { Places } from 'kysely-codegen';
+import { Places } from 'src/types/db/db';
 import { Insertable, Updateable } from 'kysely';
 
 @Injectable()

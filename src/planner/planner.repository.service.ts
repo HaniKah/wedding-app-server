@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
 
 import { Kysely } from 'kysely';
-import { DB } from 'kysely-codegen';
+import { DB } from 'src/types/db/db';
 import { DbService } from '../db/db.service';
 import { SearchFilter } from '../types/planner/places.dto';
 

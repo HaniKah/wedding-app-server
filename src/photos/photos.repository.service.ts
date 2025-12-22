@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DbService } from '../db/db.service';
 import { Insertable } from 'kysely';
-import { Photos } from 'kysely-codegen';
+import { Photos } from 'src/types/db/db';
 import { PhotoSize } from '../types/photos/photos.dto';
 
 @Injectable()
