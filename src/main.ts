@@ -38,6 +38,15 @@ async function bootstrap() {
     jsonDocumentUrl: 'swagger/json',
   });
 
+  // setInterval(() => {
+  //   const used = process.memoryUsage();
+  //   console.log(`RSS: ${(used.rss / 1024 / 1024).toFixed(2)} MB`);
+  //   console.log(`Heap Total: ${(used.heapTotal / 1024 / 1024).toFixed(2)} MB`);
+  //   console.log(`Heap Used: ${(used.heapUsed / 1024 / 1024).toFixed(2)} MB`);
+  //   console.log(`External: ${(used.external / 1024 / 1024).toFixed(2)} MB`);
+  //   console.log('----------------------------');
+  // }, 5000); // logs every 5 seconds
+
   //todo: you might not want to expose to all (0.0.0.0) check if this has to be deleted
   await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
 }
