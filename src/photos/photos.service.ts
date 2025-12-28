@@ -36,7 +36,7 @@ export class PhotosService {
       if (photos.length > 0) {
         return await this.getObject(photos[0].objectKey, photos[0].bucketName);
       } else {
-        return this.fallbackPhoto();
+        return null;
       }
     }
   }
@@ -87,10 +87,10 @@ export class PhotosService {
     }
   }
 
-  private fallbackPhoto(): string {
-    //todo : to be changed
-    return 'https://placehold.co/600x400';
-  }
+  // private fallbackPhoto(): string {
+  //   //todo : to be changed
+  //   return 'https://placehold.co/600x400';
+  // }
 
   private async storePhotoInfo(
     placeId: number,
