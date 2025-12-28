@@ -42,7 +42,7 @@ export class PlannerRepositoryService {
         'placeFilter.picked as picked',
         'placeFilter.favourite as favourite',
       ])
-      .where('status', '=', 'Published')
+      .where('isPublished', '=', true)
       .where('step', '=', step)
       .where('places.deletedAt', 'is', null)
       .$if(!!searchQuery, (eb) =>

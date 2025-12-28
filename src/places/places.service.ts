@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import {
   CreatePlaceRequest,
-  PlaceStatus,
   UpdatePlaceRequest,
   UpdateStep,
   VendorPlaceDetailsDto,
@@ -11,6 +10,8 @@ import {
 import { PlacesRepositoryService } from './places.repository.service';
 import { PhotosService } from '../photos/photos.service';
 import { PhotoSize } from '../types/photos/photos.dto';
+import { Selectable } from 'kysely';
+import { Places } from '../types/db/db';
 
 @Injectable()
 export class PlacesService {
@@ -85,7 +86,7 @@ export class PlacesService {
       tiktok: p.tiktok,
       website: p.website,
       currency: p.currency,
-      status: p.status,
+      isPublished: p.isPublished,
       description: p.description,
       mainPhoto: mainPhoto,
       step: p.step,
@@ -95,9 +96,9 @@ export class PlacesService {
     };
   }
 
-  public async updateStatus(placeId: number, status: PlaceStatus) {
+  public async updateStatus(placeId: number, isPublished: boolean) {
     await this.placesRepositoryService.updatePlace(placeId, {
-      status: status,
+      isPublished: isPublished,
     });
   }
 
@@ -123,6 +124,7 @@ export class PlacesService {
             p.id,
             PhotoSize.Small,
           );
+        const isCompleted = this.isPlaceComplete(p) && photo !== null;
 
         return {
           id: p.id,
@@ -130,35 +132,59 @@ export class PlacesService {
           streetName: p.streetName,
           thumbnail: photo,
           currency: p.currency,
-          status: p.status,
+          isPublished: p.isPublished,
+          isCompleted: isCompleted,
           minPrice: p.minPrice,
           maxPrice: p.maxPrice,
         };
       }),
     );
-    const [published, unpublished] = placesDto.reduce(
+    const [published, unpublished, uncompleted] = placesDto.reduce(
       (
-        [published, unpublished]: [VendorPlaceDto[], VendorPlaceDto[]],
+        [published, unpublished, uncompleted]: [
+          VendorPlaceDto[],
+          VendorPlaceDto[],
+          VendorPlaceDto[],
+        ],
         place,
       ) => {
-        if (place.status === PlaceStatus.Published) {
-          published.push(place);
+        if (place.isCompleted) {
+          if (place.isPublished) {
+            published.push(place);
+          } else {
+            unpublished.push(place);
+          }
         } else {
-          unpublished.push(place);
+          uncompleted.push(place);
         }
-        return [published, unpublished];
+
+        return [published, unpublished, uncompleted];
       },
-      [[], []],
+      [[], [], []],
     );
     return {
       published: {
-        title: PlaceStatus.Published,
+        title: 'Published',
         data: published,
       },
       unpublished: {
-        title: PlaceStatus.Unpublished,
+        title: 'Unpublished',
         data: unpublished,
       },
+      uncompleted: {
+        title: 'Uncompleted',
+        data: uncompleted,
+      },
     };
+  }
+
+  //todo: more accurate checks should happen here
+  private isPlaceComplete(place: Selectable<Places>): boolean {
+    return (
+      place.name != null &&
+      place.minPrice != null &&
+      place.maxPrice != null &&
+      place.phoneNumber != null
+    );
   }
 }

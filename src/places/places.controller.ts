@@ -45,7 +45,7 @@ export class PlacesController {
 
   @Post('toggleStatus')
   public async toggleStatus(@Body() body: PublishPlaceRequest): Promise<void> {
-    await this.placesService.updateStatus(body.placeId, body.status);
+    await this.placesService.updateStatus(body.placeId, body.isPublished);
   }
 
   @Get('getPlaceDetails')

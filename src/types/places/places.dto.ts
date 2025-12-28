@@ -9,10 +9,10 @@ export enum UpdateStep {
   UploadImages = 'UploadImages',
 }
 
-export enum PlaceStatus {
-  Unpublished = 'Unpublished', // dont change this value , its default entry for db
-  Published = 'Published',
-}
+// export enum PlaceStatus {
+//   Unpublished = 'Unpublished', // dont change this value , its default entry for db
+//   Published = 'Published',
+// }
 
 export enum PriceType {
   None = 'None',
@@ -47,11 +47,15 @@ export class CreatePlaceRequest {
 
 export class VendorPlaceViewModel {
   published: {
-    title: PlaceStatus;
+    title: string;
     data: VendorPlaceDto[];
   };
   unpublished: {
-    title: PlaceStatus;
+    title: string;
+    data: VendorPlaceDto[];
+  };
+  uncompleted: {
+    title: string;
     data: VendorPlaceDto[];
   };
 }
@@ -62,8 +66,8 @@ export class VendorPlaceDto {
   streetName?: string;
   currency: string;
   thumbnail: string;
-  @ApiProperty({ enum: PlaceStatus, enumName: 'PlaceStatus' })
-  status: PlaceStatus;
+  isPublished: boolean;
+  isCompleted: boolean;
   minPrice: string;
   maxPrice: string;
 }
@@ -92,8 +96,7 @@ class PlaceLocation {
 
 export class PublishPlaceRequest {
   placeId: number;
-  @ApiProperty({ enum: PlaceStatus, enumName: 'PlaceStatus' })
-  status: PlaceStatus;
+  isPublished: boolean;
 }
 
 export class VendorPlaceDetailsDto {
@@ -108,8 +111,7 @@ export class VendorPlaceDetailsDto {
   tiktok?: string;
   website?: string;
   currency: string;
-  @ApiProperty({ enum: PlaceStatus, enumName: 'PlaceStatus' })
-  status: PlaceStatus;
+  isPublished: boolean;
   description?: string;
   mainPhoto: string;
   minPrice: string;

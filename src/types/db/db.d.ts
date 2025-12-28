@@ -58,6 +58,7 @@ export interface Places {
   googleId: string | null;
   id: Generated<number>;
   instagram: string | null;
+  isPublished: Generated<boolean>;
   lat: number | null;
   lng: number | null;
   maxPrice: Numeric | null;
@@ -67,7 +68,6 @@ export interface Places {
   phoneNumber: string | null;
   postalCode: string | null;
   priceType: PriceType;
-  status: PlaceStatus;
   step: WeddingSteps;
   streetName: string | null;
   tiktok: string | null;

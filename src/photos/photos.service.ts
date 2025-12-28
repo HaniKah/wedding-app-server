@@ -12,6 +12,9 @@ export class PhotosService {
     private readonly minioService: MinioService,
     private readonly photosRepositoryService: PhotosRepositoryService,
   ) {}
+  public async hasPhotos(placeId: number): Promise<boolean> {
+    return await this.photosRepositoryService.photoExists(placeId);
+  }
   public async getMainPhotoOrFirstByPlaceId(
     placeId: number,
     photoSize: PhotoSize,

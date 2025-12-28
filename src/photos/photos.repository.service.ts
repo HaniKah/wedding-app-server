@@ -28,4 +28,12 @@ export class PhotosRepositoryService {
       .where('main', 'is', true)
       .executeTakeFirst();
   }
+  public async photoExists(placeId: number) {
+    const photos = await this.db.db
+      .selectFrom('photos')
+      .selectAll()
+      .where('placeId', '=', placeId)
+      .execute();
+    return photos.length > 0;
+  }
 }
