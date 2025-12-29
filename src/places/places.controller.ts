@@ -40,7 +40,9 @@ export class PlacesController {
   public async getPlaces(
     @User() user: CurrentUser,
   ): Promise<VendorPlaceViewModel> {
-    return await this.placesService.getPlaces(user.id);
+    const places = await this.placesService.getPlaces(user.id);
+    console.log(places);
+    return places;
   }
 
   @Post('toggleStatus')
