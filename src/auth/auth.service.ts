@@ -64,10 +64,16 @@ export class AuthService {
     const { accessToken, refreshToken } = await this.generateTokens(id);
     const hashedRefreshToken = await argon2.hash(refreshToken);
     await this.usersService.updateHashedRefreshToken(id, hashedRefreshToken);
+    const user = await this.usersService.findUserById(id);
     return {
       id: id,
       accessToken,
       refreshToken,
+      user: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+      },
     };
   }
 
