@@ -19,7 +19,10 @@ export class PlannerRepositoryService {
     step: WeddingSteps,
     searchQuery?: string,
     filter?: SearchFilter,
+    offset?: number,
   ) {
+    const LIMIT = 5;
+
     const planRecord = await this.db
       .selectFrom('plans')
       .selectAll()
@@ -54,6 +57,8 @@ export class PlannerRepositoryService {
       .$if(filter === SearchFilter.MyPick, (qbb) =>
         qbb.where('picked', '=', true),
       )
+      .limit(LIMIT)
+      .offset(LIMIT * offset)
 
       .execute();
   }
