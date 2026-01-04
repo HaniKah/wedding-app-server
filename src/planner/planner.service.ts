@@ -169,6 +169,8 @@ export class PlannerService {
       );
 
     let note: string;
+    const progress =
+      Math.floor((completedStepsRecord.length / stepsList.length) * 100) / 100;
 
     const dtoList = await Promise.all(
       stepsList.map(async (step) => {
@@ -179,7 +181,7 @@ export class PlannerService {
           note = placeDetails.name;
           isCompleted = true;
         } else {
-          note = this.generateRandomNote();
+          note = progress * 100 + '% completed';
         }
         return {
           step,
@@ -193,9 +195,7 @@ export class PlannerService {
 
     return {
       steps: dtoList,
-      progress:
-        Math.floor((completedStepsRecord.length / stepsList.length) * 100) /
-        100,
+      progress: progress,
     };
   }
 
@@ -239,10 +239,5 @@ export class PlannerService {
     return {
       list: dtoList,
     };
-  }
-
-  private generateRandomNote() {
-    // create custom notes here and randomly pick one of them
-    return ' you can do it';
   }
 }
