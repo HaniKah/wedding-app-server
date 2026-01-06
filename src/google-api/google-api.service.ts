@@ -1,14 +1,22 @@
-import { Injectable } from '@nestjs/common';
-import { PlacesClient } from '@googlemaps/places';
+import { Inject, Injectable } from '@nestjs/common';
 import { google } from '@googlemaps/places/build/protos/protos';
+import type { ConfigType } from '@nestjs/config';
+import googleApiConfig from './config/google-api.config';
+import { PlacesClient } from '@googlemaps/places';
 import IPlace = google.maps.places.v1.IPlace;
 import IGetPhotoMediaRequest = google.maps.places.v1.IGetPhotoMediaRequest;
 
 @Injectable()
 export class GoogleApiService {
-  private readonly client = new PlacesClient({
-    apiKey: process.env.GOOGLE_API_KEY || '',
-  });
+  private readonly client = new PlacesClient();
+  constructor(
+    @Inject(googleApiConfig.KEY)
+    private googleApi: ConfigType<typeof googleApiConfig>,
+  ) {
+    this.client = new PlacesClient({
+      key: this.googleApi.apiKey,
+    });
+  }
 
   async getPhotoByRef(photoRef: string): Promise<string> {
     const photoMediaName = photoRef + '/media';
@@ -74,15 +82,4 @@ export class GoogleApiService {
     const [response] = await this.client.searchText(request, callOptions);
     return response.places;
   }
-
-  // const url = `https://places.googleapis.com/v1/${photoRef}/media?key=${process.env.GOOGLE_API_KEY}&maxHeightPx=450&skipHttpRedirect=true`;
-  //
-  // const res = await fetch(url);
-  //
-  // if (!res.ok) {
-  //   throw new Error(`Failed to fetch photo: ${res.status} ${res.statusText}`);
-  // }
-  //
-  // const json = (await res.json()) as { name: string; photoUri: string };
-  // return json.photoUri || '';
 }
