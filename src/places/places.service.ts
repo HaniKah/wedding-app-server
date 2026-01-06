@@ -40,6 +40,7 @@ export class PlacesService {
           minPrice: req.placeInfo.minPrice,
           maxPrice: req.placeInfo.maxPrice,
           priceType: req.placeInfo.priceType,
+          country: req.location.country,
         });
         break;
       case UpdateStep.PickPlaceLocation:

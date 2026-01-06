@@ -106,7 +106,7 @@ class PlaceInfo {
 class PlaceLocation {
   streetName?: string;
   city?: string;
-  country?: string;
+  country?: CountryCode;
   postalCode?: string;
   lat?: number;
   lng?: number;
