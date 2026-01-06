@@ -49,7 +49,7 @@ export interface PlaceFilter {
 
 export interface Places {
   city: string | null;
-  country: string | null;
+  country: CountryCode;
   createdAt: Generated<Timestamp | null>;
   currency: string | null;
   deletedAt: Timestamp | null;

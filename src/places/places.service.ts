@@ -94,6 +94,7 @@ export class PlacesService {
       maxPrice: p.maxPrice,
       priceType: p.priceType,
       googleId: p.googleId,
+      country: p.country,
     };
   }
 

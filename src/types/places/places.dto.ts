@@ -22,6 +22,25 @@ export enum PriceType {
   PerEvent = 'PerEvent',
 }
 
+export enum CountryCode {
+  BAHRAIN = 'BHR',
+  CYPRUS = 'CYP',
+  EGYPT = 'EGY',
+  IRAN = 'IRN',
+  IRAQ = 'IRQ',
+  JORDAN = 'JOR',
+  KUWAIT = 'KWT',
+  LEBANON = 'LBN',
+  OMAN = 'OMN',
+  PALESTINE = 'PSE',
+  QATAR = 'QAT',
+  SAUDI_ARABIA = 'SAU',
+  SYRIA = 'SYR',
+  TURKEY = 'TUR',
+  UNITED_ARAB_EMIRATES = 'ARE',
+  YEMEN = 'YEM',
+}
+
 export class DeletePlaceRequest {
   id: number;
 }
@@ -119,4 +138,27 @@ export class VendorPlaceDetailsDto {
   @ApiProperty({ enum: PriceType, enumName: 'PriceType' })
   priceType: PriceType;
   googleId?: string;
+  @ApiProperty({
+    enum: CountryCode,
+    enumName: 'CountryCode',
+    'x-enumNames': [
+      'BAHRAIN',
+      'CYPRUS',
+      'EGYPT',
+      'IRAN',
+      'IRAQ',
+      'JORDAN',
+      'KUWAIT',
+      'LEBANON',
+      'OMAN',
+      'PALESTINE',
+      'QATAR',
+      'SAUDI_ARABIA',
+      'SYRIA',
+      'TURKEY',
+      'UNITED_ARAB_EMIRATES',
+      'YEMEN',
+    ],
+  })
+  country: CountryCode;
 }
