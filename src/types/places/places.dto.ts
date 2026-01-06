@@ -118,4 +118,5 @@ export class VendorPlaceDetailsDto {
   maxPrice: string;
   @ApiProperty({ enum: PriceType, enumName: 'PriceType' })
   priceType: PriceType;
+  googleId?: string;
 }

@@ -93,6 +93,7 @@ export class PlacesService {
       minPrice: p.minPrice,
       maxPrice: p.maxPrice,
       priceType: p.priceType,
+      googleId: p.googleId,
     };
   }
 
