@@ -26,14 +26,14 @@ export class PlannerController {
   @ApiQuery({ name: 'step', required: true, enum: WeddingSteps })
   @ApiQuery({ name: 'filter', required: false, enum: SearchFilter })
   @ApiQuery({ name: 'offset', required: true })
-  public getPlaces(
+  public async getPlaces(
     @User() user: CurrentUser,
     @Query('step') step: WeddingSteps,
     @Query('offset') offset: number,
     @Query('search') search?: string,
     @Query('filter') filter?: SearchFilter,
   ): Promise<PlacesViewModel> {
-    const places = this.plannerService.getPlaces(
+    const places = await this.plannerService.getPlaces(
       user.id,
       step,
       search,
