@@ -113,6 +113,7 @@ export class PhotosService {
     return await this.minioService.minio.presignedGetObject(
       bucketName,
       objectKey,
+      3600,
     );
   }
 
