@@ -33,7 +33,15 @@ export class PlannerController {
     @Query('search') search?: string,
     @Query('filter') filter?: SearchFilter,
   ): Promise<PlacesViewModel> {
-    return this.plannerService.getPlaces(user.id, step, search, filter, offset);
+    const places = this.plannerService.getPlaces(
+      user.id,
+      step,
+      search,
+      filter,
+      offset,
+    );
+    console.log(places);
+    return places;
   }
 
   @Get('getPlaceById')
