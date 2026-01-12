@@ -10,6 +10,7 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
       countryCode: CountryCode.BH,
       countryName: 'Bahrain',
       states: [],
+      currency: 'BHD',
     },
   ],
   [
@@ -18,6 +19,7 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
       countryCode: CountryCode.EG,
       countryName: 'Egypt',
       states: [],
+      currency: 'EGP',
     },
   ],
   [
@@ -26,6 +28,7 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
       countryCode: CountryCode.IR,
       countryName: 'Iran',
       states: [],
+      currency: 'IRR',
     },
   ],
   [
@@ -34,6 +37,7 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
       countryCode: CountryCode.IQ,
       countryName: 'Iraq',
       states: [],
+      currency: 'IQD',
     },
   ],
   [
@@ -55,6 +59,7 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
         "ma'an",
         'aqaba',
       ],
+      currency: 'JOD',
     },
   ],
   [
@@ -63,6 +68,7 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
       countryCode: CountryCode.KW,
       countryName: 'Kuwait',
       states: [],
+      currency: 'KWD',
     },
   ],
   [
@@ -71,6 +77,7 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
       countryCode: CountryCode.LB,
       countryName: 'Lebanon',
       states: [],
+      currency: 'LBP',
     },
   ],
   [
@@ -79,6 +86,7 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
       countryCode: CountryCode.OM,
       countryName: 'Oman',
       states: [],
+      currency: 'OMR',
     },
   ],
   [
@@ -87,6 +95,7 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
       countryCode: CountryCode.PS,
       countryName: 'Palestine',
       states: [],
+      currency: 'ILS',
     },
   ],
   [
@@ -104,6 +113,7 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
         'al shamal',
         'al shahaniya',
       ],
+      currency: 'QAR',
     },
   ],
   [
@@ -126,6 +136,7 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
         'al jawf',
         'qassim',
       ],
+      currency: 'SAR',
     },
   ],
   [
@@ -134,6 +145,7 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
       countryCode: CountryCode.SY,
       countryName: 'Syria',
       states: [],
+      currency: 'SYP',
     },
   ],
   [
@@ -142,6 +154,7 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
       countryCode: CountryCode.TR,
       countryName: 'Turkey',
       states: [],
+      currency: 'TRY',
     },
   ],
   [
@@ -158,6 +171,7 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
         'ras al khaimah',
         'fujairah',
       ],
+      currency: 'AED',
     },
   ],
   [
@@ -166,6 +180,7 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
       countryCode: CountryCode.YE,
       countryName: 'Yemen',
       states: [],
+      currency: 'YER',
     },
   ],
   [
@@ -174,6 +189,7 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
       countryCode: CountryCode.SD,
       countryName: 'Sudan',
       states: [],
+      currency: 'SDG',
     },
   ],
 ]);

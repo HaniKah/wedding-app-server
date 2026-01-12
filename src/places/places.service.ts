@@ -12,7 +12,6 @@ import { PhotosService } from '../photos/photos.service';
 import { PhotoSize } from '../types/photos/photos.dto';
 import { Selectable } from 'kysely';
 import { Places } from '../types/db/db';
-import { COUNTRIES } from '../constants/countries';
 
 @Injectable()
 export class PlacesService {
@@ -88,7 +87,6 @@ export class PlacesService {
       instagram: p.instagram,
       tiktok: p.tiktok,
       website: p.website,
-      currency: p.currency,
       isPublished: p.isPublished,
       description: p.description,
       mainPhoto: mainPhoto,
@@ -97,7 +95,7 @@ export class PlacesService {
       maxPrice: p.maxPrice,
       priceType: p.priceType,
       googleId: p.googleId,
-      country: COUNTRIES.get(p.country),
+      countryCode: p.country,
     };
   }
 

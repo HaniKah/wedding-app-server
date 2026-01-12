@@ -1,6 +1,6 @@
 import { WeddingSteps } from '../general/wedding-steps-enum.dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { CountryCode, CountryInfo } from '../general/countries.dto';
+import { CountryCode } from '../general/countries.dto';
 
 export enum UpdateStep {
   PickPlaceType = 'PickPlaceType',
@@ -33,9 +33,9 @@ export class UpdatePlaceRequest {
   updateStep?: UpdateStep;
   @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
   type?: WeddingSteps;
-  placeInfo?: PlaceInfo;
+  placeInfo?: UpdatePlaceInfo;
   description?: string;
-  location?: PlaceLocation;
+  location?: UpdateLocationInfo;
 }
 
 export class CreatePlaceRequest {
@@ -70,7 +70,7 @@ export class VendorPlaceDto {
   maxPrice: string;
 }
 
-class PlaceInfo {
+class UpdatePlaceInfo {
   name?: string;
   phoneNumber?: string;
   facebook?: string;
@@ -82,7 +82,7 @@ class PlaceInfo {
   priceType?: PriceType;
 }
 
-class PlaceLocation {
+class UpdateLocationInfo {
   streetName?: string;
   city?: string;
   countryCode?: CountryCode;
@@ -108,7 +108,6 @@ export class VendorPlaceDetailsDto {
   instagram?: string;
   tiktok?: string;
   website?: string;
-  currency: string;
   isPublished: boolean;
   description?: string;
   mainPhoto: string;
@@ -117,5 +116,6 @@ export class VendorPlaceDetailsDto {
   @ApiProperty({ enum: PriceType, enumName: 'PriceType' })
   priceType: PriceType;
   googleId?: string;
-  country: CountryInfo;
+  @ApiProperty({ enum: CountryCode, enumName: 'CountryCode' })
+  countryCode: CountryCode;
 }

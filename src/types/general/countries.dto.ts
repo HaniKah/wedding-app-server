@@ -42,8 +42,9 @@ export class CountryInfo {
   states: string[];
   @ApiProperty({ enum: CountryCode, enumName: 'CountryCode' })
   countryCode: CountryCode;
+  currency: string;
 }
 
-export class CountryDtoViewModel {
+export class CountryInfoViewModel {
   result: CountryInfo[];
 }
