@@ -2,7 +2,7 @@
   "overrides": {
     "columns": {
       "users.role": "Role",
-      "place_details.step": "WeddingSteps",
+      "place_filter.step": "WeddingSteps",
       "places.step": "WeddingSteps",
       "places.status": "PlaceStatus",
       "places.price_type": "PriceType",

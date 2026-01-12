@@ -44,7 +44,7 @@ export interface PlaceFilter {
   picked: Generated<boolean | null>;
   placeId: number | null;
   planId: number;
-  step: string;
+  step: WeddingSteps;
 }
 
 export interface Places {
