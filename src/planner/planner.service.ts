@@ -18,6 +18,7 @@ import { PlannerRepositoryService } from './planner.repository.service';
 import { stepsInfo } from '../constants/steps-info';
 import { PhotosService } from '../photos/photos.service';
 import { PhotoSize } from '../types/photos/photos.dto';
+import { COUNTRIES } from '../constants/countries';
 
 @Injectable()
 export class PlannerService {
@@ -119,7 +120,7 @@ export class PlannerService {
           mainPhoto: mainPhoto,
           maxPrice: r.maxPrice,
           minPrice: r.minPrice,
-          currency: r.currency,
+          currency: COUNTRIES.get(r.country)?.currency,
         };
       }),
     );
@@ -147,7 +148,8 @@ export class PlannerService {
       facebook: place?.facebook,
       instagram: place?.instagram,
       tiktok: place?.tiktok,
-      currency: place.currency,
+      currency: COUNTRIES.get(place.country)?.currency,
+      countryName: COUNTRIES.get(place.country)?.countryName,
       step: place.step as WeddingSteps,
       picked: details?.picked || false,
       favourite: details?.favourite || false,

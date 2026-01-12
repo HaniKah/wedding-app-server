@@ -30,7 +30,6 @@ export class PlaceDetailsDto {
   tiktok?: string;
   instagram?: string;
   phoneNumber: string;
-  currency: string;
   @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
   step: WeddingSteps;
   picked: boolean;
@@ -39,6 +38,8 @@ export class PlaceDetailsDto {
   mainPhoto: string;
   maxPrice: string;
   minPrice: string;
+  countryName: string;
+  currency: string;
 }
 export class PlacesViewModel {
   places: PlacesDto[];
