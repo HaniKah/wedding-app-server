@@ -97,6 +97,8 @@ export class PlacesService {
       priceType: p.priceType,
       googleId: p.googleId,
       countryCode: p.country,
+      countryName: COUNTRIES.get(p.country)?.countryName,
+      currency: COUNTRIES.get(p.country)?.currency,
     };
   }
 

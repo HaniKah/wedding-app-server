@@ -118,4 +118,6 @@ export class VendorPlaceDetailsDto {
   googleId?: string;
   @ApiProperty({ enum: CountryCode, enumName: 'CountryCode' })
   countryCode: CountryCode;
+  currency: string;
+  countryName: string;
 }
