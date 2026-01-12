@@ -1,5 +1,6 @@
 import { WeddingSteps } from '../general/wedding-steps-enum.dto';
 import { ApiProperty } from '@nestjs/swagger';
+import { CountryCode, CountryInfo } from '../general/countries.dto';
 
 export enum UpdateStep {
   PickPlaceType = 'PickPlaceType',
@@ -22,25 +23,6 @@ export enum PriceType {
   PerEvent = 'PerEvent',
 }
 
-export enum CountryCode {
-  BAHRAIN = 'BHR',
-  CYPRUS = 'CYP',
-  EGYPT = 'EGY',
-  IRAN = 'IRN',
-  IRAQ = 'IRQ',
-  JORDAN = 'JOR',
-  KUWAIT = 'KWT',
-  LEBANON = 'LBN',
-  OMAN = 'OMN',
-  PALESTINE = 'PSE',
-  QATAR = 'QAT',
-  SAUDI_ARABIA = 'SAU',
-  SYRIA = 'SYR',
-  TURKEY = 'TUR',
-  UNITED_ARAB_EMIRATES = 'ARE',
-  YEMEN = 'YEM',
-}
-
 export class DeletePlaceRequest {
   id: number;
 }
@@ -59,9 +41,6 @@ export class UpdatePlaceRequest {
 export class CreatePlaceRequest {
   @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
   type?: WeddingSteps;
-  placeInfo?: PlaceInfo;
-  description?: string;
-  location?: PlaceLocation;
 }
 
 export class VendorPlaceViewModel {
@@ -106,7 +85,7 @@ class PlaceInfo {
 class PlaceLocation {
   streetName?: string;
   city?: string;
-  country?: CountryCode;
+  countryCode?: CountryCode;
   postalCode?: string;
   lat?: number;
   lng?: number;
@@ -138,27 +117,5 @@ export class VendorPlaceDetailsDto {
   @ApiProperty({ enum: PriceType, enumName: 'PriceType' })
   priceType: PriceType;
   googleId?: string;
-  @ApiProperty({
-    enum: CountryCode,
-    enumName: 'CountryCode',
-    'x-enumNames': [
-      'BAHRAIN',
-      'CYPRUS',
-      'EGYPT',
-      'IRAN',
-      'IRAQ',
-      'JORDAN',
-      'KUWAIT',
-      'LEBANON',
-      'OMAN',
-      'PALESTINE',
-      'QATAR',
-      'SAUDI_ARABIA',
-      'SYRIA',
-      'TURKEY',
-      'UNITED_ARAB_EMIRATES',
-      'YEMEN',
-    ],
-  })
-  country: CountryCode;
+  country: CountryInfo;
 }

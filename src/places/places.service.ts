@@ -12,6 +12,7 @@ import { PhotosService } from '../photos/photos.service';
 import { PhotoSize } from '../types/photos/photos.dto';
 import { Selectable } from 'kysely';
 import { Places } from '../types/db/db';
+import { COUNTRIES } from '../constants/countries';
 
 @Injectable()
 export class PlacesService {
@@ -29,7 +30,7 @@ export class PlacesService {
           step: req.type,
         });
         break;
-      case UpdateStep.FillPlaceInfo:
+      case UpdateStep.FillPlaceInfo: {
         await this.placesRepositoryService.updatePlace(req.id, {
           name: req.placeInfo.name,
           phoneNumber: req.placeInfo.phoneNumber,
@@ -40,9 +41,10 @@ export class PlacesService {
           minPrice: req.placeInfo.minPrice,
           maxPrice: req.placeInfo.maxPrice,
           priceType: req.placeInfo.priceType,
-          country: req.location.country,
+          country: req.location.countryCode, //todo this is duplicate with the step PickPlaceLocation , remove it from here when you implement the pick place location step
         });
         break;
+      }
       case UpdateStep.PickPlaceLocation:
         await this.placesRepositoryService.updatePlace(req.id, {
           streetName: req.location?.streetName,
@@ -50,7 +52,7 @@ export class PlacesService {
           lat: req.location?.lat,
           city: req.location?.city,
           googleId: req.location?.googleId,
-          country: req.location?.country,
+          country: req.location?.countryCode,
           postalCode: req.location?.postalCode,
         });
         break;
@@ -95,7 +97,7 @@ export class PlacesService {
       maxPrice: p.maxPrice,
       priceType: p.priceType,
       googleId: p.googleId,
-      country: p.country,
+      country: COUNTRIES.get(p.country),
     };
   }
 
