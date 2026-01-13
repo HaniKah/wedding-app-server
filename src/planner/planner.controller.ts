@@ -16,6 +16,7 @@ import type { Request } from 'express';
 import { ApiQuery } from '@nestjs/swagger';
 import { User } from '../decorators/user.decorator';
 import { CurrentUser } from '../types/auth/auth.dto';
+import { CountryCode } from '../types/general/countries.dto';
 
 @Controller('planner')
 export class PlannerController {
@@ -26,16 +27,19 @@ export class PlannerController {
   @ApiQuery({ name: 'step', required: true, enum: WeddingSteps })
   @ApiQuery({ name: 'filter', required: false, enum: SearchFilter })
   @ApiQuery({ name: 'offset', required: true })
+  @ApiQuery({ name: 'countryCode', required: true, enum: CountryCode })
   public async getPlaces(
     @User() user: CurrentUser,
     @Query('step') step: WeddingSteps,
     @Query('offset') offset: number,
+    @Query('countryCode') countryCode: CountryCode,
     @Query('search') search?: string,
     @Query('filter') filter?: SearchFilter,
   ): Promise<PlacesViewModel> {
     return await this.plannerService.getPlaces(
       user.id,
       step,
+      countryCode,
       search,
       filter,
       offset,

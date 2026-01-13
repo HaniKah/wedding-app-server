@@ -19,6 +19,7 @@ import { stepsInfo } from '../constants/steps-info';
 import { PhotosService } from '../photos/photos.service';
 import { PhotoSize } from '../types/photos/photos.dto';
 import { COUNTRIES } from '../constants/countries';
+import { CountryCode } from '../types/general/countries.dto';
 
 @Injectable()
 export class PlannerService {
@@ -89,6 +90,7 @@ export class PlannerService {
   public async getPlaces(
     userId: number,
     step: WeddingSteps,
+    countryCode: CountryCode,
     searchQuery?: string,
     filter?: SearchFilter,
     offset?: number,
@@ -97,6 +99,7 @@ export class PlannerService {
       await this.placesRepositoryService.getAllPlaces(
         userId,
         step,
+        countryCode,
         searchQuery,
         filter,
         offset,

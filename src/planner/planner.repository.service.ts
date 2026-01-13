@@ -5,6 +5,7 @@ import { Kysely } from 'kysely';
 import { DB } from 'src/types/db/db';
 import { DbService } from '../db/db.service';
 import { SearchFilter } from '../types/planner/places.dto';
+import { CountryCode } from '../types/general/countries.dto';
 
 @Injectable()
 export class PlannerRepositoryService {
@@ -17,6 +18,7 @@ export class PlannerRepositoryService {
   public async getAllPlaces(
     userId: number,
     step: WeddingSteps,
+    countryCode: CountryCode,
     searchQuery?: string,
     filter?: SearchFilter,
     offset?: number,
@@ -48,6 +50,7 @@ export class PlannerRepositoryService {
       .where('isPublished', '=', true)
       .where('step', '=', step)
       .where('places.deletedAt', 'is', null)
+      .where('places.country', '=', countryCode)
       .$if(!!searchQuery, (eb) =>
         eb.where((eb) => eb.or([eb('name', 'ilike', `%${searchQuery}%`)])),
       )
