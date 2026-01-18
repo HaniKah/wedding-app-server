@@ -12,6 +12,7 @@ import { PlacesModule } from './places/places.module';
 import { MinioModule } from './minio/minio.module';
 import { PhotosModule } from './photos/photos.module';
 import { PackagesModule } from './packages/packages.module';
+import { PromotionsModule } from './promotions/promotions.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { PackagesModule } from './packages/packages.module';
     MinioModule,
     PhotosModule,
     PackagesModule,
+    PromotionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
