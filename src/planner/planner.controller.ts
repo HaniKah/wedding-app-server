@@ -40,9 +40,9 @@ export class PlannerController {
       user.id,
       step,
       countryCode,
+      offset,
       search,
       filter,
-      offset,
     );
   }
 

@@ -100,9 +100,9 @@ export class PlannerService {
         userId,
         step,
         countryCode,
+        offset,
         searchQuery,
         filter,
-        offset,
       );
 
     const list = await Promise.all(
