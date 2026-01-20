@@ -91,9 +91,9 @@ export class PlannerService {
     userId: number,
     step: WeddingSteps,
     countryCode: CountryCode,
+    offset: number,
     searchQuery?: string,
     filter?: SearchFilter,
-    offset?: number,
   ): Promise<PlacesViewModel> {
     const placesAndPlaceDetailsRecord =
       await this.placesRepositoryService.getAllPlaces(

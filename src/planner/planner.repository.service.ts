@@ -19,9 +19,9 @@ export class PlannerRepositoryService {
     userId: number,
     step: WeddingSteps,
     countryCode: CountryCode,
+    offset: number,
     searchQuery?: string,
     filter?: SearchFilter,
-    offset?: number,
   ) {
     const LIMIT = 5;
 
@@ -62,7 +62,6 @@ export class PlannerRepositoryService {
       )
       .limit(LIMIT)
       .offset(LIMIT * offset)
-
       .execute();
   }
 
