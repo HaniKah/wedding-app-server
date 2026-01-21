@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Query,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
 import { ConfigService } from '@nestjs/config';
@@ -41,6 +49,7 @@ export class AuthController {
   async googleCallback(
     @Req() req: Request,
     @Res() res: Response,
+    @Query('state') state: string,
   ): Promise<void> {
     const exchangeToken = await this.authService.generateExchangeToken(
       req.user.id,
@@ -48,7 +57,9 @@ export class AuthController {
     const redirectUrl =
       this.configService.get<string>('APP_SCHEME') +
       '?exchangeToken=' +
-      exchangeToken;
+      exchangeToken +
+      '&state=' +
+      state;
     return res.redirect(redirectUrl);
   }
 
