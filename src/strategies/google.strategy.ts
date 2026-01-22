@@ -28,6 +28,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
   authenticate(req: Request, options: AuthenticateOptions) {
     options.state = req.query.state as string;
     options.prompt = 'select_account';
+    options.successRedirect = 'app-scheme-dev://';
     super.authenticate(req, options);
   }
 
