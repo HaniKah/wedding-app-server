@@ -27,6 +27,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
   //this here to interrupt the normal flow of passport google and manually use the authenticate function because we had to add state manually which was not working in the constructor here is the fix : https://stackoverflow.com/questions/60857548/how-to-pass-state-during-nest-js-authentication-flow
   authenticate(req: Request, options: AuthenticateOptions) {
     options.state = req.query.state as string;
+    options.prompt = 'select_account';
     super.authenticate(req, options);
   }
 
