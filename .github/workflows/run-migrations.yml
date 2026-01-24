@@ -1,4 +1,4 @@
-name: run-migrations.yaml
+name: Run migrations
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - staging
 
 jobs:
-  migrate-and-deploy:
+  migrate-database:
     runs-on: ubuntu-latest
 
     steps:
