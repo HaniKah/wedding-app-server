@@ -4,10 +4,12 @@ on:
   push:
     branches:
       - staging
+      - -live
 
 jobs:
   migrate-database:
     runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'live' && 'production' || 'staging' }}
 
     steps:
       - uses: actions/checkout@v4
@@ -20,10 +22,5 @@ jobs:
 
       - name: Run database migrations
         env:
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_PORT: ${{ secrets.DB_PORT }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-          DB_SSL: "true"
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: npm run migrate
