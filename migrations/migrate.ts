@@ -15,7 +15,7 @@ async function migrate() {
   const db = new Kysely<DB>({
     dialect: new PostgresDialect({
       pool: new Pool({
-        connectionString: process.env.DATABASE_URL,
+        connectionString: process.env.DATABASE_PUBLIC_URL,
       }),
     }),
     plugins: [new CamelCasePlugin()],

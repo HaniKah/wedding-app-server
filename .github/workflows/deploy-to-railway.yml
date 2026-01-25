@@ -11,13 +11,24 @@ jobs:
     container: ghcr.io/railwayapp/cli:latest
     env:
       RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-      DATABASE_URL: ${{ secrets.DB_PUBLIC_URL }}
+      DATABASE_URL: ${{ secrets.DATABASE_PUBLIC_URL }}
 
     steps:
-      - uses: actions/checkout@v5
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
       - name: Run Database migrations
-        run: npm run migrate
+        run: |
+          echo "running migrations"
+          npm run migrate
 
       - name: Deploy to Railway
-        run: railway up
+        run: |
+          echo "deploying to railway"
+          railway up
 
