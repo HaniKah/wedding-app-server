@@ -8,7 +8,6 @@ jobs:
   deploy:
     environment: motivated-patience / staging
     runs-on: ubuntu-latest
-    container: ghcr.io/railwayapp/cli:latest
     env:
       RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
       DATABASE_URL: ${{ secrets.DATABASE_PUBLIC_URL }}
@@ -21,6 +20,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+
+      - name: install railway cli
+        run: npm install -g @railway/cli
 
       - name: Install dependencies
         run: |
