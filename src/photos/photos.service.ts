@@ -54,6 +54,7 @@ export class PhotosService {
         const uri: string = await this.getObject(p.objectKey, p.bucketName);
         return {
           uri: uri,
+          ratio: p.ratio,
         };
       }),
     );
@@ -63,7 +64,7 @@ export class PhotosService {
     placeId: number,
     files: Array<Express.Multer.File>,
     bucketName: BucketName,
-    photoSize: PhotoSize[],
+    photoSizes: PhotoSize[],
   ) {
     //check bucket exists
     const bucketExists: boolean = await this.minioService.minio.bucketExists(
@@ -74,35 +75,44 @@ export class PhotosService {
       await this.minioService.minio.makeBucket(BucketName.Places, 'jordan');
     }
 
-    for (const size of photoSize) {
+    for (const photoSize of photoSizes) {
       for (const file of files) {
+        const { data, info } = await this.resizeFile(photoSize, file);
+        const ratio = Number((info.height / info.width).toFixed(2));
+
         const objectName: string = await this.uploadObject(
           placeId,
-          file,
+          file.originalname,
           bucketName,
-          size,
+          photoSize,
+          info.size,
+          data,
         );
-        await this.storePhotoInfo(placeId, objectName, bucketName, size);
+
+        await this.storePhotoInfo(
+          placeId,
+          objectName,
+          bucketName,
+          photoSize,
+          ratio,
+        );
       }
     }
   }
-
-  // private fallbackPhoto(): string {
-  //   //todo : to be changed
-  //   return 'https://placehold.co/600x400';
-  // }
 
   private async storePhotoInfo(
     placeId: number,
     objectName: string,
     bucketName: BucketName,
     photoSize: PhotoSize,
+    ratio: number,
   ) {
     await this.photosRepositoryService.createPhoto({
       placeId: placeId,
       objectKey: objectName,
       size: photoSize,
       bucketName: bucketName,
+      ratio: ratio,
     });
   }
 
@@ -119,26 +129,27 @@ export class PhotosService {
 
   private async uploadObject(
     placeId: number,
-    file: Express.Multer.File,
+    fileName: string,
     bucketName: string,
     photoSize: PhotoSize,
+    size: number,
+    data: Buffer,
   ) {
-    const fileExtension: string = file.originalname.split('.').pop();
+    const fileExtension: string = fileName.split('.').pop();
     const uuid = v4();
     const objectName = `${placeId}/${photoSize}/${uuid}.${fileExtension}`;
-    const { data, info } = await this.resizeFile(photoSize, file);
 
     const metadata = {
-      fileName: file.filename,
+      fileName: fileName,
       photoSize: photoSize,
-      size: info.size,
+      size: size,
     };
 
     await this.minioService.minio.putObject(
       bucketName,
       objectName,
       data,
-      info.size,
+      size,
       metadata,
     );
     return objectName;
@@ -149,9 +160,6 @@ export class PhotosService {
     switch (fileSize) {
       case PhotoSize.Large:
         width = 1200;
-        break;
-      case PhotoSize.Medium:
-        width = 600;
         break;
       case PhotoSize.Small:
         width = 300;

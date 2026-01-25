@@ -33,6 +33,7 @@ export interface Photos {
   main: Generated<boolean | null>;
   objectKey: string;
   placeId: number;
+  ratio: number | null;
   size: PhotoSize;
 }
 
@@ -51,7 +52,6 @@ export interface Places {
   city: string | null;
   country: CountryCode;
   createdAt: Generated<Timestamp | null>;
-  currency: string | null;
   deletedAt: Timestamp | null;
   description: string | null;
   facebook: string | null;
