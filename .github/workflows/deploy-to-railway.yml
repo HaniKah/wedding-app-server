@@ -1,0 +1,23 @@
+name: Deploy to Railway
+
+on:
+  push:
+    branches: [ staging ]
+
+jobs:
+  deploy:
+    environment: motivated-patience / staging
+    runs-on: ubuntu-latest
+    container: ghcr.io/railwayapp/cli:latest
+    env:
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      DATABASE_URL: ${{ secrets.DB_PUBLIC_URL }}
+
+    steps:
+      - uses: actions/checkout@v5
+      - name: Run Database migrations
+        run: npm run migrate
+
+      - name: Deploy to Railway
+        run: railway up
+
