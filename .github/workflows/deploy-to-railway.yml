@@ -22,6 +22,11 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Install dependencies
+        run: |
+          echo "installing dependencies"
+          npm ci
+
       - name: Run Database migrations
         run: |
           echo "running migrations"
