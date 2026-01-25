@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-      DATABASE_URL: ${{ secrets.DATABASE_PUBLIC_URL }}
+      DATABASE_PUBLIC_URL: ${{ secrets.DATABASE_PUBLIC_URL }}
 
     steps:
       - name: Checkout code
