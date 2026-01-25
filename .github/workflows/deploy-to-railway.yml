@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      RAILWAY_SERVICE_ID: ${{ secrets.RAILWAY_SERVICE_ID }}
       DATABASE_PUBLIC_URL: ${{ secrets.DATABASE_PUBLIC_URL }}
 
     steps:
@@ -31,8 +32,6 @@ jobs:
           echo "installing dependencies ..."
           npm ci
 
-      - run: echo DATABASE_URL=$DATABASE_URL
-
       - name: Run Database migrations
         run: |
           echo "running migrations ..."
@@ -41,5 +40,5 @@ jobs:
       - name: Deploy to Railway
         run: |
           echo "deploying to railway"
-          railway up
+          railway up --service=${{ env.RAILWAY_SERVICE_ID }}
 
