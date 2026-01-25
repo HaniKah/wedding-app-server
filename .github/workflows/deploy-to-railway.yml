@@ -2,11 +2,13 @@ name: Deploy to Railway
 
 on:
   push:
-    branches: [ staging ]
+    branches:
+      - live
+      - staging
 
 jobs:
   deploy:
-    environment: motivated-patience / staging
+    environment: ${{ github.ref_name == 'live' && 'motivated-patience / production' || 'motivated-patience / staging'}}
     runs-on: ubuntu-latest
     env:
       RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
