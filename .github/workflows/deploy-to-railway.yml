@@ -22,16 +22,20 @@ jobs:
           node-version: '22'
 
       - name: install railway cli
-        run: npm install -g @railway/cli
+        run: |
+          echo "installing railway cli ..."
+          npm install -g @railway/cli
 
       - name: Install dependencies
         run: |
-          echo "installing dependencies"
+          echo "installing dependencies ..."
           npm ci
+
+      - run: echo DATABASE_URL=$DATABASE_URL
 
       - name: Run Database migrations
         run: |
-          echo "running migrations"
+          echo "running migrations ..."
           npm run migrate
 
       - name: Deploy to Railway
