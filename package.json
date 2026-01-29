@@ -19,7 +19,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "codegen": "kysely-codegen --out-file ./src/types/db/db.d.ts",
-    "migrate": "ts-node migrations/migrate.ts"
+    "migrate": "ts-node migrations/migrate.ts",
+    "ngrok": "ngrok http 3000 --url=exacting-uncrossable-delena.ngrok-free.dev"
   },
   "dependencies": {
     "@googlemaps/places": "^2.1.0",
