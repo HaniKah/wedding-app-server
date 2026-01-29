@@ -84,9 +84,16 @@ export interface Plans {
 
 export interface Promotions {
   createdAt: Timestamp;
+  entitlement: string | null;
   expiredAt: Timestamp;
   id: Generated<number>;
+  label: string | null;
+  managementUrl: string | null;
+  percentage: number | null;
   placeId: number;
+  productId: string | null;
+  purchaseId: string | null;
+  transactionId: string | null;
   type: string;
 }
 

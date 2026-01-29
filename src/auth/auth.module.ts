@@ -14,6 +14,8 @@ import exchangeJwtConfig from './config/exchange-jwt.config';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 import { PlansRepositoryService } from '../planner/plans.repository.service';
+import webhookJwtConfig from './config/webhook-jwt.config';
+import { WebhookJwtStrategy } from '../strategies/webhook-jwt.strategy';
 
 @Module({
   providers: [
@@ -23,6 +25,7 @@ import { PlansRepositoryService } from '../planner/plans.repository.service';
     PlansRepositoryService,
     JwtStrategy,
     RefreshJwtStrategy,
+    WebhookJwtStrategy,
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard, //@UseGuards(JwtAuthGuard) applied on all API endppints
@@ -39,6 +42,7 @@ import { PlansRepositoryService } from '../planner/plans.repository.service';
     ConfigModule.forFeature(refreshJwtConfig),
     ConfigModule.forFeature(googleOauthConfig),
     ConfigModule.forFeature(exchangeJwtConfig),
+    ConfigModule.forFeature(webhookJwtConfig),
   ],
 })
 export class AuthModule {}

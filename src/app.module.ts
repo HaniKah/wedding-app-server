@@ -13,6 +13,7 @@ import { MinioModule } from './minio/minio.module';
 import { PhotosModule } from './photos/photos.module';
 import { PackagesModule } from './packages/packages.module';
 import { PromotionsModule } from './promotions/promotions.module';
+import { WebhooksModule } from './webhooks/webhooks.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { PromotionsModule } from './promotions/promotions.module';
     PhotosModule,
     PackagesModule,
     PromotionsModule,
+    WebhooksModule,
   ],
   controllers: [AppController],
   providers: [AppService],
