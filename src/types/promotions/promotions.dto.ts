@@ -1,13 +1,18 @@
 export class CreatePromotionRequest {
+  place: PlaceRequest;
+  promotion: PromoteRequest;
+}
+export class PlaceRequest {
   placeId: number;
-  packageId: string;
+  promotionBeginsAt: Date;
+  promotionEndsAt: Date;
+  saleLabel: string;
+  salePercentage: string;
+}
+export class PromoteRequest {
+  placeId: number;
+  price: number;
+  priceInPurchaseCurrency: number;
   productId: string;
-  transactionId: string;
-  purchaseId: string;
-  createdAt: Date;
-  expiredAt: Date;
-  promotionType: string; // PromotionType type
-  saleLabel: string; //SaleLabel type
-  percentage: number;
-  managementUrl: string;
+  purchasedAt: Date;
 }

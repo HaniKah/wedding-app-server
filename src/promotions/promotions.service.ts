@@ -1,23 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePromotionRequest } from '../types/promotions/promotions.dto';
 import { PromotionRepositoryService } from './promotion.repository.service';
+import { PlacesRepositoryService } from '../places/places.repository.service';
 
 @Injectable()
 export class PromotionsService {
-  constructor(private promotionRepositoryService: PromotionRepositoryService) {}
-  public async createPromotion(data: CreatePromotionRequest) {
+  constructor(
+    private readonly promotionRepositoryService: PromotionRepositoryService,
+    private readonly placeRepositoryService: PlacesRepositoryService,
+  ) {}
+  public async createPromotion({ place, promotion }: CreatePromotionRequest) {
     await this.promotionRepositoryService.createPromotion({
-      placeId: data.placeId,
-      createdAt: data.createdAt,
-      expiredAt: data.expiredAt,
-      type: data.promotionType,
-      // entitlement: data.entitelements,
-      label: data.saleLabel,
-      managementUrl: data.managementUrl,
-      percentage: data.percentage,
-      productId: data.productId,
-      purchaseId: data.purchaseId,
-      transactionId: data.transactionId,
+      placeId: promotion.placeId,
+      price: promotion.price,
+      priceInPurchasedCurrency: promotion.priceInPurchaseCurrency,
+      productId: promotion.productId,
+      purchasedAt: promotion.purchasedAt,
+    });
+    await this.placeRepositoryService.updatePlace(place.placeId, {
+      promotionBeginsAt: place.promotionBeginsAt,
+      promotionEndsAt: place.promotionEndsAt,
+      saleLabel: place.saleLabel,
+      salePercentage: place.salePercentage,
     });
   }
 }

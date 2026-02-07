@@ -8,5 +8,6 @@ import { PhotosModule } from '../photos/photos.module';
   controllers: [PlacesController],
   providers: [PlacesService, PlacesRepositoryService],
   imports: [PhotosModule],
+  exports: [PlacesService, PlacesRepositoryService],
 })
 export class PlacesModule {}

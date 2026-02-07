@@ -68,6 +68,10 @@ export interface Places {
   phoneNumber: string | null;
   postalCode: string | null;
   priceType: PriceType;
+  promotionBeginsAt: Timestamp | null;
+  promotionEndsAt: Timestamp | null;
+  saleLabel: string | null;
+  salePercentage: Numeric | null;
   step: WeddingSteps;
   streetName: string | null;
   tiktok: string | null;
@@ -83,18 +87,12 @@ export interface Plans {
 }
 
 export interface Promotions {
-  createdAt: Timestamp;
-  entitlement: string | null;
-  expiredAt: Timestamp;
   id: Generated<number>;
-  label: string | null;
-  managementUrl: string | null;
-  percentage: number | null;
   placeId: number;
+  price: Numeric | null;
+  priceInPurchasedCurrency: Numeric | null;
   productId: string | null;
-  purchaseId: string | null;
-  transactionId: string | null;
-  type: string;
+  purchasedAt: Timestamp;
 }
 
 export interface Users {
@@ -105,6 +103,9 @@ export interface Users {
   id: Generated<number>;
   lastName: string;
   password: string;
+  rcAliases: string | null;
+  rcAppUserId: string | null;
+  rcOriginalAppUserId: string | null;
   refreshToken: string | null;
   role: Role;
   updatedAt: Timestamp | null;
