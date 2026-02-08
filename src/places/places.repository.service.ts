@@ -31,11 +31,26 @@ export class PlacesRepositoryService {
       .executeTakeFirst();
   }
   public async getAllPlacesByUserId(userId: number) {
+    const now = new Date();
     return await this.db.db
       .selectFrom('places')
       .selectAll()
       .where('userId', '=', userId)
       .where('deletedAt', 'is', null)
+      .orderBy((eb) =>
+        eb
+          .case()
+          .when(
+            eb.and([
+              eb('places.promotionBeginsAt', '<=', now),
+              eb('places.promotionEndsAt', '>=', now),
+            ]),
+          )
+          .then(0)
+          .else(1)
+          .end(),
+      )
+      .orderBy('places.promotionBeginsAt', 'desc')
       .execute();
   }
   public async updatePlace(placeId: number, data: Updateable<Places>) {
