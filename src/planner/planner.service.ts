@@ -20,6 +20,7 @@ import { PhotosService } from '../photos/photos.service';
 import { PhotoSize } from '../types/photos/photos.dto';
 import { COUNTRIES } from '../constants/countries';
 import { CountryCode } from '../types/general/countries.dto';
+import { SaleLabel } from '../types/webhooks/revenue-cat.dto';
 
 @Injectable()
 export class PlannerService {
@@ -112,7 +113,10 @@ export class PlannerService {
             r.id,
             PhotoSize.Small,
           );
-
+        const isPromoted: boolean =
+          r.promotionBeginsAt <= new Date() && r.promotionEndsAt >= new Date();
+        const label: string =
+          isPromoted && this.createLabelContent(r.saleLabel, r.salePercentage);
         return {
           id: r.id,
           step: step,
@@ -124,6 +128,8 @@ export class PlannerService {
           maxPrice: r.maxPrice,
           minPrice: r.minPrice,
           currency: COUNTRIES.get(r.country)?.currency,
+          isPromoted: isPromoted,
+          label: label,
         };
       }),
     );
@@ -244,5 +250,17 @@ export class PlannerService {
     return {
       list: dtoList,
     };
+  }
+
+  private createLabelContent(saleLabel: SaleLabel, percentage: string): string {
+    switch (saleLabel) {
+      case SaleLabel.Sale:
+        //todo converting number here doesnt make much of sense , implement converting using transformers in kysely with decimal.js maybe ?
+        return `${Number(percentage) * 100}% Off`;
+      case SaleLabel.Buy1Get1Free:
+        return `Buy 1 get 1 free`;
+      default:
+        return 'Premium';
+    }
   }
 }

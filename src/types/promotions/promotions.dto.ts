@@ -3,14 +3,14 @@ export class CreatePromotionRequest {
   promotion: PromoteRequest;
 }
 export class PlaceRequest {
-  placeId: number;
-  promotionBeginsAt: Date;
-  promotionEndsAt: Date;
+  placeId: string;
+  promotionBeginsAt: string;
+  promotionEndsAt: string;
   saleLabel: string;
   salePercentage: string;
 }
 export class PromoteRequest {
-  placeId: number;
+  placeId: string;
   price: number;
   priceInPurchaseCurrency: number;
   productId: string;

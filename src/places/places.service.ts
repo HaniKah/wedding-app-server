@@ -120,6 +120,7 @@ export class PlacesService {
   }
 
   public async getPlaces(userId: number): Promise<VendorPlaceViewModel> {
+    const today = new Date();
     const places =
       await this.placesRepositoryService.getAllPlacesByUserId(userId);
 
@@ -140,6 +141,8 @@ export class PlacesService {
           currency: COUNTRIES.get(p.country)?.currency,
           isPublished: p.isPublished,
           isCompleted: isCompleted,
+          isPromoted:
+            today >= p.promotionBeginsAt && today <= p.promotionEndsAt,
           minPrice: p.minPrice,
           maxPrice: p.maxPrice,
         };

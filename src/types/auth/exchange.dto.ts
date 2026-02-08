@@ -1,5 +1,6 @@
 export class ExchangeTokenDto {
   id: number;
+  rcAppUserId: string;
   accessToken: string;
   refreshToken: string;
   user: UserInfo;

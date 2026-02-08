@@ -66,4 +66,5 @@ export enum WebHooksEventType {
 export enum SaleLabel {
   Sale = 'Sale',
   Buy1Get1Free = 'Buy1Get1Free',
+  None = 'None',
 }

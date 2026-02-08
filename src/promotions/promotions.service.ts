@@ -11,13 +11,13 @@ export class PromotionsService {
   ) {}
   public async createPromotion({ place, promotion }: CreatePromotionRequest) {
     await this.promotionRepositoryService.createPromotion({
-      placeId: promotion.placeId,
+      placeId: Number(promotion.placeId),
       price: promotion.price,
       priceInPurchasedCurrency: promotion.priceInPurchaseCurrency,
       productId: promotion.productId,
       purchasedAt: promotion.purchasedAt,
     });
-    await this.placeRepositoryService.updatePlace(place.placeId, {
+    await this.placeRepositoryService.updatePlace(Number(place.placeId), {
       promotionBeginsAt: place.promotionBeginsAt,
       promotionEndsAt: place.promotionEndsAt,
       saleLabel: place.saleLabel,

@@ -19,6 +19,8 @@ export class PlacesDto {
   minPrice: string;
   maxPrice: string;
   currency: string;
+  isPromoted: boolean;
+  label: string | null;
 }
 
 export class PlaceDetailsDto {

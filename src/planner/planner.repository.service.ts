@@ -1,19 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
-
-import { Kysely } from 'kysely';
-import { DB } from 'src/types/db/db';
 import { DbService } from '../db/db.service';
 import { SearchFilter } from '../types/planner/places.dto';
 import { CountryCode } from '../types/general/countries.dto';
 
 @Injectable()
 export class PlannerRepositoryService {
-  private readonly db: Kysely<DB>;
-
-  constructor(private readonly dbService: DbService) {
-    this.db = dbService.db;
-  }
+  constructor(private readonly dbService: DbService) {}
 
   public async getAllPlaces(
     userId: number,
@@ -24,8 +17,9 @@ export class PlannerRepositoryService {
     filter?: SearchFilter,
   ) {
     const LIMIT = 5;
+    const now = new Date();
 
-    const planRecord = await this.db
+    const planRecord = await this.dbService.db
       .selectFrom('plans')
       .selectAll()
       .where('plans.userId', '=', userId)
@@ -33,13 +27,13 @@ export class PlannerRepositoryService {
 
     if (!planRecord) return [];
 
-    const placeFilter = this.db
+    const placeFilter = this.dbService.db
       .selectFrom('placeFilter')
       .select(['placeId', 'picked', 'favourite'])
       .where('placeFilter.planId', '=', planRecord.id)
       .as('placeFilter');
 
-    return await this.db
+    return await this.dbService.db
       .selectFrom('places')
       .selectAll()
       .leftJoin(placeFilter, 'placeFilter.placeId', 'places.id')
@@ -60,13 +54,28 @@ export class PlannerRepositoryService {
       .$if(filter === SearchFilter.MyPick, (qbb) =>
         qbb.where('picked', '=', true),
       )
+      .orderBy((eb) =>
+        eb
+          .case()
+          .when(
+            eb.and([
+              eb('places.promotionBeginsAt', '<=', now),
+              eb('places.promotionEndsAt', '>=', now),
+            ]),
+          )
+          .then(0)
+          .else(1)
+          .end(),
+      )
+      .orderBy('places.promotionBeginsAt', 'desc')
+      .orderBy('places.createdAt', 'desc')
       .limit(LIMIT)
       .offset(LIMIT * offset)
       .execute();
   }
 
   public async getPlaceByIdOrThrow(placeId: number) {
-    return await this.db
+    return await this.dbService.db
       .selectFrom('places')
       .selectAll()
       .where('id', '=', placeId)

@@ -1,12 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { DbService } from '../db/db.service';
-import { Insertable } from 'kysely';
+import { Insertable, Updateable } from 'kysely';
 import { Users } from 'src/types/db/db';
 import { Role } from '../types/auth/auth.dto';
+import { v4 } from 'uuid';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly dbService: DbService) {}
+
+  async updateUser(userId: number, data: Updateable<Users>) {
+    return await this.dbService.db
+      .updateTable('users')
+      .set(data)
+      .where('users.id', '=', userId)
+      .executeTakeFirstOrThrow();
+  }
 
   async updateRoleById(id: number, role: Role) {
     return await this.dbService.db
@@ -33,12 +42,22 @@ export class UsersService {
   }
 
   async createUser(user: Insertable<Users>) {
-    return await this.dbService.db
+    const createdUser = await this.dbService.db
       .insertInto('users')
       .values(user)
+      .returning('id')
+      .executeTakeFirstOrThrow();
+
+    const rcAppUserId = `${createdUser.id}RC${v4()}`;
+
+    return await this.dbService.db
+      .updateTable('users')
+      .set('rcAppUserId', rcAppUserId)
+      .where('id', '=', createdUser.id)
       .returningAll()
       .executeTakeFirstOrThrow();
   }
+
   async updateHashedRefreshToken(
     userId: number,
     hashedRefreshToken: string | null,

@@ -70,7 +70,7 @@ export interface Places {
   priceType: PriceType;
   promotionBeginsAt: Timestamp | null;
   promotionEndsAt: Timestamp | null;
-  saleLabel: string | null;
+  saleLabel: SaleLabel;
   salePercentage: Numeric | null;
   step: WeddingSteps;
   streetName: string | null;

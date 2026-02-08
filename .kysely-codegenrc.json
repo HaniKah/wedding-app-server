@@ -7,6 +7,7 @@
       "places.status": "PlaceStatus",
       "places.price_type": "PriceType",
       "places.country": "CountryCode",
+      "places.sale_label": "SaleLabel",
       "guests.couple_side": "CoupleSide",
       "photos.size": "PhotoSize",
       "photos.bucket_name": "BucketName"
