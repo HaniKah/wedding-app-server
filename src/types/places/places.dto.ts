@@ -66,7 +66,7 @@ export class VendorPlaceDto {
   thumbnail: string;
   isPublished: boolean;
   isCompleted: boolean;
-  isPromoted;
+  isPromoted: boolean;
   minPrice: string;
   maxPrice: string;
 }
