@@ -11,7 +11,7 @@ import { UsersModule } from './users/users.module';
 import { PlacesModule } from './places/places.module';
 import { MinioModule } from './minio/minio.module';
 import { PhotosModule } from './photos/photos.module';
-import { PackagesModule } from './packages/packages.module';
+
 import { PromotionsModule } from './promotions/promotions.module';
 import { WebhooksModule } from './webhooks/webhooks.module';
 
@@ -31,11 +31,10 @@ import { WebhooksModule } from './webhooks/webhooks.module';
     PlacesModule,
     MinioModule,
     PhotosModule,
-    PackagesModule,
     PromotionsModule,
     WebhooksModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
