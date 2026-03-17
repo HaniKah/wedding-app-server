@@ -56,7 +56,7 @@ export class AuthService {
       return user;
     } else {
       const userRecord = await this.usersService.createUser(googleUser);
-      await this.updateUserRcAppUserId(user.id);
+      await this.updateUserRcAppUserId(userRecord.id);
       // todo : solve the catch error thing , https://www.youtube.com/watch?v=AdmGHwvgaVs&t=72s
       await this.plansRepositoryService.createPlan(userRecord.id);
       return userRecord;
