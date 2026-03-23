@@ -67,3 +67,12 @@ export class PlaceFilterRequest {
   favorite?: boolean;
   picked?: boolean;
 }
+
+export class ToggleFavoritePlaceFilterRequest {
+  placeId: number;
+  favorite: boolean;
+}
+export class TogglePickedPlaceFilterRequest {
+  placeId: number;
+  picked: boolean;
+}

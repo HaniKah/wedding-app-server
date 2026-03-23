@@ -5,6 +5,8 @@ import {
   PlaceFilterRequest,
   PlacesViewModel,
   SearchFilter,
+  ToggleFavoritePlaceFilterRequest,
+  TogglePickedPlaceFilterRequest,
 } from '../types/planner/places.dto';
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
 import { ChecklistViewModel, StepsViewModel } from '../types/planner/steps.dto';
@@ -20,7 +22,7 @@ import { CountryCode } from '../types/general/countries.dto';
 
 @Controller('planner')
 export class PlannerController {
-  constructor(private readonly plannerService: PlannerService) {}
+  constructor(private readonly plannerService: PlannerService) { }
 
   @Get('getPlaces')
   @ApiQuery({ name: 'search', required: false })
@@ -59,12 +61,21 @@ export class PlannerController {
     return await this.plannerService.getSteps(userId);
   }
 
-  @Post('updateOrCreatePlaceFilter')
-  public async updateOrCreatePlaceFilter(
-    @Body() req: PlaceFilterRequest,
+  @Post('toggleFavoritePlaceFilter')
+  public async toggleFavoritePlaceFilter(
+    @Body() req: ToggleFavoritePlaceFilterRequest,
     @User() user: CurrentUser,
   ): Promise<void> {
-    await this.plannerService.updateOrCreatePlaceFilter(user.id, req);
+    await this.plannerService.toggleFavorite(user.id, req);
+  }
+
+  @Post("togglePickedPlaceFilter")
+  public async togglePickedPlaceFilter(
+    @Body() req: TogglePickedPlaceFilterRequest,
+    @User() user: CurrentUser,
+
+  ) {
+    await this.plannerService.togglePicked(user.id, req);
   }
 
   @Get('getWeddingDate')

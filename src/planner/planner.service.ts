@@ -4,6 +4,8 @@ import {
   PlaceFilterRequest,
   PlacesViewModel,
   SearchFilter,
+  ToggleFavoritePlaceFilterRequest,
+  TogglePickedPlaceFilterRequest,
 } from '../types/planner/places.dto';
 import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
 import {
@@ -21,6 +23,8 @@ import { PhotoSize } from '../types/photos/photos.dto';
 import { COUNTRIES } from '../constants/countries';
 import { CountryCode } from '../types/general/countries.dto';
 import { SaleLabel } from '../types/webhooks/revenue-cat.dto';
+import { PlaceFilter } from 'src/types/db/db';
+import { Updateable } from 'kysely';
 
 @Injectable()
 export class PlannerService {
@@ -29,7 +33,7 @@ export class PlannerService {
     private readonly plansRepositoryService: PlansRepositoryService,
     private readonly placesRepositoryService: PlannerRepositoryService,
     private readonly photosService: PhotosService,
-  ) {}
+  ) { }
 
   public async updateWeddingDate(userId: number, date: Date): Promise<void> {
     const planRecord =
@@ -47,37 +51,53 @@ export class PlannerService {
     };
   }
 
-  public async updateOrCreatePlaceFilter(
+  public async toggleFavorite(
     userId: number,
-    request: PlaceFilterRequest,
+    req: ToggleFavoritePlaceFilterRequest
+  ) {
+
+    await this.updateOrCreatePlaceFilter(userId, {
+      placeId: req.placeId,
+      isFavorite: req.favorite
+    })
+
+  }
+
+
+  public async togglePicked(
+    userId: number,
+    req: TogglePickedPlaceFilterRequest
+  ) {
+    await this.updateOrCreatePlaceFilter(userId, {
+      placeId: req.placeId,
+      isPicked: req.picked
+    })
+
+  }
+
+  private async updateOrCreatePlaceFilter(
+    userId: number,
+    request: Updateable<PlaceFilter>,
   ): Promise<void> {
-    // const placeRecord = await this.placesRepositoryService.getPlaceByIdOrThrow(
-    //   request.placeId,
-    // );
-    const planRecord =
-      await this.plansRepositoryService.getPlanByUserIdOrThrow(userId);
 
     const filtersRecord =
       await this.placeFilterRepositoryService.getPlaceFilter(
-        planRecord.id,
+        userId,
         request.placeId,
       );
 
     if (filtersRecord) {
       await this.placeFilterRepositoryService.updatePlaceFilterById(
         filtersRecord.id,
-        {
-          isPicked: request.picked,
-          isFavorite: request.favorite,
-        },
+        request
       );
     } else {
       //todo optimization: here we are updating unnecessary fields
       await this.placeFilterRepositoryService.createPlaceFilter({
         userId: userId,
         placeId: request.placeId,
-        isPicked: request.picked,
-        isFavorite: request.favorite,
+        isPicked: request.isPicked,
+        isFavorite: request.isFavorite,
       });
     }
   }
@@ -227,7 +247,6 @@ export class PlannerService {
     const dtoList: ChecklistDto[] = await Promise.all(
       stepsList.map(async (step) => {
         let isCompleted: boolean = false;
-        //todo : this is not correct , we should get all placeFilters of user , join the step from each place id on the table inside the repo service
         const found = completedStepsRecord.find((s) => s.step === step);
 
         if (found && found.placeId) {
