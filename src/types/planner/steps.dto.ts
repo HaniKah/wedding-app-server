@@ -35,7 +35,6 @@ export class ChecklistDto {
   isCompleted: boolean;
   placeName: string | null;
   placeId: number | null;
-  cost: number | null;
 }
 export class ChecklistViewModel {
   list: ChecklistDto[];

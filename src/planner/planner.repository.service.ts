@@ -29,8 +29,8 @@ export class PlannerRepositoryService {
 
     const placeFilter = this.dbService.db
       .selectFrom('placeFilter')
-      .select(['placeId', 'picked', 'favourite'])
-      .where('placeFilter.planId', '=', planRecord.id)
+      .select(['placeId', 'isPicked', 'isFavorite'])
+      .where('placeFilter.userId', '=', userId)
       .as('placeFilter');
 
     return await this.dbService.db
@@ -38,8 +38,8 @@ export class PlannerRepositoryService {
       .selectAll()
       .leftJoin(placeFilter, 'placeFilter.placeId', 'places.id')
       .select([
-        'placeFilter.picked as picked',
-        'placeFilter.favourite as favourite',
+        'placeFilter.isPicked as picked',
+        'placeFilter.isFavorite as favourite',
       ])
       .where('isPublished', '=', true)
       .where('step', '=', step)
@@ -49,10 +49,10 @@ export class PlannerRepositoryService {
         eb.where((eb) => eb.or([eb('name', 'ilike', `%${searchQuery}%`)])),
       )
       .$if(filter == SearchFilter.MyFavourite, (qb) =>
-        qb.where('favourite', '=', true),
+        qb.where('isFavorite', '=', true),
       )
       .$if(filter === SearchFilter.MyPick, (qbb) =>
-        qbb.where('picked', '=', true),
+        qbb.where('isPicked', '=', true),
       )
       .orderBy((eb) =>
         eb

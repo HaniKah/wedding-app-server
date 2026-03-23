@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
 import { PlannerService } from './planner.service';
 import {
   PlaceDetailsDto,
-  PlaceDetailsRequest,
+  PlaceFilterRequest,
   PlacesViewModel,
   SearchFilter,
 } from '../types/planner/places.dto';
@@ -49,8 +49,9 @@ export class PlannerController {
   @Get('getPlaceById')
   public async getPlaceById(
     @Query('placeId') placeId: number,
+    @User() user: CurrentUser,
   ): Promise<PlaceDetailsDto> {
-    return await this.plannerService.getPlaceById(placeId);
+    return await this.plannerService.getPlaceDetailsById(user.id, placeId);
   }
   @Get('getSteps')
   public async getSteps(@Req() req: Request): Promise<StepsViewModel> {
@@ -58,12 +59,12 @@ export class PlannerController {
     return await this.plannerService.getSteps(userId);
   }
 
-  @Post('updatePlaceDetails')
-  public async updatePlaceDetails(
-    @Body() request: PlaceDetailsRequest,
-    @Req() req: Request,
+  @Post('updateOrCreatePlaceFilter')
+  public async updateOrCreatePlaceFilter(
+    @Body() req: PlaceFilterRequest,
+    @User() user: CurrentUser,
   ): Promise<void> {
-    await this.plannerService.updateAPlaceDetails(req.user.id, request);
+    await this.plannerService.updateOrCreatePlaceFilter(user.id, req);
   }
 
   @Get('getWeddingDate')

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import {
   PlaceDetailsDto,
-  PlaceDetailsRequest,
+  PlaceFilterRequest,
   PlacesViewModel,
   SearchFilter,
 } from '../types/planner/places.dto';
@@ -13,7 +13,7 @@ import {
 } from '../types/planner/steps.dto';
 import { WeddingDateDto } from '../types/planner/weddingDateDto';
 import { PlansRepositoryService } from './plans.repository.service';
-import { PlaceDetailsRepositoryService } from './place-details.repository.service';
+import { PlaceFilterRepositoryService } from './placeFilter.repository.service';
 import { PlannerRepositoryService } from './planner.repository.service';
 import { stepsInfo } from '../constants/steps-info';
 import { PhotosService } from '../photos/photos.service';
@@ -25,7 +25,7 @@ import { SaleLabel } from '../types/webhooks/revenue-cat.dto';
 @Injectable()
 export class PlannerService {
   constructor(
-    private readonly placeDetailsRepositoryService: PlaceDetailsRepositoryService,
+    private readonly placeFilterRepositoryService: PlaceFilterRepositoryService,
     private readonly plansRepositoryService: PlansRepositoryService,
     private readonly placesRepositoryService: PlannerRepositoryService,
     private readonly photosService: PhotosService,
@@ -47,43 +47,37 @@ export class PlannerService {
     };
   }
 
-  public async updateAPlaceDetails(
+  public async updateOrCreatePlaceFilter(
     userId: number,
-    request: PlaceDetailsRequest,
+    request: PlaceFilterRequest,
   ): Promise<void> {
-    if (request.picked) {
-      const planRecord =
-        await this.plansRepositoryService.getPlanByUserIdOrThrow(userId);
-      await this.placeDetailsRepositoryService.removeAllPicked(
+    // const placeRecord = await this.placesRepositoryService.getPlaceByIdOrThrow(
+    //   request.placeId,
+    // );
+    const planRecord =
+      await this.plansRepositoryService.getPlanByUserIdOrThrow(userId);
+
+    const filtersRecord =
+      await this.placeFilterRepositoryService.getPlaceFilter(
         planRecord.id,
-        request.step,
-      );
-    }
-    const details =
-      await this.placeDetailsRepositoryService.getPlaceFilterByPlaceId(
         request.placeId,
       );
-    if (details) {
-      //todo optimization: here we are updating unnecessary fields
-      await this.placeDetailsRepositoryService.updatePlaceFilterById(
-        details.id,
+
+    if (filtersRecord) {
+      await this.placeFilterRepositoryService.updatePlaceFilterById(
+        filtersRecord.id,
         {
-          step: request.step,
-          picked: request.picked,
-          notes: request.notes,
+          isPicked: request.picked,
+          isFavorite: request.favorite,
         },
       );
     } else {
-      const planRecord =
-        await this.plansRepositoryService.getPlanByUserIdOrThrow(userId);
-
       //todo optimization: here we are updating unnecessary fields
-      await this.placeDetailsRepositoryService.createPlaceFilter({
-        planId: planRecord.id,
+      await this.placeFilterRepositoryService.createPlaceFilter({
+        userId: userId,
         placeId: request.placeId,
-        step: request.step,
-        picked: request.picked,
-        favourite: request.favorite,
+        isPicked: request.picked,
+        isFavorite: request.favorite,
       });
     }
   }
@@ -137,10 +131,16 @@ export class PlannerService {
     return { places: list, filter: filter };
   }
 
-  public async getPlaceById(id: number): Promise<PlaceDetailsDto> {
-    const place = await this.placesRepositoryService.getPlaceByIdOrThrow(id);
-    const details =
-      await this.placeDetailsRepositoryService.getPlaceFilterByPlaceId(id);
+  public async getPlaceDetailsById(
+    userId: number,
+    placeId: number,
+  ): Promise<PlaceDetailsDto> {
+    const place =
+      await this.placesRepositoryService.getPlaceByIdOrThrow(placeId);
+    const filters = await this.placeFilterRepositoryService.getPlaceFilter(
+      userId,
+      placeId,
+    );
 
     const mainPhoto: string =
       await this.photosService.getMainPhotoOrFirstByPlaceId(
@@ -160,23 +160,22 @@ export class PlannerService {
       currency: COUNTRIES.get(place.country)?.currency,
       countryName: COUNTRIES.get(place.country)?.countryName,
       step: place.step as WeddingSteps,
-      picked: details?.picked || false,
-      favourite: details?.favourite || false,
-      notes: details?.notes || null,
+      picked: filters?.isPicked || false,
+      favourite: filters?.isFavorite || false,
       mainPhoto: mainPhoto,
       maxPrice: place.maxPrice,
       minPrice: place.minPrice,
+      description: place.description,
     };
   }
 
   public async getSteps(userId: number): Promise<StepsViewModel> {
     //todo : ignored steps are not implemented yet
     const stepsList: WeddingSteps[] = Object.values(WeddingSteps);
-    const planRecord =
-      await this.plansRepositoryService.getPlanByUserIdOrThrow(userId);
+
     const completedStepsRecord =
-      await this.placeDetailsRepositoryService.getPlaceFilterOfCompletedSteps(
-        planRecord.id,
+      await this.placeFilterRepositoryService.getPlaceFilterOfPickedSteps(
+        userId,
       );
 
     let note: string;
@@ -188,7 +187,10 @@ export class PlannerService {
         let isCompleted: boolean = false;
         const pickedPlace = completedStepsRecord.find((s) => s.step === step);
         if (pickedPlace && pickedPlace.placeId) {
-          const placeDetails = await this.getPlaceById(pickedPlace.placeId);
+          const placeDetails = await this.getPlaceDetailsById(
+            userId,
+            pickedPlace.placeId,
+          );
           note = placeDetails.name;
           isCompleted = true;
         } else {
@@ -213,12 +215,10 @@ export class PlannerService {
   public async createChecklist(userId: number): Promise<ChecklistViewModel> {
     //todo : ignored steps are not implemented yet
     const stepsList: WeddingSteps[] = Object.values(WeddingSteps);
-    const planRecord =
-      await this.plansRepositoryService.getPlanByUserIdOrThrow(userId);
 
     const completedStepsRecord =
-      await this.placeDetailsRepositoryService.getPlaceFilterOfCompletedSteps(
-        planRecord.id,
+      await this.placeFilterRepositoryService.getPlaceFilterOfPickedSteps(
+        userId,
       );
 
     let placeName: string | null = null;
@@ -227,11 +227,14 @@ export class PlannerService {
     const dtoList: ChecklistDto[] = await Promise.all(
       stepsList.map(async (step) => {
         let isCompleted: boolean = false;
-
+        //todo : this is not correct , we should get all placeFilters of user , join the step from each place id on the table inside the repo service
         const found = completedStepsRecord.find((s) => s.step === step);
 
         if (found && found.placeId) {
-          const placeDetails = await this.getPlaceById(found.placeId);
+          const placeDetails = await this.getPlaceDetailsById(
+            userId,
+            found.placeId,
+          );
           placeName = placeDetails.name;
           placeId = found.placeId;
           isCompleted = true;
@@ -242,7 +245,6 @@ export class PlannerService {
           isCompleted: isCompleted,
           placeName: placeName,
           placeId: placeId,
-          cost: found?.cost || null,
         };
       }),
     );

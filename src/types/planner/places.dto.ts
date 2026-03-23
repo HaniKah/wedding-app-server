@@ -36,12 +36,12 @@ export class PlaceDetailsDto {
   step: WeddingSteps;
   picked: boolean;
   favourite: boolean;
-  notes: string | null;
   mainPhoto: string;
   maxPrice: string;
   minPrice: string;
   countryName: string;
   currency: string;
+  description: string;
 }
 export class PlacesViewModel {
   places: PlacesDto[];
@@ -61,11 +61,9 @@ export class AuthorAttributionDto {
   photoUri?: string | null;
 }
 
-export class PlaceDetailsRequest {
+export class PlaceFilterRequest {
   placeId: number;
-  notes: string | null;
-  favorite: boolean;
-  picked: boolean;
-  @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
-  step: WeddingSteps;
+  notes?: string | null;
+  favorite?: boolean;
+  picked?: boolean;
 }

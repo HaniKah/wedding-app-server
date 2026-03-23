@@ -38,14 +38,11 @@ export interface Photos {
 }
 
 export interface PlaceFilter {
-  cost: number | null;
-  favourite: Generated<boolean | null>;
   id: Generated<number>;
-  notes: string | null;
-  picked: Generated<boolean | null>;
-  placeId: number | null;
-  planId: number;
-  step: WeddingSteps;
+  isFavorite: Generated<boolean | null>;
+  isPicked: Generated<boolean | null>;
+  placeId: number;
+  userId: number;
 }
 
 export interface Places {

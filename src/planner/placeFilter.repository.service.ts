@@ -1,46 +1,39 @@
 import { Injectable } from '@nestjs/common';
-import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
 
 import { Insertable, Kysely, Updateable } from 'kysely';
 import { DB, PlaceFilter } from 'src/types/db/db';
 import { DbService } from '../db/db.service';
 
 @Injectable()
-export class PlaceDetailsRepositoryService {
+export class PlaceFilterRepositoryService {
   private readonly db: Kysely<DB>;
 
   constructor(private readonly dbService: DbService) {
     this.db = dbService.db;
   }
-  public async removeAllPicked(planId: number, step: WeddingSteps) {
+  public async removeAllPicked(userId: number) {
     await this.db
       .updateTable('placeFilter')
-      .set('picked', false)
-      .where('step', '=', step)
-      .where('planId', '=', planId)
+      .set('isPicked', false)
+      .where('userId', '=', userId)
       .execute();
   }
-  public async getPlaceFilterOfCompletedSteps(planId: number) {
+  public async getPlaceFilterOfPickedSteps(userId: number) {
     return await this.db
       .selectFrom('placeFilter')
       .selectAll()
-      .where('planId', '=', planId)
-      .where('picked', '=', true)
-      .execute();
-  }
-
-  public async getPlaceFilter(planId: number) {
-    return await this.db
-      .selectFrom('placeFilter')
-      .selectAll()
-      .where('planId', '=', planId)
+      .rightJoin('places', 'places.id', 'placeFilter.placeId')
+      .select('places.step')
+      .where('placeFilter.userId', '=', userId)
+      .where('placeFilter.isPicked', '=', true)
       .execute();
   }
 
-  public async getPlaceFilterByPlaceId(placeId: number) {
+  public async getPlaceFilter(userId: number, placeId: number) {
     return await this.db
       .selectFrom('placeFilter')
       .selectAll()
+      .where('userId', '=', userId)
       .where('placeId', '=', placeId)
       .executeTakeFirst();
   }
