@@ -75,4 +75,6 @@ export class ToggleFavoritePlaceFilterRequest {
 export class TogglePickedPlaceFilterRequest {
   placeId: number;
   picked: boolean;
+  @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
+  step: WeddingSteps
 }

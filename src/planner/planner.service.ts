@@ -68,6 +68,9 @@ export class PlannerService {
     userId: number,
     req: TogglePickedPlaceFilterRequest
   ) {
+
+    await this.placeFilterRepositoryService.removeAllPickedOfSameStep(userId, req.step)
+
     await this.updateOrCreatePlaceFilter(userId, {
       placeId: req.placeId,
       isPicked: req.picked

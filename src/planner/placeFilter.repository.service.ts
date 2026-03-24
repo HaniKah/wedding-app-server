@@ -3,6 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { Insertable, Kysely, Updateable } from 'kysely';
 import { DB, PlaceFilter } from 'src/types/db/db';
 import { DbService } from '../db/db.service';
+import { WeddingDateDto } from 'src/types/planner/weddingDateDto';
+import { WeddingSteps } from 'src/types/general/wedding-steps-enum.dto';
 
 @Injectable()
 export class PlaceFilterRepositoryService {
@@ -11,13 +13,19 @@ export class PlaceFilterRepositoryService {
   constructor(private readonly dbService: DbService) {
     this.db = dbService.db;
   }
-  public async removeAllPicked(userId: number) {
+  public async removeAllPickedOfSameStep(userId: number, step: WeddingSteps) {
     await this.db
-      .updateTable('placeFilter')
-      .set('isPicked', false)
-      .where('userId', '=', userId)
+      .updateTable("placeFilter")
+      .set({ isPicked: false })
+      .where("userId", "=", userId)
+      .where("placeId", "in", (eb) =>
+        eb.selectFrom("places")
+          .select("id")
+          .where("step", "=", step))
       .execute();
   }
+
+
   public async getPlaceFilterOfPickedSteps(userId: number) {
     return await this.db
       .selectFrom('placeFilter')
