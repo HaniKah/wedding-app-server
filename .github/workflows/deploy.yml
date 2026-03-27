@@ -17,7 +17,7 @@ jobs:
         - name: setup node
           uses: actions/setup-node@84
           with:
-          node-version: '22'
+            node-version: '22'
     
         - name: Install dependencies
           run: npm ci
