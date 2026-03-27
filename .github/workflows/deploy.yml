@@ -2,7 +2,7 @@ name : test & migrate
 
 on:
   push:
-  branches:
+    branches:
       - live
       - staging
       - main
