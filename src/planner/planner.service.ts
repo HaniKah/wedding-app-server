@@ -53,36 +53,33 @@ export class PlannerService {
 
   public async toggleFavorite(
     userId: number,
-    req: ToggleFavoritePlaceFilterRequest
+    req: ToggleFavoritePlaceFilterRequest,
   ) {
-
     await this.updateOrCreatePlaceFilter(userId, {
       placeId: req.placeId,
-      isFavorite: req.favorite
-    })
-
+      isFavorite: req.favorite,
+    });
   }
-
 
   public async togglePicked(
     userId: number,
-    req: TogglePickedPlaceFilterRequest
+    req: TogglePickedPlaceFilterRequest,
   ) {
-
-    await this.placeFilterRepositoryService.removeAllPickedOfSameStep(userId, req.step)
+    await this.placeFilterRepositoryService.removeAllPickedOfSameStep(
+      userId,
+      req.step,
+    );
 
     await this.updateOrCreatePlaceFilter(userId, {
       placeId: req.placeId,
-      isPicked: req.picked
-    })
-
+      isPicked: req.picked,
+    });
   }
 
   private async updateOrCreatePlaceFilter(
     userId: number,
     request: Updateable<PlaceFilter>,
   ): Promise<void> {
-
     const filtersRecord =
       await this.placeFilterRepositoryService.getPlaceFilter(
         userId,
@@ -92,7 +89,7 @@ export class PlannerService {
     if (filtersRecord) {
       await this.placeFilterRepositoryService.updatePlaceFilterById(
         filtersRecord.id,
-        request
+        request,
       );
     } else {
       //todo optimization: here we are updating unnecessary fields
