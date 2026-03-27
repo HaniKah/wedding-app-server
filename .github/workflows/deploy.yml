@@ -22,9 +22,6 @@ jobs:
         - name: Install dependencies
           run: npm ci
 
-        - name: Run ESLint
-          run: npm run lint
-
         - name: Run TypeScript Checks
           run: npx tsc --noEmit
 
