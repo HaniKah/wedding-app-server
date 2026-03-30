@@ -2,7 +2,6 @@ import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
 import { PlannerService } from './planner.service';
 import {
   PlaceDetailsDto,
-  PlaceFilterRequest,
   PlacesViewModel,
   SearchFilter,
   ToggleFavoritePlaceFilterRequest,
@@ -22,7 +21,7 @@ import { CountryCode } from '../types/general/countries.dto';
 
 @Controller('planner')
 export class PlannerController {
-  constructor(private readonly plannerService: PlannerService) { }
+  constructor(private readonly plannerService: PlannerService) {}
 
   @Get('getPlaces')
   @ApiQuery({ name: 'search', required: false })
@@ -69,11 +68,10 @@ export class PlannerController {
     await this.plannerService.toggleFavorite(user.id, req);
   }
 
-  @Post("togglePickedPlaceFilter")
+  @Post('togglePickedPlaceFilter')
   public async togglePickedPlaceFilter(
     @Body() req: TogglePickedPlaceFilterRequest,
     @User() user: CurrentUser,
-
   ) {
     await this.plannerService.togglePicked(user.id, req);
   }
