@@ -44,7 +44,7 @@ export class PlannerRepositoryService {
       .where('isPublished', '=', true)
       .where('step', '=', step)
       .where('places.deletedAt', 'is', null)
-      .where('places.country', '=', countryCode)
+      // .where('places.country', '=', countryCode) lets not do that yet ( restrictions are on AppStore only )
       .$if(!!searchQuery, (eb) =>
         eb.where((eb) => eb.or([eb('name', 'ilike', `%${searchQuery}%`)])),
       )
