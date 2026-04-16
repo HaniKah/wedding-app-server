@@ -1,6 +1,6 @@
-import { WeddingSteps } from '../general/wedding-steps-enum.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { CountryCode } from '../general/countries.dto';
+import { Categories } from '../general/categories';
 
 export enum UpdateStep {
   PickPlaceType = 'PickPlaceType',
@@ -31,16 +31,16 @@ export class UpdatePlaceRequest {
   id?: number;
   @ApiProperty({ enum: UpdateStep, enumName: 'UpdateStep' })
   updateStep?: UpdateStep;
-  @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
-  type?: WeddingSteps;
+  @ApiProperty({ enum: Categories, enumName: 'Categories' })
+  type?: Categories;
   placeInfo?: UpdatePlaceInfo;
   description?: string;
   location?: UpdateLocationInfo;
 }
 
 export class CreatePlaceRequest {
-  @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
-  type?: WeddingSteps;
+  @ApiProperty({ enum: Categories, enumName: 'Categories' })
+  type?: Categories;
 }
 
 export class VendorPlaceViewModel {
@@ -101,8 +101,8 @@ export class PublishPlaceRequest {
 export class VendorPlaceDetailsDto {
   id: number;
   name: string;
-  @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
-  step: WeddingSteps;
+  @ApiProperty({ enum: Categories, enumName: 'WeddingSteps' })
+  step: Categories;
   streetName?: string;
   phoneNumber: string;
   facebook?: string;

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { WeddingSteps } from '../general/wedding-steps-enum.dto';
+import { Categories } from '../general/categories';
 
 export class StepsViewModel {
   @ApiProperty()
@@ -8,8 +8,8 @@ export class StepsViewModel {
   steps: StepsDto[];
 }
 export class StepsDto {
-  @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
-  step: WeddingSteps;
+  @ApiProperty({ enum: Categories, enumName: 'Categories' })
+  category: Categories;
 
   @ApiProperty()
   isCompleted: boolean;
@@ -30,8 +30,8 @@ export interface StepsInfo {
 }
 
 export class ChecklistDto {
-  @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
-  step: WeddingSteps;
+  @ApiProperty({ enum: Categories, enumName: 'WeddingSteps' })
+  step: Categories;
   isCompleted: boolean;
   placeName: string | null;
   placeId: number | null;

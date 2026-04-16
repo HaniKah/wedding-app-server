@@ -1,4 +1,4 @@
-export enum WeddingSteps {
+export enum Categories {
   Host = 'Host',
   Dress = 'Dress',
   Photographer = 'Photographer',

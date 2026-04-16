@@ -1,11 +1,11 @@
-import { WeddingSteps } from '../general/wedding-steps-enum.dto';
+import { Categories } from '../general/categories';
 
 export class PackagesDto {
   budget: string;
-  includedSteps: WeddingSteps[];
+  includedSteps: Categories[];
 }
 
 export class GeneratePackagesRequest {
   budget: number;
-  includedSteps: WeddingSteps[];
+  includedSteps: Categories[];
 }

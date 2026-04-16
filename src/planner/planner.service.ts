@@ -4,21 +4,13 @@ import {
   FavouritePlacesViewModel,
   PlaceDetailsDto,
   PlacesViewModel,
-  SearchFilter,
   ToggleFavoritePlaceFilterRequest,
   TogglePickedPlaceFilterRequest,
 } from '../types/planner/places.dto';
-import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
-import {
-  ChecklistDto,
-  ChecklistViewModel,
-  StepsViewModel,
-} from '../types/planner/steps.dto';
 import { WeddingDateDto } from '../types/planner/weddingDateDto';
 import { PlansRepositoryService } from './plans.repository.service';
 import { PlaceFilterRepositoryService } from './placeFilter.repository.service';
 import { PlannerRepositoryService } from './planner.repository.service';
-import { stepsInfo } from '../constants/steps-info';
 import { PhotosService } from '../photos/photos.service';
 import { PhotoSize } from '../types/photos/photos.dto';
 import { COUNTRIES } from '../constants/countries';
@@ -26,6 +18,7 @@ import { CountryCode } from '../types/general/countries.dto';
 import { SaleLabel } from '../types/webhooks/revenue-cat.dto';
 import { PlaceFilter } from 'src/types/db/db';
 import { Updateable } from 'kysely';
+import { Categories } from '../types/general/categories';
 
 @Injectable()
 export class PlannerService {
@@ -100,21 +93,17 @@ export class PlannerService {
   }
 
   public async getPlaces(
-    userId: number,
-    step: WeddingSteps,
     countryCode: CountryCode,
     offset: number,
     searchQuery?: string,
-    filter?: SearchFilter,
+    category?: Categories,
   ): Promise<PlacesViewModel> {
     const placesAndPlaceDetailsRecord =
       await this.plannerRepositoryService.getAllPlaces(
-        userId,
-        step,
         countryCode,
         offset,
         searchQuery,
-        filter,
+        category,
       );
 
     const list = await Promise.all(
@@ -130,11 +119,9 @@ export class PlannerService {
           isPromoted && this.createLabelContent(r.saleLabel, r.salePercentage);
         return {
           id: r.id,
-          step: step,
+          category: r.step,
           name: r.name,
           formattedAddress: r.streetName,
-          picked: r.picked,
-          favourite: r.favourite,
           mainPhoto: mainPhoto,
           maxPrice: r.maxPrice,
           minPrice: r.minPrice,
@@ -148,7 +135,7 @@ export class PlannerService {
       }),
     );
 
-    return { places: list, filter: filter };
+    return { places: list };
   }
 
   public async getPlaceDetailsById(
@@ -179,7 +166,7 @@ export class PlannerService {
       tiktok: place?.tiktok,
       currency: COUNTRIES.get(place.country)?.currency,
       countryName: COUNTRIES.get(place.country)?.countryName,
-      step: place.step as WeddingSteps,
+      category: place.step as Categories,
       picked: filters?.isPicked || false,
       favourite: filters?.isFavorite || false,
       mainPhoto: mainPhoto,
@@ -189,89 +176,89 @@ export class PlannerService {
     };
   }
 
-  public async getSteps(userId: number): Promise<StepsViewModel> {
-    //todo : ignored steps are not implemented yet
-    const stepsList: WeddingSteps[] = Object.values(WeddingSteps);
+  // public async getSteps(userId: number): Promise<StepsViewModel> {
+  //   //todo : ignored steps are not implemented yet
+  //   const stepsList: Categories[] = Object.values(Categories);
+  //
+  //   const completedStepsRecord =
+  //     await this.placeFilterRepositoryService.getPlaceFilterOfPickedSteps(
+  //       userId,
+  //     );
+  //
+  //   let note: string;
+  //   const progress =
+  //     Math.floor((completedStepsRecord.length / stepsList.length) * 100) / 100;
+  //
+  //   const dtoList = await Promise.all(
+  //     stepsList.map(async (step) => {
+  //       let isCompleted: boolean = false;
+  //       const pickedPlace = completedStepsRecord.find((s) => s.step === step);
+  //       if (pickedPlace && pickedPlace.placeId) {
+  //         const placeDetails = await this.getPlaceDetailsById(
+  //           userId,
+  //           pickedPlace.placeId,
+  //         );
+  //         note = placeDetails.name;
+  //         isCompleted = true;
+  //       } else {
+  //         note = progress * 100 + '% completed';
+  //       }
+  //       return {
+  //         step,
+  //         title: stepsInfo[step].title,
+  //         description: stepsInfo[step].description,
+  //         isCompleted: isCompleted,
+  //         note: note,
+  //       };
+  //     }),
+  //   );
+  //
+  //   return {
+  //     steps: dtoList,
+  //     progress: progress,
+  //   };
+  // }
 
-    const completedStepsRecord =
-      await this.placeFilterRepositoryService.getPlaceFilterOfPickedSteps(
-        userId,
-      );
-
-    let note: string;
-    const progress =
-      Math.floor((completedStepsRecord.length / stepsList.length) * 100) / 100;
-
-    const dtoList = await Promise.all(
-      stepsList.map(async (step) => {
-        let isCompleted: boolean = false;
-        const pickedPlace = completedStepsRecord.find((s) => s.step === step);
-        if (pickedPlace && pickedPlace.placeId) {
-          const placeDetails = await this.getPlaceDetailsById(
-            userId,
-            pickedPlace.placeId,
-          );
-          note = placeDetails.name;
-          isCompleted = true;
-        } else {
-          note = progress * 100 + '% completed';
-        }
-        return {
-          step,
-          title: stepsInfo[step].title,
-          description: stepsInfo[step].description,
-          isCompleted: isCompleted,
-          note: note,
-        };
-      }),
-    );
-
-    return {
-      steps: dtoList,
-      progress: progress,
-    };
-  }
-
-  public async createChecklist(userId: number): Promise<ChecklistViewModel> {
-    //todo : ignored steps are not implemented yet
-    const stepsList: WeddingSteps[] = Object.values(WeddingSteps);
-
-    const completedStepsRecord =
-      await this.placeFilterRepositoryService.getPlaceFilterOfPickedSteps(
-        userId,
-      );
-
-    let placeName: string | null = null;
-    let placeId: number | null = null;
-
-    const dtoList: ChecklistDto[] = await Promise.all(
-      stepsList.map(async (step) => {
-        let isCompleted: boolean = false;
-        const found = completedStepsRecord.find((s) => s.step === step);
-
-        if (found && found.placeId) {
-          const placeDetails = await this.getPlaceDetailsById(
-            userId,
-            found.placeId,
-          );
-          placeName = placeDetails.name;
-          placeId = found.placeId;
-          isCompleted = true;
-        }
-
-        return {
-          step,
-          isCompleted: isCompleted,
-          placeName: placeName,
-          placeId: placeId,
-        };
-      }),
-    );
-
-    return {
-      list: dtoList,
-    };
-  }
+  // public async createChecklist(userId: number): Promise<ChecklistViewModel> {
+  //   //todo : ignored steps are not implemented yet
+  //   const stepsList: Categories[] = Object.values(Categories);
+  //
+  //   const completedStepsRecord =
+  //     await this.placeFilterRepositoryService.getPlaceFilterOfPickedSteps(
+  //       userId,
+  //     );
+  //
+  //   let placeName: string | null = null;
+  //   let placeId: number | null = null;
+  //
+  //   const dtoList: ChecklistDto[] = await Promise.all(
+  //     stepsList.map(async (step) => {
+  //       let isCompleted: boolean = false;
+  //       const found = completedStepsRecord.find((s) => s.step === step);
+  //
+  //       if (found && found.placeId) {
+  //         const placeDetails = await this.getPlaceDetailsById(
+  //           userId,
+  //           found.placeId,
+  //         );
+  //         placeName = placeDetails.name;
+  //         placeId = found.placeId;
+  //         isCompleted = true;
+  //       }
+  //
+  //       return {
+  //         step,
+  //         isCompleted: isCompleted,
+  //         placeName: placeName,
+  //         placeId: placeId,
+  //       };
+  //     }),
+  //   );
+  //
+  //   return {
+  //     list: dtoList,
+  //   };
+  // }
 
   private async updateOrCreatePlaceFilter(
     userId: number,

@@ -1,21 +1,13 @@
-import { WeddingSteps } from '../general/wedding-steps-enum.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { PriceType } from '../places/places.dto';
+import { Categories } from '../general/categories';
 
-export enum SearchFilter {
-  MyPick = 'MyPick',
-  MyFavourite = 'MyFavourite',
-  onSale = 'onSale',
-}
 export class PlacesDto {
   id: number;
   name?: string | null;
   formattedAddress?: string | null;
-  @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
-  step: WeddingSteps;
-  picked: boolean;
-  favourite: boolean;
-  @ApiProperty({ enum: SearchFilter, enumName: 'SearchFilter' })
+  @ApiProperty({ enum: Categories, enumName: 'Categories' })
+  category: Categories;
   mainPhoto: string;
   minPrice: string;
   maxPrice: string;
@@ -37,8 +29,8 @@ export class PlaceDetailsDto {
   tiktok?: string;
   instagram?: string;
   phoneNumber: string;
-  @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
-  step: WeddingSteps;
+  @ApiProperty({ enum: Categories, enumName: 'Categories' })
+  category: Categories;
   picked: boolean;
   favourite: boolean;
   mainPhoto: string;
@@ -48,9 +40,13 @@ export class PlaceDetailsDto {
   currency: string;
   description: string;
 }
+
 export class PlacesViewModel {
   places: PlacesDto[];
-  filter?: SearchFilter;
+}
+
+export class SearchFilter {
+  category?: Categories;
 }
 
 //coming from google places api , a fetchName is used to fetch from the places photos api
@@ -60,6 +56,7 @@ export class PlacePhotoDto {
   height: number | null;
   attributions: AuthorAttributionDto[] | null;
 }
+
 export class AuthorAttributionDto {
   displayName?: string | null;
   uri?: string | null;
@@ -77,11 +74,12 @@ export class ToggleFavoritePlaceFilterRequest {
   placeId: number;
   favorite: boolean;
 }
+
 export class TogglePickedPlaceFilterRequest {
   placeId: number;
   picked: boolean;
-  @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
-  step: WeddingSteps;
+  @ApiProperty({ enum: Categories, enumName: 'WeddingSteps' })
+  step: Categories;
 }
 
 export class FavouritePlacesDto {
@@ -89,6 +87,7 @@ export class FavouritePlacesDto {
   name: string;
   city: string;
 }
+
 export class FavouritePlacesViewModel {
   result: FavouritePlacesDto[];
 }

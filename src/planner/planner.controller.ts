@@ -1,24 +1,17 @@
-import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { PlannerService } from './planner.service';
 import {
   FavouritePlacesViewModel,
   PlaceDetailsDto,
   PlacesViewModel,
-  SearchFilter,
   ToggleFavoritePlaceFilterRequest,
   TogglePickedPlaceFilterRequest,
 } from '../types/planner/places.dto';
-import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
-import { ChecklistViewModel, StepsViewModel } from '../types/planner/steps.dto';
-import {
-  UpdateDateRequest,
-  WeddingDateDto,
-} from '../types/planner/weddingDateDto';
-import type { Request } from 'express';
 import { ApiQuery } from '@nestjs/swagger';
 import { User } from '../decorators/user.decorator';
 import { CurrentUser } from '../types/auth/auth.dto';
 import { CountryCode } from '../types/general/countries.dto';
+import { Categories } from '../types/general/categories';
 
 @Controller('planner')
 export class PlannerController {
@@ -32,26 +25,21 @@ export class PlannerController {
   }
 
   @Get('getPlaces')
-  @ApiQuery({ name: 'search', required: false })
-  @ApiQuery({ name: 'step', required: true, enum: WeddingSteps })
-  @ApiQuery({ name: 'filter', required: false, enum: SearchFilter })
   @ApiQuery({ name: 'offset', required: true })
   @ApiQuery({ name: 'countryCode', required: true, enum: CountryCode })
+  @ApiQuery({ name: 'search', required: false })
+  @ApiQuery({ name: 'category', required: false, enum: Categories })
   public async getPlaces(
-    @User() user: CurrentUser,
-    @Query('step') step: WeddingSteps,
     @Query('offset') offset: number,
     @Query('countryCode') countryCode: CountryCode,
+    @Query('category') category: Categories,
     @Query('search') search?: string,
-    @Query('filter') filter?: SearchFilter,
   ): Promise<PlacesViewModel> {
     return await this.plannerService.getPlaces(
-      user.id,
-      step,
       countryCode,
       offset,
       search,
-      filter,
+      category,
     );
   }
 
@@ -63,11 +51,11 @@ export class PlannerController {
     return await this.plannerService.getPlaceDetailsById(user.id, placeId);
   }
 
-  @Get('getSteps')
-  public async getSteps(@Req() req: Request): Promise<StepsViewModel> {
-    const userId = req.user.id;
-    return await this.plannerService.getSteps(userId);
-  }
+  // @Get('getSteps')
+  // public async getSteps(@Req() req: Request): Promise<StepsViewModel> {
+  //   const userId = req.user.id;
+  //   return await this.plannerService.getSteps(userId);
+  // }
 
   @Post('toggleFavoritePlaceFilter')
   public async toggleFavoritePlaceFilter(
@@ -84,24 +72,25 @@ export class PlannerController {
   ) {
     await this.plannerService.togglePicked(user.id, req);
   }
+  //
+  // @Get('getWeddingDate')
+  // public async getWeddingDate(@Req() req: Request): Promise<WeddingDateDto> {
+  //   return await this.plannerService.getWeddingDate(req.user.id);
+  // }
 
-  @Get('getWeddingDate')
-  public async getWeddingDate(@Req() req: Request): Promise<WeddingDateDto> {
-    return await this.plannerService.getWeddingDate(req.user.id);
-  }
+  // @Post('updateWeddingDate')
+  // public async updateWeddingDate(
+  //   @Req() req: Request,
+  //   @Body() date: UpdateDateRequest,
+  // ): Promise<void> {
+  //   return await this.plannerService.updateWeddingDate(
+  //     req.user.id,
+  //     new Date(date.date),
+  //   );
+  // }
 
-  @Post('updateWeddingDate')
-  public async updateWeddingDate(
-    @Req() req: Request,
-    @Body() date: UpdateDateRequest,
-  ): Promise<void> {
-    return await this.plannerService.updateWeddingDate(
-      req.user.id,
-      new Date(date.date),
-    );
-  }
-  @Get('getChecklist')
-  public async getChecklist(@Req() req: Request): Promise<ChecklistViewModel> {
-    return await this.plannerService.createChecklist(req.user.id);
-  }
+  // @Get('getChecklist')
+  // public async getChecklist(@Req() req: Request): Promise<ChecklistViewModel> {
+  //   return await this.plannerService.createChecklist(req.user.id);
+  // }
 }

@@ -1,78 +1,78 @@
-import { WeddingSteps } from '../types/general/wedding-steps-enum.dto';
 import { StepsInfo } from '../types/planner/steps.dto';
+import { Categories } from '../types/general/categories';
 
-export const stepsInfo: Record<WeddingSteps, StepsInfo> = {
-  [WeddingSteps.Host]: {
+export const stepsInfo: Record<Categories, StepsInfo> = {
+  [Categories.Host]: {
     title: 'Host',
     description: 'Select the master of ceremonies or wedding host.',
   },
-  [WeddingSteps.Dress]: {
+  [Categories.Dress]: {
     title: 'Dress',
     description: 'Find and fit the wedding dress.',
   },
-  [WeddingSteps.Photographer]: {
+  [Categories.Photographer]: {
     title: 'Photographer',
     description: 'Book a photographer to capture the wedding day.',
   },
-  [WeddingSteps.Dj]: {
+  [Categories.Dj]: {
     title: 'DJ',
     description: 'Hire a DJ to provide music and entertainment.',
   },
-  [WeddingSteps.MakeUpArtist]: {
+  [Categories.MakeUpArtist]: {
     title: 'Make-up Artist',
     description: 'Arrange a make-up artist for the bride and bridal party.',
   },
-  [WeddingSteps.Decorator]: {
+  [Categories.Decorator]: {
     title: 'Decorator',
     description: 'Organize decorations for the wedding venue.',
   },
-  [WeddingSteps.Catering]: {
+  [Categories.Catering]: {
     title: 'Catering',
     description: 'Choose a catering service for food and drinks.',
   },
 
-  [WeddingSteps.DancingCourse]: {
+  [Categories.DancingCourse]: {
     title: 'Dancing Course',
     description: 'Take dancing lessons for the first dance.',
   },
-  [WeddingSteps.Aarada]: {
+  [Categories.Aarada]: {
     title: 'Aarada',
     description: 'Arrange the traditional Aarada performance.',
   },
-  [WeddingSteps.Car]: {
+  [Categories.Car]: {
     title: 'Car',
     description: 'Book the wedding car or transportation.',
   },
 
-  [WeddingSteps.Giveaways]: {
+  [Categories.Giveaways]: {
     title: 'Giveaways',
     description: 'Prepare wedding favors or giveaways for guests.',
   },
-  [WeddingSteps.MusiciansAndPerformers]: {
+  [Categories.MusiciansAndPerformers]: {
     title: 'Musicians and Performers',
     description: 'Book live musicians, singers, or performers.',
   },
-  [WeddingSteps.Jewelry]: {
+  [Categories.Jewelry]: {
     title: 'Jewelry',
     description: 'Purchase or arrange jewelry for the couple.',
   },
-  [WeddingSteps.Perfumes]: {
+  [Categories.Perfumes]: {
     title: 'Perfumes',
     description: 'Select perfumes for the bride and groom.',
   },
-  [WeddingSteps.Hammam]: {
+  [Categories.Hammam]: {
     title: 'Hammam',
     description: 'Plan a hammam (traditional bath) session before the wedding.',
   },
-  [WeddingSteps.CosmeticClinics]: {
+  [Categories.CosmeticClinics]: {
     title: 'Cosmetic Clinics',
     description: 'Book beauty or cosmetic treatments ahead of the wedding.',
   },
-  [WeddingSteps.Fireworks]: {
+  [Categories.Fireworks]: {
     title: 'Fireworks',
     description: 'Lighten up your wedding day with fireworks.',
   },
-  [WeddingSteps.Extra]: {
+  [Categories.Extra]: {
     title: 'Extra Decorations',
     description: 'Arrange any additional or custom decorations.',
   },
