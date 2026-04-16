@@ -83,3 +83,12 @@ export class TogglePickedPlaceFilterRequest {
   @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
   step: WeddingSteps;
 }
+
+export class FavouritePlacesDto {
+  id: number;
+  name: string;
+  city: string;
+}
+export class FavouritePlacesViewModel {
+  result: FavouritePlacesDto[];
+}

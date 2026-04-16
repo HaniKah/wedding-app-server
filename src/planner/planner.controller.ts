@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
 import { PlannerService } from './planner.service';
 import {
+  FavouritePlacesViewModel,
   PlaceDetailsDto,
   PlacesViewModel,
   SearchFilter,
@@ -22,6 +23,13 @@ import { CountryCode } from '../types/general/countries.dto';
 @Controller('planner')
 export class PlannerController {
   constructor(private readonly plannerService: PlannerService) {}
+
+  @Get('getFavorites')
+  public async getFavorites(
+    @User() user: CurrentUser,
+  ): Promise<FavouritePlacesViewModel> {
+    return await this.plannerService.getFavorites(user.id);
+  }
 
   @Get('getPlaces')
   @ApiQuery({ name: 'search', required: false })
@@ -54,6 +62,7 @@ export class PlannerController {
   ): Promise<PlaceDetailsDto> {
     return await this.plannerService.getPlaceDetailsById(user.id, placeId);
   }
+
   @Get('getSteps')
   public async getSteps(@Req() req: Request): Promise<StepsViewModel> {
     const userId = req.user.id;

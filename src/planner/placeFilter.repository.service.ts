@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { Insertable, Kysely, Updateable } from 'kysely';
 import { DB, PlaceFilter } from 'src/types/db/db';
 import { DbService } from '../db/db.service';
-import { WeddingDateDto } from 'src/types/planner/weddingDateDto';
 import { WeddingSteps } from 'src/types/general/wedding-steps-enum.dto';
 
 @Injectable()
@@ -15,16 +14,23 @@ export class PlaceFilterRepositoryService {
   }
   public async removeAllPickedOfSameStep(userId: number, step: WeddingSteps) {
     await this.db
-      .updateTable("placeFilter")
+      .updateTable('placeFilter')
       .set({ isPicked: false })
-      .where("userId", "=", userId)
-      .where("placeId", "in", (eb) =>
-        eb.selectFrom("places")
-          .select("id")
-          .where("step", "=", step))
+      .where('userId', '=', userId)
+      .where('placeId', 'in', (eb) =>
+        eb.selectFrom('places').select('id').where('step', '=', step),
+      )
       .execute();
   }
 
+  public async getPlaceFilterOfFavorites(userId: number) {
+    return await this.db
+      .selectFrom('placeFilter')
+      .selectAll()
+      .where('placeFilter.userId', '=', userId)
+      .where('placeFilter.isFavorite', 'is', true)
+      .execute();
+  }
 
   public async getPlaceFilterOfPickedSteps(userId: number) {
     return await this.db

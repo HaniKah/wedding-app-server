@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import {
+  FavouritePlacesDto,
+  FavouritePlacesViewModel,
   PlaceDetailsDto,
   PlacesViewModel,
   SearchFilter,
@@ -30,7 +32,7 @@ export class PlannerService {
   constructor(
     private readonly placeFilterRepositoryService: PlaceFilterRepositoryService,
     private readonly plansRepositoryService: PlansRepositoryService,
-    private readonly placesRepositoryService: PlannerRepositoryService,
+    private readonly plannerRepositoryService: PlannerRepositoryService,
     private readonly photosService: PhotosService,
   ) {}
 
@@ -40,6 +42,28 @@ export class PlannerService {
     await this.plansRepositoryService.updatePlan(planRecord.id, {
       weddingDate: date,
     });
+  }
+  public async getFavorites(userId: number): Promise<FavouritePlacesViewModel> {
+    const filters =
+      await this.placeFilterRepositoryService.getPlaceFilterOfFavorites(userId);
+
+    const favoritePlacesRecord = await Promise.all(
+      filters.map(
+        async (f) =>
+          await this.plannerRepositoryService.getPlaceByIdOrThrow(f.placeId),
+      ),
+    );
+
+    const favPlaces: FavouritePlacesDto[] = favoritePlacesRecord.map((p) => {
+      return {
+        id: p.id,
+        city: p.city,
+        name: p.name,
+      };
+    });
+    return {
+      result: favPlaces,
+    };
   }
 
   public async getWeddingDate(userId: number): Promise<WeddingDateDto> {
@@ -84,7 +108,7 @@ export class PlannerService {
     filter?: SearchFilter,
   ): Promise<PlacesViewModel> {
     const placesAndPlaceDetailsRecord =
-      await this.placesRepositoryService.getAllPlaces(
+      await this.plannerRepositoryService.getAllPlaces(
         userId,
         step,
         countryCode,
@@ -132,7 +156,7 @@ export class PlannerService {
     placeId: number,
   ): Promise<PlaceDetailsDto> {
     const place =
-      await this.placesRepositoryService.getPlaceByIdOrThrow(placeId);
+      await this.plannerRepositoryService.getPlaceByIdOrThrow(placeId);
     const filters = await this.placeFilterRepositoryService.getPlaceFilter(
       userId,
       placeId,
