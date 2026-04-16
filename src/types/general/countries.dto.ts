@@ -39,7 +39,7 @@ export enum CountryCode {
 
 export class CountryInfo {
   countryName: string;
-  states: string[];
+  cities: string[];
   @ApiProperty({ enum: CountryCode, enumName: 'CountryCode' })
   countryCode: CountryCode;
   currency: string;

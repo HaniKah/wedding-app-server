@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import {
   PlaceDetailsDto,
-  PlaceFilterRequest,
   PlacesViewModel,
   SearchFilter,
   ToggleFavoritePlaceFilterRequest,
@@ -33,7 +32,7 @@ export class PlannerService {
     private readonly plansRepositoryService: PlansRepositoryService,
     private readonly placesRepositoryService: PlannerRepositoryService,
     private readonly photosService: PhotosService,
-  ) { }
+  ) {}
 
   public async updateWeddingDate(userId: number, date: Date): Promise<void> {
     const planRecord =
@@ -76,32 +75,6 @@ export class PlannerService {
     });
   }
 
-  private async updateOrCreatePlaceFilter(
-    userId: number,
-    request: Updateable<PlaceFilter>,
-  ): Promise<void> {
-    const filtersRecord =
-      await this.placeFilterRepositoryService.getPlaceFilter(
-        userId,
-        request.placeId,
-      );
-
-    if (filtersRecord) {
-      await this.placeFilterRepositoryService.updatePlaceFilterById(
-        filtersRecord.id,
-        request,
-      );
-    } else {
-      //todo optimization: here we are updating unnecessary fields
-      await this.placeFilterRepositoryService.createPlaceFilter({
-        userId: userId,
-        placeId: request.placeId,
-        isPicked: request.isPicked,
-        isFavorite: request.isFavorite,
-      });
-    }
-  }
-
   public async getPlaces(
     userId: number,
     step: WeddingSteps,
@@ -142,8 +115,11 @@ export class PlannerService {
           maxPrice: r.maxPrice,
           minPrice: r.minPrice,
           currency: COUNTRIES.get(r.country)?.currency,
+          city: r.city,
           isPromoted: isPromoted,
           label: label,
+          phoneNumber: r.phoneNumber,
+          priceType: r.priceType,
         };
       }),
     );
@@ -271,6 +247,32 @@ export class PlannerService {
     return {
       list: dtoList,
     };
+  }
+
+  private async updateOrCreatePlaceFilter(
+    userId: number,
+    request: Updateable<PlaceFilter>,
+  ): Promise<void> {
+    const filtersRecord =
+      await this.placeFilterRepositoryService.getPlaceFilter(
+        userId,
+        request.placeId,
+      );
+
+    if (filtersRecord) {
+      await this.placeFilterRepositoryService.updatePlaceFilterById(
+        filtersRecord.id,
+        request,
+      );
+    } else {
+      //todo optimization: here we are updating unnecessary fields
+      await this.placeFilterRepositoryService.createPlaceFilter({
+        userId: userId,
+        placeId: request.placeId,
+        isPicked: request.isPicked,
+        isFavorite: request.isFavorite,
+      });
+    }
   }
 
   private createLabelContent(saleLabel: SaleLabel, percentage: string): string {

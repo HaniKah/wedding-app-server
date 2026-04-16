@@ -1,5 +1,6 @@
 import { WeddingSteps } from '../general/wedding-steps-enum.dto';
 import { ApiProperty } from '@nestjs/swagger';
+import { PriceType } from '../places/places.dto';
 
 export enum SearchFilter {
   MyPick = 'MyPick',
@@ -21,6 +22,10 @@ export class PlacesDto {
   currency: string;
   isPromoted: boolean;
   label: string | null;
+  @ApiProperty({ enum: PriceType, enumName: 'PriceType' })
+  priceType: PriceType;
+  phoneNumber: string;
+  city: string;
 }
 
 export class PlaceDetailsDto {
@@ -76,5 +81,5 @@ export class TogglePickedPlaceFilterRequest {
   placeId: number;
   picked: boolean;
   @ApiProperty({ enum: WeddingSteps, enumName: 'WeddingSteps' })
-  step: WeddingSteps
+  step: WeddingSteps;
 }

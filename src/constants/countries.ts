@@ -9,7 +9,15 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
     {
       countryCode: CountryCode.BH,
       countryName: 'Bahrain',
-      states: [],
+      cities: [
+        'Manama',
+        'Riffa',
+        'Muharraq',
+        'Isa Town',
+        'Hamad Town',
+        'Sitra',
+        'Budaiya',
+      ],
       currency: 'BHD',
     },
   ],
@@ -18,17 +26,18 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
     {
       countryCode: CountryCode.EG,
       countryName: 'Egypt',
-      states: [],
+      cities: [
+        'Cairo',
+        'Alexandria',
+        'Giza',
+        'Sharm El Sheikh',
+        'Hurghada',
+        'Luxor',
+        'Aswan',
+        'Mansoura',
+        'Tanta',
+      ],
       currency: 'EGP',
-    },
-  ],
-  [
-    CountryCode.IR,
-    {
-      countryCode: CountryCode.IR,
-      countryName: 'Iran',
-      states: [],
-      currency: 'IRR',
     },
   ],
   [
@@ -36,7 +45,16 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
     {
       countryCode: CountryCode.IQ,
       countryName: 'Iraq',
-      states: [],
+      cities: [
+        'Baghdad',
+        'Basra',
+        'Erbil',
+        'Mosul',
+        'Najaf',
+        'Karbala',
+        'Sulaymaniyah',
+        'Kirkuk',
+      ],
       currency: 'IQD',
     },
   ],
@@ -45,7 +63,7 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
     {
       countryCode: CountryCode.JO,
       countryName: 'Jordan',
-      states: [
+      cities: [
         'amman',
         'irbid',
         'zarqa',
@@ -67,7 +85,18 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
     {
       countryCode: CountryCode.KW,
       countryName: 'Kuwait',
-      states: [],
+      cities: [
+        'Kuwait City',
+        'Hawalli',
+        'Salmiya',
+        'Ahmadi',
+        'Farwaniya',
+        'Jahra',
+        'Mangaf',
+        'Sabah Al Salem',
+        'Fahaheel',
+        'Rumaithiya',
+      ],
       currency: 'KWD',
     },
   ],
@@ -76,7 +105,15 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
     {
       countryCode: CountryCode.LB,
       countryName: 'Lebanon',
-      states: [],
+      cities: [
+        'Beirut',
+        'Tripoli',
+        'Sidon',
+        'Tyre',
+        'Jounieh',
+        'Byblos',
+        'Zahle',
+      ],
       currency: 'LBP',
     },
   ],
@@ -85,7 +122,7 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
     {
       countryCode: CountryCode.OM,
       countryName: 'Oman',
-      states: [],
+      cities: ['Muscat', 'Salalah', 'Sohar', 'Nizwa', 'Sur', 'Ibri', 'Buraimi'],
       currency: 'OMR',
     },
   ],
@@ -94,7 +131,18 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
     {
       countryCode: CountryCode.PS,
       countryName: 'Palestine',
-      states: [],
+      cities: [
+        'Gaza',
+        'Ramallah',
+        'Nablus',
+        'Hebron',
+        'Jenin',
+        'Tulkarm',
+        'Qalqilya',
+        'Jericho',
+        'Bethlehem',
+        'Rafah',
+      ],
       currency: 'ILS',
     },
   ],
@@ -103,7 +151,7 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
     {
       countryCode: CountryCode.QA,
       countryName: 'Qatar',
-      states: [
+      cities: [
         'doha',
         'al rayyan',
         'al wakra',
@@ -121,7 +169,7 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
     {
       countryCode: CountryCode.SA,
       countryName: 'Saudi Arabia',
-      states: [
+      cities: [
         'riyadh',
         'makkah',
         'madinah',
@@ -144,17 +192,19 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
     {
       countryCode: CountryCode.SY,
       countryName: 'Syria',
-      states: [],
+      cities: [
+        'Damascus',
+        'Aleppo',
+        'Homs',
+        'Latakia',
+        'Hama',
+        'Deir ez-Zor',
+        'Raqqa',
+        'Idlib',
+        'Tartus',
+        'Daraa',
+      ],
       currency: 'SYP',
-    },
-  ],
-  [
-    CountryCode.TR,
-    {
-      countryCode: CountryCode.TR,
-      countryName: 'Turkey',
-      states: [],
-      currency: 'TRY',
     },
   ],
   [
@@ -162,7 +212,7 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
     {
       countryCode: CountryCode.AE,
       countryName: 'United Arabs of Emirates',
-      states: [
+      cities: [
         'abu dhabi',
         'dubai',
         'sharjah',
@@ -179,7 +229,17 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
     {
       countryCode: CountryCode.YE,
       countryName: 'Yemen',
-      states: [],
+      cities: [
+        'Sanaa',
+        'Aden',
+        'Taiz',
+        'Hodeidah',
+        'Mukalla',
+        'Ibb',
+        'Dhamar',
+        'Amran',
+        'Sayoun',
+      ],
       currency: 'YER',
     },
   ],
@@ -188,7 +248,17 @@ export const COUNTRIES: Map<CountryCode, CountryInfo> = new Map<
     {
       countryCode: CountryCode.SD,
       countryName: 'Sudan',
-      states: [],
+      cities: [
+        'Khartoum',
+        'Omdurman',
+        'Khartoum North',
+        'Port Sudan',
+        'Kassala',
+        'El Obeid',
+        'Wad Madani',
+        'Atbara',
+        'Gedaref',
+      ],
       currency: 'SDG',
     },
   ],
