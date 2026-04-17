@@ -11,7 +11,10 @@ import { PlacesService } from './places.service';
 import type { Request } from 'express';
 import { User } from '../decorators/user.decorator';
 import { CurrentUser } from '../types/auth/auth.dto';
+import { ApiExtraModels } from '@nestjs/swagger';
+import { CountryInfo } from '../types/general/countries.dto';
 
+@ApiExtraModels(CountryInfo)
 @Controller('places')
 export class PlacesController {
   constructor(private readonly placesService: PlacesService) {}

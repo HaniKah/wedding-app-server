@@ -139,6 +139,8 @@ export class PlacesService {
             today >= p.promotionBeginsAt && today <= p.promotionEndsAt,
           minPrice: p.minPrice,
           maxPrice: p.maxPrice,
+          city: p.city,
+          country: p.country,
         };
       }),
     );
