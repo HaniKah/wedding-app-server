@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { PriceType } from '../places/places.dto';
 import { Categories } from '../general/categories';
+import { CountryCode } from '../general/countries.dto';
 
 export class PlacesDto {
   id: number;
@@ -16,6 +17,9 @@ export class PlacesDto {
   @ApiProperty({ enum: PriceType, enumName: 'PriceType' })
   priceType: PriceType;
   phoneNumber: string;
+  @ApiProperty({ enum: CountryCode, enumName: 'CountryCode' })
+  country: CountryCode;
+  city: string;
 }
 
 export class PlaceDetailsDto {

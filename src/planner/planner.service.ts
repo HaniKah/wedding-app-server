@@ -124,11 +124,12 @@ export class PlannerService {
           mainPhoto: mainPhoto,
           maxPrice: r.maxPrice,
           minPrice: r.minPrice,
-          city: r.city,
           isPromoted: isPromoted,
           label: label,
           phoneNumber: r.phoneNumber,
           priceType: r.priceType,
+          country: r.country,
+          city: r.city,
         };
       }),
     );

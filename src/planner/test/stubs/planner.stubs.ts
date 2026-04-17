@@ -18,6 +18,8 @@ export const placesViewModelStub = (): PlacesViewModel => {
         minPrice: '50',
         phoneNumber: '0795542743',
         priceType: PriceType.None,
+        country: CountryCode.JO,
+        city: 'Amman',
         formattedAddress:
           'sample address , sample city , sample state , sample country',
       },

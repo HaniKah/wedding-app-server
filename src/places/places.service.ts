@@ -110,6 +110,7 @@ export class PlacesService {
       minPrice: data.placeInfo.minPrice,
       maxPrice: data.placeInfo.maxPrice,
       priceType: data.placeInfo.priceType,
+      isPublished: true,
     });
     return await this.getPlaceDetails(placeRecord.id);
   }
