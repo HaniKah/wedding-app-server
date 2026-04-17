@@ -12,7 +12,6 @@ import { PhotosService } from '../photos/photos.service';
 import { PhotoSize } from '../types/photos/photos.dto';
 import { Selectable } from 'kysely';
 import { Places } from '../types/db/db';
-import { COUNTRIES } from '../constants/countries';
 
 @Injectable()
 export class PlacesService {
@@ -25,23 +24,14 @@ export class PlacesService {
     req: UpdatePlaceRequest,
   ): Promise<VendorPlaceDetailsDto> {
     switch (req.updateStep) {
-      case UpdateStep.PickPlaceType:
-        await this.placesRepositoryService.updatePlace(req.id, {
-          step: req.type,
-        });
-        break;
       case UpdateStep.FillPlaceInfo: {
         await this.placesRepositoryService.updatePlace(req.id, {
           name: req.placeInfo.name,
           phoneNumber: req.placeInfo.phoneNumber,
-          facebook: req.placeInfo.facebook,
-          instagram: req.placeInfo.instagram,
-          tiktok: req.placeInfo.tiktok,
-          website: req.placeInfo.website,
           minPrice: req.placeInfo.minPrice,
           maxPrice: req.placeInfo.maxPrice,
           priceType: req.placeInfo.priceType,
-          country: req.location.countryCode, //todo this is duplicate with the step PickPlaceLocation , remove it from here when you implement the pick place location step
+          category: req.placeInfo.category,
         });
         break;
       }
@@ -91,14 +81,12 @@ export class PlacesService {
       isPublished: p.isPublished,
       description: p.description,
       mainPhoto: mainPhoto,
-      step: p.step,
+      category: p.step,
       minPrice: p.minPrice,
       maxPrice: p.maxPrice,
       priceType: p.priceType,
-      googleId: p.googleId,
       countryCode: p.country,
-      countryName: COUNTRIES.get(p.country)?.countryName,
-      currency: COUNTRIES.get(p.country)?.currency,
+      city: p.city,
     };
   }
 
@@ -114,7 +102,14 @@ export class PlacesService {
   ): Promise<VendorPlaceDetailsDto> {
     const placeRecord = await this.placesRepositoryService.createPlace({
       userId: userId,
-      step: data.type,
+      name: data.placeInfo.name,
+      step: data.placeInfo.category,
+      phoneNumber: data.placeInfo.phoneNumber,
+      country: data.location.countryCode,
+      city: data.location.city,
+      minPrice: data.placeInfo.minPrice,
+      maxPrice: data.placeInfo.maxPrice,
+      priceType: data.placeInfo.priceType,
     });
     return await this.getPlaceDetails(placeRecord.id);
   }
@@ -138,7 +133,6 @@ export class PlacesService {
           name: p.name,
           streetName: p.streetName,
           thumbnail: photo,
-          currency: COUNTRIES.get(p.country)?.currency,
           isPublished: p.isPublished,
           isCompleted: isCompleted,
           isPromoted:

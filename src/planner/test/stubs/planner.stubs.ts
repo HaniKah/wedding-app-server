@@ -10,7 +10,6 @@ export const placesViewModelStub = (): PlacesViewModel => {
       {
         id: 123,
         name: 'sample Cars',
-        currency: 'JOD',
         category: Categories.Dress,
         isPromoted: false,
         label: null,
@@ -19,7 +18,6 @@ export const placesViewModelStub = (): PlacesViewModel => {
         minPrice: '50',
         phoneNumber: '0795542743',
         priceType: PriceType.None,
-        city: 'Amman',
         formattedAddress:
           'sample address , sample city , sample state , sample country',
       },

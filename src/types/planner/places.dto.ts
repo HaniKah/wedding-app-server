@@ -11,13 +11,11 @@ export class PlacesDto {
   mainPhoto: string;
   minPrice: string;
   maxPrice: string;
-  currency: string;
   isPromoted: boolean;
   label: string | null;
   @ApiProperty({ enum: PriceType, enumName: 'PriceType' })
   priceType: PriceType;
   phoneNumber: string;
-  city: string;
 }
 
 export class PlaceDetailsDto {
@@ -36,8 +34,6 @@ export class PlaceDetailsDto {
   mainPhoto: string;
   maxPrice: string;
   minPrice: string;
-  countryName: string;
-  currency: string;
   description: string;
 }
 

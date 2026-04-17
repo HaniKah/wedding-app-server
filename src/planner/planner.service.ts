@@ -13,7 +13,6 @@ import { PlaceFilterRepositoryService } from './placeFilter.repository.service';
 import { PlannerRepositoryService } from './planner.repository.service';
 import { PhotosService } from '../photos/photos.service';
 import { PhotoSize } from '../types/photos/photos.dto';
-import { COUNTRIES } from '../constants/countries';
 import { CountryCode } from '../types/general/countries.dto';
 import { SaleLabel } from '../types/webhooks/revenue-cat.dto';
 import { PlaceFilter } from 'src/types/db/db';
@@ -125,7 +124,6 @@ export class PlannerService {
           mainPhoto: mainPhoto,
           maxPrice: r.maxPrice,
           minPrice: r.minPrice,
-          currency: COUNTRIES.get(r.country)?.currency,
           city: r.city,
           isPromoted: isPromoted,
           label: label,
@@ -164,8 +162,6 @@ export class PlannerService {
       facebook: place?.facebook,
       instagram: place?.instagram,
       tiktok: place?.tiktok,
-      currency: COUNTRIES.get(place.country)?.currency,
-      countryName: COUNTRIES.get(place.country)?.countryName,
       category: place.step as Categories,
       picked: filters?.isPicked || false,
       favourite: filters?.isFavorite || false,

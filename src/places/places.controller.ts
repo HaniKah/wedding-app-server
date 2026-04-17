@@ -11,8 +11,6 @@ import { PlacesService } from './places.service';
 import type { Request } from 'express';
 import { User } from '../decorators/user.decorator';
 import { CurrentUser } from '../types/auth/auth.dto';
-import { CountryInfoViewModel } from '../types/general/countries.dto';
-import { COUNTRIES } from '../constants/countries';
 
 @Controller('places')
 export class PlacesController {
@@ -55,10 +53,5 @@ export class PlacesController {
     @Query('id') id: number,
   ): Promise<VendorPlaceDetailsDto> {
     return await this.placesService.getPlaceDetails(id);
-  }
-
-  @Get('getCountries')
-  public getCountries(): CountryInfoViewModel {
-    return { result: [...COUNTRIES.values()] };
   }
 }

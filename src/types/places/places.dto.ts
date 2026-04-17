@@ -3,7 +3,6 @@ import { CountryCode } from '../general/countries.dto';
 import { Categories } from '../general/categories';
 
 export enum UpdateStep {
-  PickPlaceType = 'PickPlaceType',
   FillPlaceInfo = 'FillPlaceInfo',
   AddDescription = 'AddDescription',
   PickPlaceLocation = 'PickPlaceLocation',
@@ -28,19 +27,18 @@ export class DeletePlaceRequest {
 }
 
 export class UpdatePlaceRequest {
-  id?: number;
+  id: number;
   @ApiProperty({ enum: UpdateStep, enumName: 'UpdateStep' })
-  updateStep?: UpdateStep;
-  @ApiProperty({ enum: Categories, enumName: 'Categories' })
-  type?: Categories;
-  placeInfo?: UpdatePlaceInfo;
+  updateStep: UpdateStep;
+  placeInfo?: PlaceInfo;
   description?: string;
-  location?: UpdateLocationInfo;
+  location?: LocationInfo;
+  socialMedia?: SocialMediaInfo;
 }
 
 export class CreatePlaceRequest {
-  @ApiProperty({ enum: Categories, enumName: 'Categories' })
-  type?: Categories;
+  placeInfo: PlaceInfo;
+  location: LocationInfo;
 }
 
 export class VendorPlaceViewModel {
@@ -62,7 +60,6 @@ export class VendorPlaceDto {
   id: number;
   name: string;
   streetName?: string;
-  currency: string;
   thumbnail: string;
   isPublished: boolean;
   isCompleted: boolean;
@@ -71,26 +68,30 @@ export class VendorPlaceDto {
   maxPrice: string;
 }
 
-class UpdatePlaceInfo {
-  name?: string;
-  phoneNumber?: string;
-  facebook?: string;
-  instagram?: string;
-  tiktok?: string;
-  website?: string;
+class PlaceInfo {
+  name: string;
+  phoneNumber: string;
+  @ApiProperty({ enum: Categories, enumName: 'Categories' })
+  category: Categories;
   minPrice?: string;
   maxPrice?: string;
-  priceType?: PriceType;
+  priceType: PriceType;
 }
 
-class UpdateLocationInfo {
+class LocationInfo {
+  city: string;
+  countryCode: CountryCode;
   streetName?: string;
-  city?: string;
-  countryCode?: CountryCode;
   postalCode?: string;
   lat?: number;
   lng?: number;
   googleId?: string;
+}
+class SocialMediaInfo {
+  instagram?: string;
+  facebook?: string;
+  tiktok?: string;
+  website?: string;
 }
 
 export class PublishPlaceRequest {
@@ -101,8 +102,8 @@ export class PublishPlaceRequest {
 export class VendorPlaceDetailsDto {
   id: number;
   name: string;
-  @ApiProperty({ enum: Categories, enumName: 'WeddingSteps' })
-  step: Categories;
+  @ApiProperty({ enum: Categories, enumName: 'Categories' })
+  category: Categories;
   streetName?: string;
   phoneNumber: string;
   facebook?: string;
@@ -116,9 +117,7 @@ export class VendorPlaceDetailsDto {
   maxPrice: string;
   @ApiProperty({ enum: PriceType, enumName: 'PriceType' })
   priceType: PriceType;
-  googleId?: string;
   @ApiProperty({ enum: CountryCode, enumName: 'CountryCode' })
   countryCode: CountryCode;
-  currency: string;
-  countryName: string;
+  city: string;
 }
