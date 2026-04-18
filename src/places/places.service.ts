@@ -31,7 +31,7 @@ export class PlacesService {
           minPrice: req.placeInfo.minPrice,
           maxPrice: req.placeInfo.maxPrice,
           priceType: req.placeInfo.priceType,
-          category: req.placeInfo.category,
+          step: req.placeInfo.category,
         });
         break;
       }
