@@ -69,6 +69,8 @@ export class VendorPlaceDto {
   @ApiProperty({ enum: CountryCode, enumName: 'CountryCode' })
   country: CountryCode;
   city: string;
+  @ApiProperty({ enum: Categories, enumName: 'Categories' })
+  category: Categories;
 }
 
 class PlaceInfo {

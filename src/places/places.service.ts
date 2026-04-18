@@ -142,6 +142,7 @@ export class PlacesService {
           maxPrice: p.maxPrice,
           city: p.city,
           country: p.country,
+          category: p.step,
         };
       }),
     );
