@@ -9,7 +9,6 @@ import type { ConfigType } from '@nestjs/config';
 import JwtConfig from './config/jwt.config';
 import exchangeJwtConfig from './config/exchange-jwt.config';
 import { PlansRepositoryService } from '../planner/plans.repository.service';
-import { v4 } from 'uuid';
 
 @Injectable()
 export class AuthService {
@@ -50,14 +49,9 @@ export class AuthService {
   async validateGoogleUser(googleUser: CreateUserDto) {
     const user = await this.usersService.findUserByEmail(googleUser.email);
     if (user) {
-      if (!user.rcAppUserId) {
-        await this.updateUserRcAppUserId(user.id);
-      }
       return user;
     } else {
       const userRecord = await this.usersService.createUser(googleUser);
-      await this.updateUserRcAppUserId(userRecord.id);
-      // todo : solve the catch error thing , https://www.youtube.com/watch?v=AdmGHwvgaVs&t=72s
       await this.plansRepositoryService.createPlan(userRecord.id);
       return userRecord;
     }
@@ -123,9 +117,5 @@ export class AuthService {
     const user = await this.usersService.findUserById(userId);
     if (!user) throw new UnauthorizedException('User not found!');
     return { id: user.id, role: user.role as Role };
-  }
-  private async updateUserRcAppUserId(userId: number): Promise<void> {
-    const RcId = `${userId}rc-${v4()}`;
-    await this.usersService.updateUser(userId, { rcAppUserId: RcId });
   }
 }
