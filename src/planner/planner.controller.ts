@@ -51,12 +51,6 @@ export class PlannerController {
     return await this.plannerService.getPlaceDetailsById(user.id, placeId);
   }
 
-  // @Get('getSteps')
-  // public async getSteps(@Req() req: Request): Promise<StepsViewModel> {
-  //   const userId = req.user.id;
-  //   return await this.plannerService.getSteps(userId);
-  // }
-
   @Post('toggleFavoritePlaceFilter')
   public async toggleFavoritePlaceFilter(
     @Body() req: ToggleFavoritePlaceFilterRequest,
@@ -72,25 +66,4 @@ export class PlannerController {
   ) {
     await this.plannerService.togglePicked(user.id, req);
   }
-  //
-  // @Get('getWeddingDate')
-  // public async getWeddingDate(@Req() req: Request): Promise<WeddingDateDto> {
-  //   return await this.plannerService.getWeddingDate(req.user.id);
-  // }
-
-  // @Post('updateWeddingDate')
-  // public async updateWeddingDate(
-  //   @Req() req: Request,
-  //   @Body() date: UpdateDateRequest,
-  // ): Promise<void> {
-  //   return await this.plannerService.updateWeddingDate(
-  //     req.user.id,
-  //     new Date(date.date),
-  //   );
-  // }
-
-  // @Get('getChecklist')
-  // public async getChecklist(@Req() req: Request): Promise<ChecklistViewModel> {
-  //   return await this.plannerService.createChecklist(req.user.id);
-  // }
 }

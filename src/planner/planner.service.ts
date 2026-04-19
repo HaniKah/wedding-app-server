@@ -82,7 +82,7 @@ export class PlannerService {
   ) {
     await this.placeFilterRepositoryService.removeAllPickedOfSameStep(
       userId,
-      req.step,
+      req.category,
     );
 
     await this.updateOrCreatePlaceFilter(userId, {
@@ -170,6 +170,7 @@ export class PlannerService {
       maxPrice: place.maxPrice,
       minPrice: place.minPrice,
       description: place.description,
+      countryCode: place.country,
     };
   }
 

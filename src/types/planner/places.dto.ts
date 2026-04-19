@@ -39,6 +39,8 @@ export class PlaceDetailsDto {
   maxPrice: string;
   minPrice: string;
   description: string;
+  @ApiProperty({ enum: CountryCode, enumName: 'CountryCode' })
+  countryCode: CountryCode;
 }
 
 export class PlacesViewModel {
@@ -78,8 +80,8 @@ export class ToggleFavoritePlaceFilterRequest {
 export class TogglePickedPlaceFilterRequest {
   placeId: number;
   picked: boolean;
-  @ApiProperty({ enum: Categories, enumName: 'WeddingSteps' })
-  step: Categories;
+  @ApiProperty({ enum: Categories, enumName: 'Categories' })
+  category: Categories;
 }
 
 export class FavouritePlacesDto {
