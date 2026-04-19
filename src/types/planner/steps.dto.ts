@@ -30,8 +30,8 @@ export interface StepsInfo {
 }
 
 export class ChecklistDto {
-  @ApiProperty({ enum: Categories, enumName: 'WeddingSteps' })
-  step: Categories;
+  @ApiProperty({ enum: Categories, enumName: 'Categories' })
+  category: Categories;
   isCompleted: boolean;
   placeName: string | null;
   placeId: number | null;

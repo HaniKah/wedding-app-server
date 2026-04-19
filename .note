@@ -2,13 +2,13 @@ to expose returned Maps , use the following :
   @ApiOkResponse({
     schema: {
       type: 'object',
-      properties: Object.values(WeddingSteps).reduce(
+      properties: Object.values(Categories).reduce(
         (acc, step) => {
           acc[step] = { $ref: getSchemaPath(StepsDto) };
           return acc;
         },
         {} as Record<string, any>,
       ),
-      required: Object.values(WeddingSteps),
+      required: Object.values(Categories),
     },
   })

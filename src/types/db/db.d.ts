@@ -69,7 +69,7 @@ export interface Places {
   promotionEndsAt: Timestamp | null;
   saleLabel: SaleLabel;
   salePercentage: Numeric | null;
-  step: WeddingSteps;
+  step: Categories;
   streetName: string | null;
   tiktok: string | null;
   userId: Generated<number>;
@@ -100,9 +100,6 @@ export interface Users {
   id: Generated<number>;
   lastName: string;
   password: string;
-  rcAliases: string | null;
-  rcAppUserId: string | null;
-  rcOriginalAppUserId: string | null;
   refreshToken: string | null;
   role: Role;
   updatedAt: Timestamp | null;
