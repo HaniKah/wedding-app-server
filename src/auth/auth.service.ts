@@ -68,7 +68,6 @@ export class AuthService {
     const user = await this.usersService.findUserById(id);
     return {
       id: id,
-      rcAppUserId: user.rcAppUserId,
       accessToken,
       refreshToken,
       user: {

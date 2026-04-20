@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { BucketName, PhotoSize } from '../types/photos/photos.dto';
 import { v4 } from 'uuid';
 import { MinioService } from '../minio/minio.service';
 import { PhotosRepositoryService } from './photos.repository.service';
-import sharp from 'sharp';
+import sharp, { OutputInfo } from 'sharp';
 import { PhotosDto } from '../types/planner/photos.dto';
+import {
+  BucketName,
+  PhotoSize,
+  SharpVariants,
+} from '../types/photos/photos.dto';
 
 @Injectable()
 export class PhotosService {
@@ -12,9 +16,11 @@ export class PhotosService {
     private readonly minioService: MinioService,
     private readonly photosRepositoryService: PhotosRepositoryService,
   ) {}
+
   public async hasPhotos(placeId: number): Promise<boolean> {
     return await this.photosRepositoryService.photoExists(placeId);
   }
+
   public async getMainPhotoOrFirstByPlaceId(
     placeId: number,
     photoSize: PhotoSize,
@@ -64,39 +70,53 @@ export class PhotosService {
     placeId: number,
     files: Array<Express.Multer.File>,
     bucketName: BucketName,
-    photoSizes: PhotoSize[],
   ) {
     //check bucket exists
     const bucketExists: boolean = await this.minioService.minio.bucketExists(
-      BucketName.Places,
+      BucketName.Listings,
     );
 
     if (!bucketExists) {
-      await this.minioService.minio.makeBucket(BucketName.Places, 'jordan');
+      await this.minioService.minio.makeBucket(BucketName.Listings);
     }
 
-    for (const photoSize of photoSizes) {
-      for (const file of files) {
-        const { data, info } = await this.resizeFile(photoSize, file);
-        const ratio = Number((info.height / info.width).toFixed(2));
+    for (const file of files) {
+      const variants: SharpVariants[] = await this.createVariants(
+        [PhotoSize.Image, PhotoSize.Thumbnail],
+        file,
+      );
 
+      for (const v of variants) {
         const objectName: string = await this.uploadObject(
-          placeId,
           file.originalname,
+          placeId,
           bucketName,
-          photoSize,
-          info.size,
-          data,
+          v.size,
+          v.data,
+          v.info,
         );
+
+        const ratio = v.info.width / v.info.height;
 
         await this.storePhotoInfo(
           placeId,
           objectName,
           bucketName,
-          photoSize,
+          v.size,
           ratio,
         );
       }
+    }
+  }
+
+  public async deletePhoto(photoId: number) {
+    const photo = await this.photosRepositoryService.getPhotosById(photoId);
+    if (photo) {
+      await this.minioService.minio.removeObject(
+        photo.bucketName,
+        photo.objectKey,
+      );
+      await this.photosRepositoryService.deletePhoto(photoId);
     }
   }
 
@@ -128,44 +148,58 @@ export class PhotosService {
   }
 
   private async uploadObject(
+    originalName: string,
     placeId: number,
-    fileName: string,
     bucketName: string,
     photoSize: PhotoSize,
-    size: number,
     data: Buffer,
+    info: OutputInfo,
   ) {
-    const fileExtension: string = fileName.split('.').pop();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     const uuid = v4();
+
+    const fileExtension: string = originalName.split('.').pop();
+
     const objectName = `${placeId}/${photoSize}/${uuid}.${fileExtension}`;
 
     const metadata = {
-      fileName: fileName,
+      fileName: originalName,
       photoSize: photoSize,
-      size: size,
+      size: info.size,
     };
 
     await this.minioService.minio.putObject(
       bucketName,
       objectName,
       data,
-      size,
+      info.size,
       metadata,
     );
     return objectName;
   }
 
-  private async resizeFile(fileSize: PhotoSize, file: Express.Multer.File) {
-    let width: number;
-    switch (fileSize) {
-      case PhotoSize.Large:
-        width = 1200;
-        break;
-      case PhotoSize.Small:
-        width = 300;
-    }
-    return await sharp(file.buffer)
-      .resize({ width: width, withoutEnlargement: true })
-      .toBuffer({ resolveWithObject: true });
+  private async createVariants(
+    variants: PhotoSize[],
+    file: Express.Multer.File,
+  ): Promise<Array<{ data: Buffer; info: OutputInfo; size: PhotoSize }>> {
+    return Promise.all(
+      variants.map(async (v) => {
+        let width: number;
+        switch (v) {
+          case PhotoSize.Thumbnail:
+            width = 300;
+            break;
+          case PhotoSize.Image:
+            width = 1200;
+            break;
+        }
+
+        const { data, info } = await sharp(file.buffer)
+          .resize({ width: width, withoutEnlargement: true })
+          .toBuffer({ resolveWithObject: true });
+
+        return { data, info, size: v };
+      }),
+    );
   }
 }

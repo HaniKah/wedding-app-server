@@ -25,19 +25,21 @@ export class PhotosController {
     @Body() placeId: { placeId: string },
   ): Promise<void> {
     const id = parseInt(placeId.placeId);
-    await this.photosService.uploadFiles(id, files, BucketName.Places, [
-      PhotoSize.Small,
-      PhotoSize.Large,
-    ]);
+    await this.photosService.uploadFiles(id, files, BucketName.Listings);
   }
   @Get(':id')
   public async getPhotos(@Param('id') id: number): Promise<PhotosViewModel> {
     const photos = await this.photosService.getPhotosByPlaceId(
       Number(id),
-      PhotoSize.Large,
+      PhotoSize.Image,
     );
     return {
       result: photos,
     };
+  }
+
+  @Post('delete/:id')
+  public async deletePhoto(@Param('id') id: number): Promise<void> {
+    await this.photosService.deletePhoto(id);
   }
 }

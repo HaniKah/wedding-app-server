@@ -14,18 +14,20 @@ export class PhotosRepositoryService {
   public async getPhotosByPlaceId(placeId: number, photoSize: PhotoSize) {
     return await this.db.db
       .selectFrom('photos')
+      .innerJoin('photosVariants', 'photosVariants.photoId', 'photos.id')
       .selectAll()
       .where('placeId', '=', placeId)
-      .where('size', '=', photoSize)
+      .where('photosVariants.variant', '=', photoSize)
       .execute();
   }
   public async getMainPhoto(placeId: number, photoSize: PhotoSize) {
-    return this.db.db
+    return await this.db.db
       .selectFrom('photos')
+      .innerJoin('photosVariants', 'photosVariants.photoId', 'photos.id')
       .selectAll()
       .where('placeId', '=', placeId)
-      .where('size', '=', photoSize)
       .where('main', 'is', true)
+      .where('photosVariants.variant', '=', photoSize)
       .executeTakeFirst();
   }
   public async photoExists(placeId: number) {
@@ -35,5 +37,19 @@ export class PhotosRepositoryService {
       .where('placeId', '=', placeId)
       .execute();
     return photos.length > 0;
+  }
+  public async deletePhoto(photoId: number) {
+    await this.db.db
+      .deleteFrom('photos')
+      .where('id', '=', photoId)
+      .executeTakeFirst();
+  }
+  public async getPhotosById(photoId: number) {
+    return await this.db.db
+      .selectFrom('photos')
+      .innerJoin('photosVariants', 'photosVariants.photoId', 'photos.id')
+      .selectAll()
+      .where('photos.id', '=', photoId)
+      .executeTakeFirst();
   }
 }

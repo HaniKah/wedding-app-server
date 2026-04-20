@@ -66,7 +66,7 @@ export class PlacesService {
     const mainPhoto: string =
       await this.photosService.getMainPhotoOrFirstByPlaceId(
         p.id,
-        PhotoSize.Small,
+        PhotoSize.Thumbnail,
       );
 
     return {
@@ -125,7 +125,7 @@ export class PlacesService {
         const photo: string =
           await this.photosService.getMainPhotoOrFirstByPlaceId(
             p.id,
-            PhotoSize.Small,
+            PhotoSize.Thumbnail,
           );
         const isCompleted = this.isPlaceComplete(p) && photo !== null;
 

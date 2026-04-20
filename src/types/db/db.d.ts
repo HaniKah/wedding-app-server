@@ -31,10 +31,15 @@ export interface Photos {
   deletedAt: Timestamp | null;
   id: Generated<number>;
   main: Generated<boolean | null>;
-  objectKey: string;
   placeId: number;
   ratio: number | null;
-  size: PhotoSize;
+}
+
+export interface PhotosVariants {
+  id: Generated<number>;
+  objectKey: string;
+  photoId: number | null;
+  variant: string;
 }
 
 export interface PlaceFilter {
@@ -108,6 +113,7 @@ export interface Users {
 export interface DB {
   guests: Guests;
   photos: Photos;
+  photosVariants: PhotosVariants;
   placeFilter: PlaceFilter;
   places: Places;
   plans: Plans;

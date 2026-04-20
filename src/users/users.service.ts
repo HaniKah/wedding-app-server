@@ -3,7 +3,6 @@ import { DbService } from '../db/db.service';
 import { Insertable, Updateable } from 'kysely';
 import { Users } from 'src/types/db/db';
 import { Role } from '../types/auth/auth.dto';
-import { v4 } from 'uuid';
 
 @Injectable()
 export class UsersService {
@@ -42,19 +41,10 @@ export class UsersService {
   }
 
   async createUser(user: Insertable<Users>) {
-    const createdUser = await this.dbService.db
+    return await this.dbService.db
       .insertInto('users')
       .values(user)
       .returning('id')
-      .executeTakeFirstOrThrow();
-
-    const rcAppUserId = `${createdUser.id}RC${v4()}`;
-
-    return await this.dbService.db
-      .updateTable('users')
-      .set('rcAppUserId', rcAppUserId)
-      .where('id', '=', createdUser.id)
-      .returningAll()
       .executeTakeFirstOrThrow();
   }
 

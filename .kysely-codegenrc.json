@@ -10,7 +10,8 @@
       "places.sale_label": "SaleLabel",
       "guests.couple_side": "CoupleSide",
       "photos.size": "PhotoSize",
-      "photos.bucket_name": "BucketName"
+      "photos.bucket_name": "BucketName",
+      "photosVariants.variant": "PhotoSize"
     }
   },
   "defaultSchemas": ["planner"],

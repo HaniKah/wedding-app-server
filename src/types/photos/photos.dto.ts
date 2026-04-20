@@ -1,10 +1,17 @@
+import { OutputInfo } from 'sharp';
+
 export enum PhotoSize {
-  Small = 'small',
-  // Medium = 'medium',
-  Large = 'large',
+  Thumbnail = 'Thumbnail',
+  Image = 'Image',
 }
 
 // this enum is used to identify the bucket name , dont delete any of existing bucket name
 export enum BucketName {
-  Places = 'places',
+  Listings = 'Listings',
+}
+
+export interface SharpVariants {
+  data: Buffer;
+  info: OutputInfo;
+  size: PhotoSize;
 }
