@@ -171,6 +171,8 @@ export class PlannerService {
       minPrice: place.minPrice,
       description: place.description,
       countryCode: place.country,
+      city: place.city,
+      priceType: place.priceType,
     };
   }
 

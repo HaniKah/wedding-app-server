@@ -41,6 +41,9 @@ export class PlaceDetailsDto {
   description: string;
   @ApiProperty({ enum: CountryCode, enumName: 'CountryCode' })
   countryCode: CountryCode;
+  city: string;
+  @ApiProperty({ enum: PriceType, enumName: 'PriceType' })
+  priceType: PriceType;
 }
 
 export class PlacesViewModel {
