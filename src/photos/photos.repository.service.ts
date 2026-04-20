@@ -1,15 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { DbService } from '../db/db.service';
 import { Insertable } from 'kysely';
-import { Photos } from 'src/types/db/db';
+import { Photos, PhotosVariants } from 'src/types/db/db';
 import { PhotoSize } from '../types/photos/photos.dto';
 
 @Injectable()
 export class PhotosRepositoryService {
   constructor(private readonly db: DbService) {}
 
-  public async createPhoto(data: Insertable<Photos>) {
-    await this.db.db.insertInto('photos').values(data).execute();
+  public async createPhoto(dataPhoto: Insertable<Photos>) {
+    return await this.db.db
+      .insertInto('photos')
+      .values(dataPhoto)
+      .returning('photos.id')
+      .executeTakeFirst();
+  }
+  public async createPhotoVariant(
+    dataPhotoVariant: Insertable<PhotosVariants>,
+  ) {
+    await this.db.db
+      .insertInto('photosVariants')
+      .values(dataPhotoVariant)
+      .execute();
   }
   public async getPhotosByPlaceId(placeId: number, photoSize: PhotoSize) {
     return await this.db.db

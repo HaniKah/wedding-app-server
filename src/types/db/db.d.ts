@@ -32,13 +32,13 @@ export interface Photos {
   id: Generated<number>;
   main: Generated<boolean | null>;
   placeId: number;
-  ratio: number | null;
 }
 
 export interface PhotosVariants {
   id: Generated<number>;
   objectKey: string;
-  photoId: number | null;
+  photoId: number;
+  ratio: number;
   variant: string;
 }
 

@@ -71,20 +71,18 @@ export class PhotosService {
     files: Array<Express.Multer.File>,
     bucketName: BucketName,
   ) {
-    //check bucket exists
-    const bucketExists: boolean = await this.minioService.minio.bucketExists(
-      BucketName.Listings,
-    );
-
-    if (!bucketExists) {
-      await this.minioService.minio.makeBucket(BucketName.Listings);
-    }
+    await this.minioService.minio.bucketExists(BucketName.Listings);
 
     for (const file of files) {
       const variants: SharpVariants[] = await this.createVariants(
         [PhotoSize.Image, PhotoSize.Thumbnail],
         file,
       );
+
+      const { id } = await this.photosRepositoryService.createPhoto({
+        placeId: placeId,
+        bucketName: bucketName,
+      });
 
       for (const v of variants) {
         const objectName: string = await this.uploadObject(
@@ -97,14 +95,12 @@ export class PhotosService {
         );
 
         const ratio = v.info.width / v.info.height;
-
-        await this.storePhotoInfo(
-          placeId,
-          objectName,
-          bucketName,
-          v.size,
-          ratio,
-        );
+        await this.photosRepositoryService.createPhotoVariant({
+          photoId: id,
+          objectKey: objectName,
+          variant: v.size,
+          ratio: ratio,
+        });
       }
     }
   }
@@ -118,22 +114,6 @@ export class PhotosService {
       );
       await this.photosRepositoryService.deletePhoto(photoId);
     }
-  }
-
-  private async storePhotoInfo(
-    placeId: number,
-    objectName: string,
-    bucketName: BucketName,
-    photoSize: PhotoSize,
-    ratio: number,
-  ) {
-    await this.photosRepositoryService.createPhoto({
-      placeId: placeId,
-      objectKey: objectName,
-      size: photoSize,
-      bucketName: bucketName,
-      ratio: ratio,
-    });
   }
 
   private async getObject(

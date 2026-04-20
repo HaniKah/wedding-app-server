@@ -7,7 +7,7 @@ export enum PhotoSize {
 
 // this enum is used to identify the bucket name , dont delete any of existing bucket name
 export enum BucketName {
-  Listings = 'Listings',
+  Listings = 'listings',
 }
 
 export interface SharpVariants {
