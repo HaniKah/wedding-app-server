@@ -13,6 +13,15 @@ export type Numeric = ColumnType<string, number | string, number | string>;
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
+export interface Checklist {
+  createdAt: Generated<Timestamp>;
+  id: Generated<number>;
+  isChecked: Generated<boolean>;
+  task: string;
+  timeframe: string;
+  userId: number;
+}
+
 export interface Guests {
   coupleSide: CoupleSide;
   createdAt: Generated<Timestamp>;
@@ -111,6 +120,7 @@ export interface Users {
 }
 
 export interface DB {
+  checklist: Checklist;
   guests: Guests;
   photos: Photos;
   photosVariants: PhotosVariants;
