@@ -37,22 +37,25 @@ export class PlannerService {
   }
   public async getFavorites(userId: number): Promise<FavouritePlacesViewModel> {
     const filters =
-      await this.placeFilterRepositoryService.getPlaceFilterOfFavorites(userId);
+      await this.placeFilterRepositoryService.getFavoritePlaces(userId);
 
-    const favoritePlacesRecord = await Promise.all(
-      filters.map(
-        async (f) =>
-          await this.plannerRepositoryService.getPlaceByIdOrThrow(f.placeId),
-      ),
+    const favPlaces: FavouritePlacesDto[] = await Promise.all(
+      filters.map(async (p) => {
+        const mainPhoto = await this.photosService.getMainPhotoOrFirstByPlaceId(
+          p.placeId,
+          PhotoSize.Thumbnail,
+        );
+        return {
+          id: p.id,
+          name: p.name,
+          category: p.step,
+          country: p.country,
+          mainPhoto: mainPhoto,
+          minPrice: p.minPrice,
+          maxPrice: p.maxPrice,
+        };
+      }),
     );
-
-    const favPlaces: FavouritePlacesDto[] = favoritePlacesRecord.map((p) => {
-      return {
-        id: p.id,
-        city: p.city,
-        name: p.name,
-      };
-    });
     return {
       result: favPlaces,
     };

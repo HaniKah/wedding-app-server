@@ -90,7 +90,13 @@ export class TogglePickedPlaceFilterRequest {
 export class FavouritePlacesDto {
   id: number;
   name: string;
-  city: string;
+  @ApiProperty({ enum: CountryCode, enumName: 'CountryCode' })
+  country: CountryCode;
+  @ApiProperty({ enum: Categories, enumName: 'Categories' })
+  category: Categories;
+  minPrice: string;
+  maxPrice: string;
+  mainPhoto: string;
 }
 
 export class FavouritePlacesViewModel {

@@ -23,12 +23,15 @@ export class PlaceFilterRepositoryService {
       .execute();
   }
 
-  public async getPlaceFilterOfFavorites(userId: number) {
+  public async getFavoritePlaces(userId: number) {
     return await this.db
       .selectFrom('placeFilter')
+      .innerJoin('places', 'places.id', 'placeFilter.placeId')
       .selectAll()
       .where('placeFilter.userId', '=', userId)
       .where('placeFilter.isFavorite', 'is', true)
+      .where('places.isPublished', 'is', true)
+      .where('places.deletedAt', 'is', null)
       .execute();
   }
 
