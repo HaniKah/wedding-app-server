@@ -18,7 +18,7 @@ export interface Checklist {
   id: Generated<number>;
   isChecked: Generated<boolean>;
   task: string;
-  timeframe: string;
+  timeframe: Timeframe;
   userId: number;
 }
 
