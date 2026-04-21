@@ -29,7 +29,7 @@ jobs:
         run: npm run test
 
       - name: Run migrations
+        if: github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/live'
         run: npm run migrate
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      
