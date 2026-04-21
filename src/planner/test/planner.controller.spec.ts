@@ -29,23 +29,19 @@ describe('PlannerController', () => {
 
       beforeEach(async () => {
         places = await plannerController.getPlaces(
-          getPlaceRequestStub().loggedInUser,
-          getPlaceRequestStub().step,
           getPlaceRequestStub().offset,
           getPlaceRequestStub().countryCode,
-          undefined,
-          undefined,
+          getPlaceRequestStub().step,
+          getPlaceRequestStub().searchQuery,
         );
       });
       // we could have written expect(plannerSerivce.getplaces).tohavebeen... but because of esLint errors , this is the friendly way to do it
       test('then it should call plannerService', () => {
         expect(jest.spyOn(plannerService, 'getPlaces')).toHaveBeenCalledWith(
-          getPlaceRequestStub().loggedInUser.id,
-          getPlaceRequestStub().step,
           getPlaceRequestStub().countryCode,
           getPlaceRequestStub().offset,
-          undefined,
-          undefined,
+          getPlaceRequestStub().searchQuery,
+          getPlaceRequestStub().step,
         );
       });
 

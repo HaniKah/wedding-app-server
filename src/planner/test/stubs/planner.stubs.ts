@@ -1,5 +1,4 @@
 import { PlacesViewModel } from '../../../types/planner/places.dto';
-import { Role } from '../../../types/auth/auth.dto';
 import { CountryCode } from '../../../types/general/countries.dto';
 import { PriceType } from '../../../types/places/places.dto';
 import { Categories } from '../../../types/general/categories';
@@ -28,8 +27,8 @@ export const placesViewModelStub = (): PlacesViewModel => {
 };
 
 export const getPlaceRequestStub = () => ({
-  loggedInUser: { id: 2, role: Role.User },
   step: Categories.Dress,
   offset: 0,
   countryCode: CountryCode.JO,
+  searchQuery: 'sample',
 });
