@@ -35,7 +35,7 @@ export class ChecklistService {
     };
   }
 
-  public async toggleTask(taskId: number) {
-    await this.checklistRepository.toggleTask(taskId);
+  public async toggleTask(taskId: number, isChecked: boolean) {
+    await this.checklistRepository.toggleTask(taskId, isChecked);
   }
 }

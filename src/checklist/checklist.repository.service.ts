@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DbService } from '../db/db.service';
-import { Insertable, sql } from 'kysely';
+import { Insertable } from 'kysely';
 import { Checklist } from '../types/db/db';
 
 @Injectable()
@@ -31,11 +31,11 @@ export class ChecklistRepositoryService {
       .execute();
   }
 
-  public async toggleTask(taskId: number) {
+  public async toggleTask(taskId: number, isChecked: boolean) {
     await this.db.db
       .updateTable('checklist')
       .set({
-        isChecked: sql`NOT "isChecked"`,
+        isChecked: isChecked,
       })
       .where('id', '=', taskId)
       .execute();

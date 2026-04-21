@@ -35,6 +35,6 @@ export class ChecklistController {
 
   @Post('toggleTask')
   public async toggleTask(@Body() request: ToggleTaskRequest): Promise<void> {
-    await this.checklistService.toggleTask(request.taskId);
+    await this.checklistService.toggleTask(request.taskId, request.isChecked);
   }
 }

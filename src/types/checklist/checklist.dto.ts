@@ -35,4 +35,5 @@ export class DeleteTaskRequest {
 
 export class ToggleTaskRequest {
   taskId: number;
+  isChecked: boolean;
 }
