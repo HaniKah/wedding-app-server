@@ -27,4 +27,9 @@ jobs:
 
       - name: Running Tests
         run: npm run test
+
+      - name: Run migrations
+        run: npm run migrate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
       
