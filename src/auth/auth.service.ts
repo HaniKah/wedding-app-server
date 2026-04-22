@@ -1,8 +1,18 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { CreateUserDto } from '../types/users/users.dto';
 import * as argon2 from 'argon2';
-import { AuthJwtPayload, Role } from '../types/auth/auth.dto';
+import {
+  AuthJwtPayload,
+  Role,
+  SignInDto,
+  SignUpDto,
+} from '../types/auth/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import refreshJwtConfig from './config/refresh-jwt.config';
 import type { ConfigType } from '@nestjs/config';
@@ -23,6 +33,42 @@ export class AuthService {
     @Inject(exchangeJwtConfig.KEY)
     private exchangeTokenConfig: ConfigType<typeof exchangeJwtConfig>,
   ) {}
+
+  async signUp(signUpDto: SignUpDto) {
+    const existingUser = await this.usersService.findUserByEmail(
+      signUpDto.email,
+    );
+    if (existingUser) {
+      throw new BadRequestException('User already exists');
+    }
+
+    const hashedPassword = await argon2.hash(signUpDto.password);
+    const user = await this.usersService.createUser({
+      ...signUpDto,
+      password: hashedPassword,
+    });
+
+    await this.plansRepositoryService.createPlan(user.id);
+
+    return await this.login(user.id);
+  }
+
+  async signIn(signInDto: SignInDto) {
+    const user = await this.usersService.findUserByEmail(signInDto.email);
+    if (!user) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const isPasswordValid = await argon2.verify(
+      user.password,
+      signInDto.password,
+    );
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    return await this.login(user.id);
+  }
 
   async refreshToken(userId: number) {
     const { accessToken, refreshToken } = await this.generateTokens(userId);

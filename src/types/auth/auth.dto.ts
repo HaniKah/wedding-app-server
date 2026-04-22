@@ -1,14 +1,13 @@
-// export class SignUpDto {
-//   id: number;
-//   name: string;
-//   email: string;
-//   password: string;
-//   role: Role;
-// }
-// export class SignInDto {
-//   email: string;
-//   password: string;
-// }
+import { IsEmail, IsEnum, IsString } from 'class-validator';
+
+export class SignInDto {
+  @IsString()
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  password: string;
+}
 export enum Role {
   Admin = 'Admin',
   User = 'User',
@@ -27,4 +26,22 @@ export enum Provider {
   Google = 'Google',
   Apple = 'Apple',
   Facebook = 'Facebook',
+}
+
+export class SignUpDto {
+  @IsString()
+  firstName: string;
+
+  @IsString()
+  lastName: string;
+
+  @IsString()
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  password: string;
+
+  @IsEnum(Role)
+  role: Role;
 }

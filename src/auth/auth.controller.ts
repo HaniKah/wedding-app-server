@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   Post,
@@ -16,6 +17,7 @@ import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 import type { Request, Response } from 'express';
 import { ExchangeAuthGuard } from './guards/exchange-auth/exchange-auth.guard';
 import { ExchangeTokenDto } from '../types/auth/exchange.dto';
+import { SignInDto, SignUpDto } from '../types/auth/auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -29,6 +31,18 @@ export class AuthController {
   @Post('refresh')
   async refreshToken(@Req() req: Request) {
     return await this.authService.refreshToken(req.user.id);
+  }
+
+  @Public()
+  @Post('signup')
+  async signUp(@Body() signUpDto: SignUpDto) {
+    return await this.authService.signUp(signUpDto);
+  }
+
+  @Public()
+  @Post('signin')
+  async signIn(@Body() signInDto: SignInDto) {
+    return await this.authService.signIn(signInDto);
   }
 
   @UseGuards(JwtAuthGuard)
