@@ -50,3 +50,4 @@ jobs:
 
       - name: Run migrations
         run: npm run migrate
+        env: ${{ secrets.DATABASE_PUBLIC_URL }}
