@@ -59,6 +59,7 @@ export class PhotosService {
       photos.map(async (p) => {
         const uri: string = await this.getObject(p.objectKey, p.bucketName);
         return {
+          id: p.photoId,
           uri: uri,
           ratio: p.ratio,
         };

@@ -15,3 +15,6 @@ export interface SharpVariants {
   info: OutputInfo;
   size: PhotoSize;
 }
+export class DeletePhotoRequest {
+  id: number;
+}

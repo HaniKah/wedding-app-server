@@ -10,7 +10,11 @@ import {
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { PhotosService } from './photos.service';
-import { BucketName, PhotoSize } from '../types/photos/photos.dto';
+import {
+  BucketName,
+  DeletePhotoRequest,
+  PhotoSize,
+} from '../types/photos/photos.dto';
 import { PhotosViewModel } from '../types/planner/photos.dto';
 
 @Controller('photos')
@@ -38,8 +42,8 @@ export class PhotosController {
     };
   }
 
-  @Post('delete/:id')
-  public async deletePhoto(@Param('id') id: number): Promise<void> {
-    await this.photosService.deletePhoto(id);
+  @Post('delete')
+  public async deletePhoto(@Body() req: DeletePhotoRequest): Promise<void> {
+    await this.photosService.deletePhoto(req.id);
   }
 }
