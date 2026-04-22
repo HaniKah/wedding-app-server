@@ -71,7 +71,10 @@ export class PhotosService {
     files: Array<Express.Multer.File>,
     bucketName: BucketName,
   ) {
-    await this.minioService.minio.bucketExists(BucketName.Listings);
+    const exists: boolean = await this.minioService.minio.bucketExists(
+      BucketName.Listings,
+    );
+    if (!exists) await this.minioService.minio.makeBucket(BucketName.Listings);
 
     for (const file of files) {
       const variants: SharpVariants[] = await this.createVariants(
