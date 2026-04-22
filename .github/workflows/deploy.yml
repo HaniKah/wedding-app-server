@@ -40,7 +40,8 @@ jobs:
   migrate:
     name: Database Migration
     needs: ci
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/live'
+    if: github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/live'
+    environment: ${{github.ref == 'refs/heads/live' && 'production' || 'staging' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
