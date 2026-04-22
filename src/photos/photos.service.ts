@@ -109,11 +109,12 @@ export class PhotosService {
   }
 
   public async deletePhoto(photoId: number) {
-    const photo = await this.photosRepositoryService.getPhotosById(photoId);
-    if (photo) {
-      await this.minioService.minio.removeObject(
-        photo.bucketName,
-        photo.objectKey,
+    const photos = await this.photosRepositoryService.getPhotosById(photoId);
+    if (photos.length > 0) {
+      await Promise.all(
+        photos.map(async (p) => {
+          await this.minioService.minio.removeObject(p.bucketName, p.objectKey);
+        }),
       );
       await this.photosRepositoryService.deletePhoto(photoId);
     }

@@ -62,6 +62,6 @@ export class PhotosRepositoryService {
       .innerJoin('photosVariants', 'photosVariants.photoId', 'photos.id')
       .selectAll()
       .where('photos.id', '=', photoId)
-      .executeTakeFirst();
+      .execute();
   }
 }
