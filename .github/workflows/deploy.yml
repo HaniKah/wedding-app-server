@@ -55,6 +55,17 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      - name: Verify DB env
+        run: |
+          if [ -z "$DATABASE_PUBLIC_URL" ]; then
+            echo "DATABASE_PUBLIC_URL is missing"
+            exit 1
+          fi
+          echo "DATABASE_PUBLIC_URL is present"
+          echo "Length: ${#DATABASE_PUBLIC_URL}"
+          env:
+          DATABASE_PUBLIC_URL: ${{ secrets.DATABASE_PUBLIC_URL }}
+
       - name: Run Migrations
         run: npm run migrate
         env:
