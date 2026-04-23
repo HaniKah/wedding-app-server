@@ -46,6 +46,7 @@ export class AuthService {
     const user = await this.usersService.createUser({
       ...signUpDto,
       password: hashedPassword,
+      role: Role.User,
     });
 
     await this.plansRepositoryService.createPlan(user.id);
