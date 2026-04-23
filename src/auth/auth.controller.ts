@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -27,6 +28,12 @@ export class AuthController {
   ) {}
 
   @Public()
+  @Get('error')
+  public errorTest() {
+    throw new BadRequestException(' custom text is working fine');
+  }
+
+  @Public()
   @UseGuards(RefreshAuthGuard)
   @Post('refresh')
   async refreshToken(@Req() req: Request) {
@@ -35,7 +42,7 @@ export class AuthController {
 
   @Public()
   @Post('signup')
-  async signUp(@Body() signUpDto: SignUpDto) {
+  async signUp(@Body() signUpDto: SignUpDto): Promise<ExchangeTokenDto> {
     return await this.authService.signUp(signUpDto);
   }
 

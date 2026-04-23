@@ -56,7 +56,9 @@ export class AuthService {
   async signIn(signInDto: SignInDto) {
     const user = await this.usersService.findUserByEmail(signInDto.email);
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new BadRequestException(
+        'Invalid Email, please try again with correct email or register new account',
+      );
     }
 
     const isPasswordValid = await argon2.verify(
@@ -64,7 +66,7 @@ export class AuthService {
       signInDto.password,
     );
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new BadRequestException('Invalid password, try again!');
     }
 
     return await this.login(user.id);

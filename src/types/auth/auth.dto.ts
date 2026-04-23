@@ -1,4 +1,4 @@
-import { IsEmail, IsEnum, IsString } from 'class-validator';
+import { IsEmail, IsString } from 'class-validator';
 
 export class SignInDto {
   @IsString()
@@ -41,7 +41,4 @@ export class SignUpDto {
 
   @IsString()
   password: string;
-
-  @IsEnum(Role)
-  role: Role;
 }
