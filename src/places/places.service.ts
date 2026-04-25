@@ -125,7 +125,7 @@ export class PlacesService {
         const photo: string =
           await this.photosService.getMainPhotoOrFirstByPlaceId(
             p.id,
-            PhotoSize.Thumbnail,
+            PhotoSize.Image,
           );
         const isCompleted = this.isPlaceComplete(p) && photo !== null;
 
