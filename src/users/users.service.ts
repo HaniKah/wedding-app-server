@@ -3,10 +3,14 @@ import { DbService } from '../db/db.service';
 import { Insertable, Updateable } from 'kysely';
 import { Users } from 'src/types/db/db';
 import { Role } from '../types/auth/auth.dto';
+import { PlansRepositoryService } from '../planner/plans.repository.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly dbService: DbService) {}
+  constructor(
+    private readonly dbService: DbService,
+    private readonly plansRepositoryService: PlansRepositoryService,
+  ) {}
 
   async updateUser(userId: number, data: Updateable<Users>) {
     return await this.dbService.db
@@ -14,6 +18,13 @@ export class UsersService {
       .set(data)
       .where('users.id', '=', userId)
       .executeTakeFirstOrThrow();
+  }
+
+  async findUserByAppleId(appleId: string) {
+    return await this.dbService.db
+      .selectFrom('users')
+      .where('appleId', '=', appleId)
+      .executeTakeFirst();
   }
 
   async updateRoleById(id: number, role: Role) {
@@ -41,11 +52,13 @@ export class UsersService {
   }
 
   async createUser(user: Insertable<Users>) {
-    return await this.dbService.db
+    const userId = await this.dbService.db
       .insertInto('users')
       .values(user)
       .returning('id')
       .executeTakeFirstOrThrow();
+    await this.plansRepositoryService.createPlan(userId.id);
+    return userId;
   }
 
   async updateHashedRefreshToken(

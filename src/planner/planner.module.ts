@@ -15,7 +15,7 @@ import { PhotosModule } from '../photos/photos.module';
     PlannerRepositoryService,
   ],
   controllers: [PlannerController],
-  exports: [PlannerService],
+  exports: [PlannerService, PlansRepositoryService],
   imports: [GoogleApiModule, PhotosModule],
 })
 export class PlannerModule {}
