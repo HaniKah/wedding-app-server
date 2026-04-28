@@ -48,7 +48,7 @@ export class AuthController {
 
   @Public()
   @Post('signin')
-  async signIn(@Body() signInDto: SignInDto) {
+  async signIn(@Body() signInDto: SignInDto): Promise<ExchangeTokenDto> {
     return await this.authService.signIn(signInDto);
   }
 
