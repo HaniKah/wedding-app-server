@@ -71,4 +71,10 @@ export class UsersService {
       .where('users.id', '=', userId)
       .executeTakeFirst();
   }
+  async deleteUser(userId: number) {
+    await this.dbService.db
+      .deleteFrom('users')
+      .where('id', '=', userId)
+      .executeTakeFirst();
+  }
 }
