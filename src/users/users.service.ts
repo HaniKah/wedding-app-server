@@ -23,6 +23,7 @@ export class UsersService {
   async findUserByAppleId(appleId: string) {
     return await this.dbService.db
       .selectFrom('users')
+      .selectAll()
       .where('appleId', '=', appleId)
       .executeTakeFirst();
   }
@@ -55,7 +56,7 @@ export class UsersService {
     const userId = await this.dbService.db
       .insertInto('users')
       .values(user)
-      .returning('id')
+      .returningAll()
       .executeTakeFirstOrThrow();
     await this.plansRepositoryService.createPlan(userId.id);
     return userId;

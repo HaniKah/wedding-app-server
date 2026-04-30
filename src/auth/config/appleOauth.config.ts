@@ -8,4 +8,5 @@ export default registerAs('appleOAuth', () => ({
   callbackURL: process.env.APPLE_CALLBACK_URL,
   appScheme: process.env.APP_SCHEME,
   privateKeyString: process.env.APPLE_PRIVATE_KEY_STRING.replace(/\\n/g, '\n'),
+  appleAuthUrl: process.env.APPLE_AUTH_URL,
 }));

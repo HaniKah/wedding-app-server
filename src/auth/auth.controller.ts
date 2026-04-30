@@ -1,17 +1,7 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Get,
-  Post,
-  Query,
-  Req,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Inject, Post, Query, Req, Res, UseGuards, } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
-import { ConfigService } from '@nestjs/config';
+import type { ConfigType } from '@nestjs/config';
 import { GoogleAuthGuard } from './guards/google-auth/google-auth.guard';
 import { RefreshAuthGuard } from './guards/refresh-auth/refresh-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
@@ -19,13 +9,18 @@ import type { Request, Response } from 'express';
 import { ExchangeAuthGuard } from './guards/exchange-auth/exchange-auth.guard';
 import { ExchangeTokenDto } from '../types/auth/exchange.dto';
 import { SignInDto, SignUpDto } from '../types/auth/auth.dto';
+import AppleOauthConfig from './config/appleOauth.config';
+import GoogleOauthConfig from './config/googleOauth.config';
 import { AppleAuthGuard } from './guards/apple-auth/apple-auth.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private authService: AuthService,
-    private readonly configService: ConfigService,
+    @Inject(AppleOauthConfig.KEY)
+    private readonly appleOauthConfig: ConfigType<typeof AppleOauthConfig>,
+    @Inject(GoogleOauthConfig.KEY)
+    private readonly googleOathConfig: ConfigType<typeof GoogleOauthConfig>,
   ) {}
 
   @Public()
@@ -66,9 +61,24 @@ export class AuthController {
   googleLogin() {}
 
   @Public()
-  @UseGuards(AppleAuthGuard)
   @Get('apple/login')
-  appleLogin() {}
+  appleLogin(
+    @Query('scope') scope: string,
+    @Query('state') state: string,
+    @Res() res: Response,
+  ) {
+    const params = new URLSearchParams({
+      client_id: this.appleOauthConfig.clientID,
+      redirect_uri: this.appleOauthConfig.callbackURL,
+      response_type: 'code',
+      scope: scope || 'name email',
+      state: state,
+      response_mode: 'form_post',
+    });
+    return res.redirect(
+      this.appleOauthConfig.appleAuthUrl + '?' + params.toString(),
+    );
+  }
 
   @Public()
   @UseGuards(AppleAuthGuard)
@@ -76,13 +86,14 @@ export class AuthController {
   async appleCallback(
     @Req() req: Request,
     @Res() res: Response,
-    @Query('state') state: string,
+    @Body('state') state: string,
   ): Promise<void> {
+    const userId = req.user.id;
     const exchangeToken = await this.authService.generateExchangeToken(
       req.user.id,
     );
     const redirectUrl =
-      this.configService.get<string>('APP_SCHEME') +
+      this.appleOauthConfig.appScheme +
       '?exchangeToken=' +
       exchangeToken +
       '&state=' +
@@ -102,7 +113,7 @@ export class AuthController {
       req.user.id,
     );
     const redirectUrl =
-      this.configService.get<string>('APP_SCHEME') +
+      this.googleOathConfig.appScheme +
       '?exchangeToken=' +
       exchangeToken +
       '&state=' +

@@ -19,7 +19,12 @@ import type { ConfigType } from '@nestjs/config';
 import JwtConfig from './config/jwt.config';
 import exchangeJwtConfig from './config/exchange-jwt.config';
 import { PlansRepositoryService } from '../planner/plans.repository.service';
-import { ApplePayloadDto } from '../types/auth/apple.dto';
+import {
+  AppleIdTokenPayload,
+  AppleUserAuthorizeResponse,
+} from '../types/auth/apple.dto';
+import { Users } from '../types/db/db';
+import { Selectable } from 'kysely';
 
 @Injectable()
 export class AuthService {
@@ -102,14 +107,23 @@ export class AuthService {
       return await this.usersService.createUser(googleUser);
     }
   }
-  async validateAppleUser(idToken: string) {
-    const payload: ApplePayloadDto = this.jwtService.decode(idToken);
-    const user = await this.usersService.findUserByAppleId(payload.sub);
-    if (user) {
-      return user;
+  async validateAppleUser(
+    user: string,
+    idToken: string,
+  ): Promise<Selectable<Users>> {
+    const payload: AppleIdTokenPayload = this.jwtService.decode(idToken);
+    const userObj: AppleUserAuthorizeResponse = JSON.parse(user);
+    const userRecord = await this.usersService.findUserByAppleId(payload.sub);
+    if (userRecord) {
+      return userRecord;
     } else {
       return await this.usersService.createUser({
         appleId: payload.sub,
+        email: payload.email,
+        firstName: userObj.name?.firstName,
+        lastName: userObj.name?.lastName,
+        password: '',
+        role: Role.User,
       });
     }
   }

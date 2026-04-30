@@ -18,6 +18,7 @@ import webhookJwtConfig from './config/webhook-jwt.config';
 import { WebhookJwtStrategy } from '../strategies/webhook-jwt.strategy';
 import { AppleStrategy } from '../strategies/apple.strategy';
 import appleOauthConfig from './config/appleOauth.config';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   providers: [
@@ -47,6 +48,7 @@ import appleOauthConfig from './config/appleOauth.config';
     ConfigModule.forFeature(exchangeJwtConfig),
     ConfigModule.forFeature(webhookJwtConfig),
     ConfigModule.forFeature(appleOauthConfig),
+    HttpModule,
   ],
 })
 export class AuthModule {}
