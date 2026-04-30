@@ -19,6 +19,7 @@ import type { Request, Response } from 'express';
 import { ExchangeAuthGuard } from './guards/exchange-auth/exchange-auth.guard';
 import { ExchangeTokenDto } from '../types/auth/exchange.dto';
 import { SignInDto, SignUpDto } from '../types/auth/auth.dto';
+import { AppleAuthGuard } from './guards/apple-auth/apple-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -63,6 +64,31 @@ export class AuthController {
   @UseGuards(GoogleAuthGuard)
   @Get('google/login')
   googleLogin() {}
+
+  @Public()
+  @UseGuards(AppleAuthGuard)
+  @Get('apple/login')
+  appleLogin() {}
+
+  @Public()
+  @UseGuards(AppleAuthGuard)
+  @Post('apple/callback')
+  async appleCallback(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Query('state') state: string,
+  ): Promise<void> {
+    const exchangeToken = await this.authService.generateExchangeToken(
+      req.user.id,
+    );
+    const redirectUrl =
+      this.configService.get<string>('APP_SCHEME') +
+      '?exchangeToken=' +
+      exchangeToken +
+      '&state=' +
+      state;
+    return res.redirect(redirectUrl);
+  }
 
   @Public()
   @UseGuards(GoogleAuthGuard)

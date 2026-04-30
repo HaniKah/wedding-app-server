@@ -107,6 +107,7 @@ export interface Promotions {
 }
 
 export interface Users {
+  appleId: string | null;
   createdAt: Generated<Timestamp | null>;
   deletedAt: Timestamp | null;
   email: string;

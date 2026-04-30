@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
-import { CreateUserDto } from '../types/users/users.dto';
+import { GoogleCreateUserDto } from '../types/users/users.dto';
 import * as argon2 from 'argon2';
 import {
   AuthJwtPayload,
@@ -19,6 +19,7 @@ import type { ConfigType } from '@nestjs/config';
 import JwtConfig from './config/jwt.config';
 import exchangeJwtConfig from './config/exchange-jwt.config';
 import { PlansRepositoryService } from '../planner/plans.repository.service';
+import { ApplePayloadDto } from '../types/auth/apple.dto';
 
 @Injectable()
 export class AuthService {
@@ -48,8 +49,6 @@ export class AuthService {
       password: hashedPassword,
       role: Role.User,
     });
-
-    await this.plansRepositoryService.createPlan(user.id);
 
     return await this.login(user.id);
   }
@@ -95,14 +94,23 @@ export class AuthService {
     });
   }
 
-  async validateGoogleUser(googleUser: CreateUserDto) {
+  async validateGoogleUser(googleUser: GoogleCreateUserDto) {
     const user = await this.usersService.findUserByEmail(googleUser.email);
     if (user) {
       return user;
     } else {
-      const userRecord = await this.usersService.createUser(googleUser);
-      await this.plansRepositoryService.createPlan(userRecord.id);
-      return userRecord;
+      return await this.usersService.createUser(googleUser);
+    }
+  }
+  async validateAppleUser(idToken: string) {
+    const payload: ApplePayloadDto = this.jwtService.decode(idToken);
+    const user = await this.usersService.findUserByAppleId(payload.sub);
+    if (user) {
+      return user;
+    } else {
+      return await this.usersService.createUser({
+        appleId: payload.sub,
+      });
     }
   }
 

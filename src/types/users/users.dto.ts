@@ -2,7 +2,7 @@ import { IsEmail, IsString } from 'class-validator';
 import { Role } from '../auth/auth.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateUserDto {
+export class GoogleCreateUserDto {
   @IsString()
   firstName: string;
 
