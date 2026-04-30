@@ -1,4 +1,15 @@
-import { BadRequestException, Body, Controller, Get, Inject, Post, Query, Req, Res, UseGuards, } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Post,
+  Query,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
 import type { ConfigType } from '@nestjs/config';
