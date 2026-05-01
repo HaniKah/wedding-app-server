@@ -24,16 +24,18 @@ export class AppleAuthGuard implements CanActivate {
     private readonly authService: AuthService,
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const req: Request = context.switchToHttp().getRequest();
+    // Request<Params, ResBody, ReqBody, Query>;
+    const req = context
+      .switchToHttp()
+      .getRequest<Request<any, any, AppleAuthorizeResponse>>();
 
-    const body: AppleAuthorizeResponse = req.body;
-    if (!body?.code) {
+    if (!req.body?.code) {
       throw new Error('Missing code');
     }
     const params = new URLSearchParams({
       client_id: this.appleOauthConfig.clientID,
       client_secret: this.appleOauthConfig.clientSecret,
-      code: body?.code,
+      code: req.body?.code,
       grant_type: 'authorization_code',
       redirect_uri: this.appleOauthConfig.callbackURL,
     });
@@ -50,10 +52,10 @@ export class AppleAuthGuard implements CanActivate {
       ),
     );
 
-    if (!data.id_token) throw new Error('Failed to exchange token');
+    if (!data.id_token) throw new Error('Failed to exchange token with Apple');
 
     const userRecord = await this.authService.validateAppleUser(
-      body.user,
+      req.body.user,
       data.id_token,
     );
     req.user = {

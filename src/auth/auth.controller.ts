@@ -99,7 +99,6 @@ export class AuthController {
     @Res() res: Response,
     @Body('state') state: string,
   ): Promise<void> {
-    const userId = req.user.id;
     const exchangeToken = await this.authService.generateExchangeToken(
       req.user.id,
     );
