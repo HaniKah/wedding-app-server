@@ -1,30 +1,18 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, UnauthorizedException, } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { GoogleCreateUserDto } from '../types/users/users.dto';
 import * as argon2 from 'argon2';
-import {
-  AuthJwtPayload,
-  Role,
-  SignInDto,
-  SignUpDto,
-} from '../types/auth/auth.dto';
+import { AuthJwtPayload, Role, SignInDto, SignUpDto, } from '../types/auth/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import refreshJwtConfig from './config/refresh-jwt.config';
 import type { ConfigType } from '@nestjs/config';
 import JwtConfig from './config/jwt.config';
 import exchangeJwtConfig from './config/exchange-jwt.config';
 import { PlansRepositoryService } from '../planner/plans.repository.service';
-import {
-  AppleIdTokenPayload,
-  AppleUserAuthorizeResponse,
-} from '../types/auth/apple.dto';
+import { AppleUserAuthorizeResponse } from '../types/auth/apple.dto';
 import { Users } from '../types/db/db';
 import { Selectable } from 'kysely';
+import { JWTPayload } from 'jose';
 
 @Injectable()
 export class AuthService {
@@ -109,9 +97,8 @@ export class AuthService {
   }
   async validateAppleUser(
     user: string,
-    idToken: string,
+    payload: JWTPayload,
   ): Promise<Selectable<Users>> {
-    const payload: AppleIdTokenPayload = this.jwtService.decode(idToken);
     const userObj: AppleUserAuthorizeResponse = JSON.parse(user);
     const userRecord = await this.usersService.findUserByAppleId(payload.sub);
     if (userRecord) {

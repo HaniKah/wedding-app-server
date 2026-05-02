@@ -23,6 +23,7 @@ import { SignInDto, SignUpDto } from '../types/auth/auth.dto';
 import AppleOauthConfig from './config/appleOauth.config';
 import GoogleOauthConfig from './config/googleOauth.config';
 import { AppleAuthGuard } from './guards/apple-auth/apple-auth.guard';
+import { AppleAuthorizeRequestParams } from '../types/auth/apple.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -85,7 +86,7 @@ export class AuthController {
       scope: scope || 'name email',
       state: state,
       response_mode: 'form_post',
-    });
+    } satisfies AppleAuthorizeRequestParams);
     return res.redirect(
       this.appleOauthConfig.appleAuthUrl + '?' + params.toString(),
     );
