@@ -32,8 +32,8 @@ jobs:
     name: Run migrations
     runs-on: ubuntu-latest
     needs: tests
-    if: github.ref_name == 'staging' || github.ref_name == 'production'
-    environment: ${{ github.ref_name == 'staging' && 'motivated-patience / staging' || github.ref_name == 'production' && 'motivated-patience / production' || '' }}
+    if: github.ref_name == 'staging' || github.ref_name == 'live'
+    environment: ${{ github.ref_name == 'staging' && 'motivated-patience / staging' || github.ref_name == 'live' && 'motivated-patience / production' || '' }}
     env:
       DATABASE_PUBLIC_URL: ${{ secrets.DATABASE_PUBLIC_URL }}
 
