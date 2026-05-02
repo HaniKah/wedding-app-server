@@ -1,8 +1,18 @@
-import { BadRequestException, Inject, Injectable, UnauthorizedException, } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { GoogleCreateUserDto } from '../types/users/users.dto';
 import * as argon2 from 'argon2';
-import { AuthJwtPayload, Role, SignInDto, SignUpDto, } from '../types/auth/auth.dto';
+import {
+  AuthJwtPayload,
+  Role,
+  SignInDto,
+  SignUpDto,
+} from '../types/auth/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import refreshJwtConfig from './config/refresh-jwt.config';
 import type { ConfigType } from '@nestjs/config';
@@ -96,10 +106,9 @@ export class AuthService {
     }
   }
   async validateAppleUser(
-    user: string,
+    user: AppleUserAuthorizeResponse | undefined,
     payload: JWTPayload,
   ): Promise<Selectable<Users>> {
-    const userObj: AppleUserAuthorizeResponse = JSON.parse(user);
     const userRecord = await this.usersService.findUserByAppleId(payload.sub);
     if (userRecord) {
       return userRecord;
@@ -107,8 +116,8 @@ export class AuthService {
       return await this.usersService.createUser({
         appleId: payload.sub,
         email: payload.email,
-        firstName: userObj.name?.firstName,
-        lastName: userObj.name?.lastName,
+        firstName: user?.name?.firstName,
+        lastName: user?.name?.lastName,
         password: '',
         role: Role.User,
       });

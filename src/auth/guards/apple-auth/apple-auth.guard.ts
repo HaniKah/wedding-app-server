@@ -14,6 +14,7 @@ import { AuthService } from '../../auth.service';
 import {
   AppleAuthorizeResponse,
   AppleTokenResponse,
+  AppleUserAuthorizeResponse,
 } from '../../../types/auth/apple.dto';
 import { createRemoteJWKSet, JWTPayload, jwtVerify } from 'jose';
 
@@ -40,9 +41,11 @@ export class AppleAuthGuard implements CanActivate {
     if (!id_token) throw new Error('Failed to exchange token with Apple');
 
     const payload = await this.verifyIdentityToken(id_token);
-
+    const userObj: AppleUserAuthorizeResponse | undefined = req.body?.user
+      ? JSON.parse(req.body.user)
+      : undefined;
     const userRecord = await this.authService.validateAppleUser(
-      req.body.user,
+      userObj,
       payload,
     );
     req.user = {
