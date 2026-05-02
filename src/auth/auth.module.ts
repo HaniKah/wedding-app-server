@@ -16,7 +16,6 @@ import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 import { PlansRepositoryService } from '../planner/plans.repository.service';
 import webhookJwtConfig from './config/webhook-jwt.config';
 import { WebhookJwtStrategy } from '../strategies/webhook-jwt.strategy';
-import { AppleStrategy } from '../strategies/apple.strategy';
 import appleOauthConfig from './config/appleOauth.config';
 import { HttpModule } from '@nestjs/axios';
 
@@ -24,7 +23,6 @@ import { HttpModule } from '@nestjs/axios';
   providers: [
     AuthService,
     GoogleStrategy,
-    AppleStrategy,
     UsersService,
     PlansRepositoryService,
     JwtStrategy,
