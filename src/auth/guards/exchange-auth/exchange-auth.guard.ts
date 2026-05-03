@@ -26,19 +26,17 @@ export class ExchangeAuthGuard implements CanActivate {
 
     if (!token) {
       throw new UnauthorizedException('Missing exchange token');
-    } else {
-      console.log('token exists');
     }
+    console.log('token:', token.substring(0, 5));
+    console.log(
+      'secret:',
+      this.exchangeTokenConfig.secret.toString().substring(0, 5),
+    );
 
     try {
       const payload: AuthJwtPayload = this.jwtService.verify(token, {
         secret: this.exchangeTokenConfig.secret,
       });
-      console.log('token:', token.substring(0, 5));
-      console.log(
-        'secret:',
-        this.exchangeTokenConfig.secret.toString().substring(0, 5),
-      );
 
       //todo role to be adjusted
       request.user = { id: payload.sub, role: payload.role };
