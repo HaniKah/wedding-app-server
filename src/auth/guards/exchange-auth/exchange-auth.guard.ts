@@ -37,7 +37,7 @@ export class ExchangeAuthGuard implements CanActivate {
       request.user = { id: payload.sub, role: payload.role };
       return true;
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 }
