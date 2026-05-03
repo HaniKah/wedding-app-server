@@ -103,13 +103,8 @@ export class AuthController {
     const exchangeToken = await this.authService.generateExchangeToken(
       req.user.id,
     );
-    const redirectUrl =
-      this.appleOauthConfig.appScheme +
-      '?exchangeToken=' +
-      exchangeToken +
-      '&state=' +
-      encodeURIComponent(state);
-    return res.redirect(redirectUrl);
+    const params = new URLSearchParams({ exchangeToken, state });
+    return res.redirect(`${this.appleOauthConfig.appScheme}?${params}`);
   }
 
   @Public()
@@ -123,13 +118,8 @@ export class AuthController {
     const exchangeToken = await this.authService.generateExchangeToken(
       req.user.id,
     );
-    const redirectUrl =
-      this.googleOathConfig.appScheme +
-      '?exchangeToken=' +
-      exchangeToken +
-      '&state=' +
-      encodeURIComponent(state);
-    return res.redirect(redirectUrl);
+    const params = new URLSearchParams({ exchangeToken, state });
+    return res.redirect(`${this.googleOathConfig.appScheme}?${params}`);
   }
 
   @Public()
