@@ -108,7 +108,7 @@ export class AuthController {
       '?exchangeToken=' +
       exchangeToken +
       '&state=' +
-      state;
+      encodeURIComponent(state);
     return res.redirect(redirectUrl);
   }
 
@@ -128,7 +128,7 @@ export class AuthController {
       '?exchangeToken=' +
       exchangeToken +
       '&state=' +
-      state;
+      encodeURIComponent(state);
     return res.redirect(redirectUrl);
   }
 
