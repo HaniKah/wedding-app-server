@@ -91,13 +91,10 @@ export class AuthService {
 
   async generateExchangeToken(userId: number) {
     const payload = { sub: userId };
-    console.log('[DEBUG] generateExchangeToken secret prefix:', this.exchangeTokenConfig.secret?.slice(0, 8));
-    const token = await this.jwtService.signAsync(payload, {
+    return await this.jwtService.signAsync(payload, {
       secret: this.exchangeTokenConfig.secret,
       expiresIn: this.exchangeTokenConfig?.expiresIn,
     });
-    console.log('[DEBUG] generated token length:', token?.length, 'suffix:', token?.slice(-10));
-    return token;
   }
 
   async validateGoogleUser(googleUser: GoogleCreateUserDto) {
