@@ -96,7 +96,7 @@ export class AuthService {
       secret: this.exchangeTokenConfig.secret,
       expiresIn: this.exchangeTokenConfig?.expiresIn,
     });
-    console.log('[DEBUG] generated exchange token prefix:', token?.slice(0, 20));
+    console.log('[DEBUG] generated token length:', token?.length, 'suffix:', token?.slice(-10));
     return token;
   }
 

@@ -29,7 +29,7 @@ export class ExchangeAuthGuard implements CanActivate {
     }
 
     console.log('[DEBUG] exchangeToken verify secret prefix:', this.exchangeTokenConfig.secret?.slice(0, 8));
-    console.log('[DEBUG] received token prefix:', token?.slice(0, 20));
+    console.log('[DEBUG] received token length:', token?.length, 'suffix:', token?.slice(-10));
 
     try {
       const payload: AuthJwtPayload = this.jwtService.verify(token, {
