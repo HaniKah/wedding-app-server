@@ -140,7 +140,6 @@ export class PhotosService {
     data: Buffer,
     info: OutputInfo,
   ) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     const uuid = v4();
 
     const fileExtension: string = originalName.split('.').pop();

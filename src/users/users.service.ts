@@ -4,12 +4,14 @@ import { Insertable, Updateable } from 'kysely';
 import { Users } from 'src/types/db/db';
 import { Role } from '../types/auth/auth.dto';
 import { PlansRepositoryService } from '../planner/plans.repository.service';
+import { PhotosService } from '../photos/photos.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly dbService: DbService,
     private readonly plansRepositoryService: PlansRepositoryService,
+    private readonly photosService: PhotosService,
   ) {}
 
   async updateUser(userId: number, data: Updateable<Users>) {
@@ -73,9 +75,22 @@ export class UsersService {
       .executeTakeFirst();
   }
   async deleteUser(userId: number) {
+    const objectKeys = await this.getAllObjectKeysByUserId(userId);
+    await Promise.all(
+      objectKeys.map((p) => this.photosService.deletePhoto(p.id)),
+    );
+
     await this.dbService.db
       .deleteFrom('users')
       .where('id', '=', userId)
       .executeTakeFirst();
+  }
+  private async getAllObjectKeysByUserId(userId: number) {
+    return await this.dbService.db
+      .selectFrom('places')
+      .innerJoin('photos', 'places.id', 'photos.placeId')
+      .select('photos.id')
+      .where('userId', '=', userId)
+      .execute();
   }
 }
