@@ -29,6 +29,13 @@ export class UsersService {
       .where('appleId', '=', appleId)
       .executeTakeFirst();
   }
+  async findUserByGoogleId(googleId: string) {
+    return await this.dbService.db
+      .selectFrom('users')
+      .selectAll()
+      .where('googleId', '=', googleId)
+      .executeTakeFirst();
+  }
 
   async updateRoleById(id: number, role: Role) {
     return await this.dbService.db
@@ -43,6 +50,8 @@ export class UsersService {
       .selectFrom('users')
       .selectAll()
       .where('email', '=', email)
+      .where('googleId', 'is', null)
+      .where('appleId', 'is', null)
       .executeTakeFirst();
   }
 

@@ -7,6 +7,7 @@ import googleOauthConfig from '../auth/config/googleOauth.config';
 import { Role } from '../types/auth/auth.dto';
 import { AuthenticateOptions } from 'passport';
 import { Request } from 'express';
+import { GoogleProfileDto } from '../types/auth/google.dto';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy) {
@@ -35,17 +36,14 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     req: Request,
     accessToken: string,
     refreshToken: string,
-    profile: any,
+    profile: GoogleProfileDto,
   ) {
     return await this.authService.validateGoogleUser({
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
+      google_id: profile.id,
       email: profile.emails[0].value,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
       firstName: profile.name.givenName,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
       lastName: profile.name.familyName,
       role: Role.User,
-      password: '',
     });
   }
 }

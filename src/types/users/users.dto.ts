@@ -4,6 +4,9 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class GoogleCreateUserDto {
   @IsString()
+  google_id: string;
+
+  @IsString()
   firstName: string;
 
   @IsString()
@@ -15,7 +18,4 @@ export class GoogleCreateUserDto {
 
   @ApiProperty({ enum: Role, enumName: 'Role' })
   role: Role;
-
-  @IsString()
-  password: string;
 }

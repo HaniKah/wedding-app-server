@@ -45,7 +45,6 @@ export class AuthService {
     if (existingUser) {
       throw new BadRequestException('User already exists');
     }
-
     const hashedPassword = await argon2.hash(signUpDto.password);
     const user = await this.usersService.createUser({
       ...signUpDto,
@@ -98,13 +97,16 @@ export class AuthService {
   }
 
   async validateGoogleUser(googleUser: GoogleCreateUserDto) {
-    const user = await this.usersService.findUserByEmail(googleUser.email);
+    const user = await this.usersService.findUserByGoogleId(
+      googleUser.google_id,
+    );
     if (user) {
       return user;
     } else {
       return await this.usersService.createUser(googleUser);
     }
   }
+
   async validateAppleUser(
     user: AppleUserAuthorizeResponse | undefined,
     payload: JWTPayload,
@@ -115,10 +117,9 @@ export class AuthService {
     } else {
       return await this.usersService.createUser({
         appleId: payload.sub,
-        email: payload.email,
+        email: user.email || payload.email,
         firstName: user?.name?.firstName,
         lastName: user?.name?.lastName,
-        password: '',
         role: Role.User,
       });
     }

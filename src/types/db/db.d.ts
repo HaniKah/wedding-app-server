@@ -111,10 +111,11 @@ export interface Users {
   createdAt: Generated<Timestamp | null>;
   deletedAt: Timestamp | null;
   email: string;
-  firstName: string;
+  firstName: string | null;
+  googleId: string | null;
   id: Generated<number>;
-  lastName: string;
-  password: string;
+  lastName: string | null;
+  password: string | null;
   refreshToken: string | null;
   role: Role;
   updatedAt: Timestamp | null;
