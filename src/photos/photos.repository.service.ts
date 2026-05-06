@@ -36,10 +36,11 @@ export class PhotosRepositoryService {
     return await this.db.db
       .selectFrom('photos')
       .innerJoin('photosVariants', 'photosVariants.photoId', 'photos.id')
-      .selectAll()
-      .where('placeId', '=', placeId)
-      .where('main', 'is', true)
+      .where('photos.placeId', '=', placeId)
       .where('photosVariants.variant', '=', photoSize)
+      .selectAll()
+      .orderBy('photos.main', (m) => m.desc().nullsLast())
+      .orderBy('photos.id', 'asc')
       .executeTakeFirst();
   }
   public async photoExists(placeId: number) {
