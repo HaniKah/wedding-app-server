@@ -10,8 +10,6 @@ import {
 import { PlacesRepositoryService } from './places.repository.service';
 import { PhotosService } from '../photos/photos.service';
 import { PhotoSize } from '../types/photos/photos.dto';
-import { Selectable } from 'kysely';
-import { Places } from '../types/db/db';
 
 @Injectable()
 export class PlacesService {
@@ -127,7 +125,6 @@ export class PlacesService {
             p.id,
             PhotoSize.Image,
           );
-        const isCompleted = this.isPlaceComplete(p) && photo !== null;
 
         return {
           id: p.id,
@@ -135,7 +132,6 @@ export class PlacesService {
           streetName: p.streetName,
           thumbnail: photo,
           isPublished: p.isPublished,
-          isCompleted: isCompleted,
           isPromoted:
             today >= p.promotionBeginsAt && today <= p.promotionEndsAt,
           minPrice: p.minPrice,
@@ -146,28 +142,19 @@ export class PlacesService {
         };
       }),
     );
-    const [published, unpublished, uncompleted] = placesDto.reduce(
+    const [published, unpublished] = placesDto.reduce(
       (
-        [published, unpublished, uncompleted]: [
-          VendorPlaceDto[],
-          VendorPlaceDto[],
-          VendorPlaceDto[],
-        ],
+        [published, unpublished]: [VendorPlaceDto[], VendorPlaceDto[]],
         place,
       ) => {
-        if (place.isCompleted) {
-          if (place.isPublished) {
-            published.push(place);
-          } else {
-            unpublished.push(place);
-          }
+        if (place.isPublished) {
+          published.push(place);
         } else {
-          uncompleted.push(place);
+          unpublished.push(place);
         }
-
-        return [published, unpublished, uncompleted];
+        return [published, unpublished];
       },
-      [[], [], []],
+      [[], []],
     );
     return {
       published: {
@@ -178,20 +165,6 @@ export class PlacesService {
         title: 'Unpublished',
         data: unpublished,
       },
-      uncompleted: {
-        title: 'Uncompleted',
-        data: uncompleted,
-      },
     };
-  }
-
-  //todo: more accurate checks should happen here
-  private isPlaceComplete(place: Selectable<Places>): boolean {
-    return (
-      place.name != null &&
-      place.minPrice != null &&
-      place.maxPrice != null &&
-      place.phoneNumber != null
-    );
   }
 }

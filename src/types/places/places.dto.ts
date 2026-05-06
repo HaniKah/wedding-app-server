@@ -50,10 +50,6 @@ export class VendorPlaceViewModel {
     title: string;
     data: VendorPlaceDto[];
   };
-  uncompleted: {
-    title: string;
-    data: VendorPlaceDto[];
-  };
 }
 
 export class VendorPlaceDto {
@@ -62,7 +58,6 @@ export class VendorPlaceDto {
   streetName?: string;
   thumbnail: string;
   isPublished: boolean;
-  isCompleted: boolean;
   isPromoted: boolean;
   minPrice: string;
   maxPrice: string;
