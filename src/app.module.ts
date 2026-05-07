@@ -14,7 +14,6 @@ import { PhotosModule } from './photos/photos.module';
 
 import { PromotionsModule } from './promotions/promotions.module';
 import { WebhooksModule } from './webhooks/webhooks.module';
-import { ChecklistModule } from './checklist/checklist.module';
 
 @Module({
   imports: [
@@ -34,9 +33,8 @@ import { ChecklistModule } from './checklist/checklist.module';
     PhotosModule,
     PromotionsModule,
     WebhooksModule,
-    ChecklistModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

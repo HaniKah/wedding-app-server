@@ -222,47 +222,6 @@ export class PlannerService {
   //   };
   // }
 
-  // public async createChecklist(userId: number): Promise<ChecklistViewModel> {
-  //   //todo : ignored steps are not implemented yet
-  //   const stepsList: Categories[] = Object.values(Categories);
-  //
-  //   const completedStepsRecord =
-  //     await this.placeFilterRepositoryService.getPlaceFilterOfPickedSteps(
-  //       userId,
-  //     );
-  //
-  //   let placeName: string | null = null;
-  //   let placeId: number | null = null;
-  //
-  //   const dtoList: ChecklistDto[] = await Promise.all(
-  //     stepsList.map(async (step) => {
-  //       let isCompleted: boolean = false;
-  //       const found = completedStepsRecord.find((s) => s.step === step);
-  //
-  //       if (found && found.placeId) {
-  //         const placeDetails = await this.getPlaceDetailsById(
-  //           userId,
-  //           found.placeId,
-  //         );
-  //         placeName = placeDetails.name;
-  //         placeId = found.placeId;
-  //         isCompleted = true;
-  //       }
-  //
-  //       return {
-  //         step,
-  //         isCompleted: isCompleted,
-  //         placeName: placeName,
-  //         placeId: placeId,
-  //       };
-  //     }),
-  //   );
-  //
-  //   return {
-  //     list: dtoList,
-  //   };
-  // }
-
   private async updateOrCreatePlaceFilter(
     userId: number,
     request: Updateable<PlaceFilter>,

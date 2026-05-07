@@ -28,14 +28,3 @@ export interface StepsInfo {
   title: string;
   description: string;
 }
-
-export class ChecklistDto {
-  @ApiProperty({ enum: Categories, enumName: 'Categories' })
-  category: Categories;
-  isCompleted: boolean;
-  placeName: string | null;
-  placeId: number | null;
-}
-export class ChecklistViewModel {
-  list: ChecklistDto[];
-}
