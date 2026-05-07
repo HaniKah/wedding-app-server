@@ -16,7 +16,9 @@ import {
   PhotoSize,
 } from '../types/photos/photos.dto';
 import { PhotosViewModel } from '../types/planner/photos.dto';
+import { Public } from '../auth/decorators/public.decorator';
 
+@Public()
 @Controller('photos')
 export class PhotosController {
   constructor(private readonly photosService: PhotosService) {}
