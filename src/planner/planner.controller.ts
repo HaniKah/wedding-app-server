@@ -1,29 +1,16 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { PlannerService } from './planner.service';
-import {
-  FavouritePlacesViewModel,
-  PlaceDetailsDto,
-  PlacesViewModel,
-  ToggleFavoritePlaceFilterRequest,
-  TogglePickedPlaceFilterRequest,
-} from '../types/planner/places.dto';
+import { PlaceDetailsDto, PlacesViewModel } from '../types/planner/places.dto';
 import { ApiQuery } from '@nestjs/swagger';
-import { User } from '../decorators/user.decorator';
-import { CurrentUser } from '../types/auth/auth.dto';
 import { CountryCode } from '../types/general/countries.dto';
 import { Categories } from '../types/general/categories';
+import { Public } from '../auth/decorators/public.decorator';
 
 @Controller('planner')
 export class PlannerController {
   constructor(private readonly plannerService: PlannerService) {}
 
-  @Get('getFavorites')
-  public async getFavorites(
-    @User() user: CurrentUser,
-  ): Promise<FavouritePlacesViewModel> {
-    return await this.plannerService.getFavorites(user.id);
-  }
-
+  @Public()
   @Get('getPlaces')
   @ApiQuery({ name: 'offset', required: true })
   @ApiQuery({ name: 'countryCode', required: true, enum: CountryCode })
@@ -42,28 +29,11 @@ export class PlannerController {
       category,
     );
   }
-
+  @Public()
   @Get('getPlaceById')
   public async getPlaceById(
     @Query('placeId') placeId: number,
-    @User() user: CurrentUser,
   ): Promise<PlaceDetailsDto> {
-    return await this.plannerService.getPlaceDetailsById(user.id, placeId);
-  }
-
-  @Post('toggleFavoritePlaceFilter')
-  public async toggleFavoritePlaceFilter(
-    @Body() req: ToggleFavoritePlaceFilterRequest,
-    @User() user: CurrentUser,
-  ): Promise<void> {
-    await this.plannerService.toggleFavorite(user.id, req);
-  }
-
-  @Post('togglePickedPlaceFilter')
-  public async togglePickedPlaceFilter(
-    @Body() req: TogglePickedPlaceFilterRequest,
-    @User() user: CurrentUser,
-  ) {
-    await this.plannerService.togglePicked(user.id, req);
+    return await this.plannerService.getPlaceDetailsById(placeId);
   }
 }

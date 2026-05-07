@@ -33,8 +33,6 @@ export class PlaceDetailsDto {
   phoneNumber: string;
   @ApiProperty({ enum: Categories, enumName: 'Categories' })
   category: Categories;
-  picked: boolean;
-  favourite: boolean;
   mainPhoto: string;
   maxPrice: string;
   minPrice: string;
@@ -68,37 +66,6 @@ export class AuthorAttributionDto {
   photoUri?: string | null;
 }
 
-export class PlaceFilterRequest {
-  placeId: number;
-  notes?: string | null;
-  favorite?: boolean;
-  picked?: boolean;
-}
-
-export class ToggleFavoritePlaceFilterRequest {
-  placeId: number;
-  favorite: boolean;
-}
-
-export class TogglePickedPlaceFilterRequest {
-  placeId: number;
-  picked: boolean;
-  @ApiProperty({ enum: Categories, enumName: 'Categories' })
-  category: Categories;
-}
-
-export class FavouritePlacesDto {
-  id: number;
-  name: string;
-  @ApiProperty({ enum: CountryCode, enumName: 'CountryCode' })
-  country: CountryCode;
-  @ApiProperty({ enum: Categories, enumName: 'Categories' })
-  category: Categories;
-  minPrice: string;
-  maxPrice: string;
-  mainPhoto: string;
-}
-
 export class FavouritePlacesViewModel {
-  result: FavouritePlacesDto[];
+  result: PlacesDto[];
 }
