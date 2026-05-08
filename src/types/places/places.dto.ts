@@ -74,7 +74,7 @@ class PlaceInfo {
   category: Categories;
   minPrice?: string;
   maxPrice?: string;
-  priceType: PriceType;
+  priceType?: PriceType;
 }
 
 class LocationInfo {
