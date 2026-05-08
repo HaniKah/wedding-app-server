@@ -15,7 +15,6 @@ export enum UpdateStep {
 // }
 
 export enum PriceType {
-  None = 'None',
   PerPerson = 'PerPerson',
   PerHour = 'PerHour',
   PerItem = 'PerItem',

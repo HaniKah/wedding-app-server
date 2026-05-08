@@ -16,7 +16,7 @@ export const placesViewModelStub = (): PlacesViewModel => {
         maxPrice: '250',
         minPrice: '50',
         phoneNumber: '0795542743',
-        priceType: PriceType.None,
+        priceType: PriceType.PerItem,
         country: CountryCode.JO,
         city: 'Amman',
         formattedAddress:

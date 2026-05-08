@@ -3,7 +3,6 @@ import { DbService } from '../db/db.service';
 
 import { Places } from 'src/types/db/db';
 import { Insertable, Updateable } from 'kysely';
-import { PriceType } from '../types/places/places.dto';
 
 @Injectable()
 export class PlacesRepositoryService {
@@ -55,15 +54,10 @@ export class PlacesRepositoryService {
       .execute();
   }
   public async updatePlace(placeId: number, data: Updateable<Places>) {
-    const adjustedData = data;
-    if (data.priceType === PriceType.None) {
-      adjustedData.minPrice = null;
-      adjustedData.maxPrice = null;
-    }
     await this.db.db
       .updateTable('places')
       .where('id', '=', placeId)
-      .set(adjustedData)
+      .set(data)
       .executeTakeFirst();
   }
 }
