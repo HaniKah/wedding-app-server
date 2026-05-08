@@ -136,6 +136,7 @@ export class PlacesService {
             today >= p.promotionBeginsAt && today <= p.promotionEndsAt,
           minPrice: p.minPrice,
           maxPrice: p.maxPrice,
+          priceType: p.priceType,
           city: p.city,
           country: p.country,
           category: p.step,

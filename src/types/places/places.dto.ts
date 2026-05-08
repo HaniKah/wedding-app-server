@@ -60,6 +60,8 @@ export class VendorPlaceDto {
   isPromoted: boolean;
   minPrice: string;
   maxPrice: string;
+  @ApiProperty({ enum: PriceType, enumName: 'PriceType' })
+  priceType: PriceType;
   @ApiProperty({ enum: CountryCode, enumName: 'CountryCode' })
   country: CountryCode;
   city: string;
