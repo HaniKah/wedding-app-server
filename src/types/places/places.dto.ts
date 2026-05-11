@@ -122,3 +122,22 @@ export class VendorPlaceDetailsDto {
   countryCode: CountryCode;
   city: string;
 }
+export class FavoritePlaceDto {
+  id: number;
+  name: string;
+  thumbnail: string;
+  minPrice: string;
+  maxPrice: string;
+  @ApiProperty({ enum: PriceType, enumName: 'PriceType' })
+  priceType: PriceType;
+  @ApiProperty({ enum: CountryCode, enumName: 'CountryCode' })
+  country: CountryCode;
+  @ApiProperty({ enum: Categories, enumName: 'Categories' })
+  category: Categories;
+}
+export class FavoritesViewModel {
+  result: FavoritePlaceDto[];
+}
+export class FavoritePlacesRequest {
+  favoriteIds: number[];
+}

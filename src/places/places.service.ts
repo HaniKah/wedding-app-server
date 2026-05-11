@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import {
   CreatePlaceRequest,
+  FavoritePlaceDto,
   UpdatePlaceRequest,
   UpdateStep,
   VendorPlaceDetailsDto,
@@ -54,6 +55,29 @@ export class PlacesService {
 
   public async deletePlace(placeId: number) {
     await this.placesRepositoryService.deletePlace(placeId);
+  }
+
+  public async getFavorites(ids: number[]): Promise<FavoritePlaceDto[]> {
+    return Promise.all(
+      ids.map(async (id) => {
+        const p = await this.placesRepositoryService.getPlaceById(id);
+        const mainPhoto: string =
+          await this.photosService.getMainPhotoOrFirstByPlaceId(
+            p.id,
+            PhotoSize.Thumbnail,
+          );
+        return {
+          id: p.id,
+          name: p.name,
+          thumbnail: mainPhoto,
+          minPrice: p.minPrice,
+          maxPrice: p.maxPrice,
+          priceType: p.priceType,
+          category: p.step,
+          country: p.country,
+        };
+      }),
+    );
   }
 
   public async getPlaceDetails(
