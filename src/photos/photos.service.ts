@@ -4,11 +4,7 @@ import { MinioService } from '../minio/minio.service';
 import { PhotosRepositoryService } from './photos.repository.service';
 import sharp, { OutputInfo } from 'sharp';
 import { PhotosDto } from '../types/planner/photos.dto';
-import {
-  BucketName,
-  PhotoSize,
-  SharpVariants,
-} from '../types/photos/photos.dto';
+import { BucketName, PhotoSize } from '../types/photos/photos.dto';
 
 @Injectable()
 export class PhotosService {
@@ -78,34 +74,18 @@ export class PhotosService {
     if (!exists) await this.minioService.minio.makeBucket(BucketName.Listings);
 
     for (const file of files) {
-      const variants: SharpVariants[] = await this.createVariants(
-        [PhotoSize.Image, PhotoSize.Thumbnail],
-        file,
-      );
-
       const { id } = await this.photosRepositoryService.createPhoto({
         placeId: placeId,
         bucketName: bucketName,
       });
 
-      for (const v of variants) {
-        const objectName: string = await this.uploadObject(
-          file.originalname,
-          placeId,
-          bucketName,
-          v.size,
-          v.data,
-          v.info,
-        );
-
-        const ratio = v.info.width / v.info.height;
-        await this.photosRepositoryService.createPhotoVariant({
-          photoId: id,
-          objectKey: objectName,
-          variant: v.size,
-          ratio: ratio,
-        });
-      }
+      await this.createVariants(
+        [PhotoSize.Image, PhotoSize.Medium, PhotoSize.Thumbnail],
+        file,
+        placeId,
+        bucketName,
+        id,
+      );
     }
   }
 
@@ -142,9 +122,9 @@ export class PhotosService {
   ) {
     const uuid = v4();
 
-    const fileExtension: string = originalName.split('.').pop();
+    // const fileExtension: string = originalName.split('.').pop();
 
-    const objectName = `${placeId}/${photoSize}/${uuid}.${fileExtension}`;
+    const objectName = `${placeId}/${photoSize}/${uuid}.webp`;
 
     const metadata = {
       fileName: originalName,
@@ -165,24 +145,54 @@ export class PhotosService {
   private async createVariants(
     variants: PhotoSize[],
     file: Express.Multer.File,
-  ): Promise<Array<{ data: Buffer; info: OutputInfo; size: PhotoSize }>> {
-    return Promise.all(
+    placeId: number,
+    bucketName: string,
+    photoId: number,
+  ): Promise<void> {
+    const input = sharp(file.buffer).rotate();
+    await Promise.all(
       variants.map(async (v) => {
         let width: number;
+        let quality: number;
+        let effort: number;
         switch (v) {
           case PhotoSize.Thumbnail:
             width = 300;
+            quality = 72;
+            effort = 3;
+            break;
+          case PhotoSize.Medium:
+            width = 800;
+            quality = 82;
+            effort = 4;
             break;
           case PhotoSize.Image:
-            width = 1200;
+            width = 1400;
+            quality = 88;
+            effort = 4;
             break;
         }
 
-        const { data, info } = await sharp(file.buffer)
-          .resize({ width: width, withoutEnlargement: true })
+        const { data, info } = await input
+          .clone()
+          .resize({ width: width, withoutEnlargement: true, fit: 'inside' })
+          .webp({ quality: quality, effort: effort })
           .toBuffer({ resolveWithObject: true });
 
-        return { data, info, size: v };
+        const objectName: string = await this.uploadObject(
+          file.originalname,
+          placeId,
+          bucketName,
+          v,
+          data,
+          info,
+        );
+        await this.photosRepositoryService.createPhotoVariant({
+          photoId: photoId,
+          objectKey: objectName,
+          variant: v,
+          ratio: info.width / info.height,
+        });
       }),
     );
   }

@@ -2,6 +2,7 @@ import { OutputInfo } from 'sharp';
 
 export enum PhotoSize {
   Thumbnail = 'Thumbnail',
+  Medium = 'Medium',
   Image = 'Image',
 }
 

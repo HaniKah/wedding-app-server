@@ -51,7 +51,7 @@ export class PlannerService {
         const mainPhoto: string =
           await this.photosService.getMainPhotoOrFirstByPlaceId(
             r.id,
-            PhotoSize.Thumbnail,
+            PhotoSize.Medium,
           );
         const isPromoted: boolean =
           r.promotionBeginsAt <= new Date() && r.promotionEndsAt >= new Date();
@@ -85,7 +85,7 @@ export class PlannerService {
     const mainPhoto: string =
       await this.photosService.getMainPhotoOrFirstByPlaceId(
         place.id,
-        PhotoSize.Thumbnail,
+        PhotoSize.Image,
       );
 
     return {
