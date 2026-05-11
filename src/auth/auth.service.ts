@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Inject,
   Injectable,
+  InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
@@ -111,13 +112,18 @@ export class AuthService {
     user: AppleUserAuthorizeResponse | undefined,
     payload: JWTPayload,
   ): Promise<Selectable<Users>> {
+    if (!payload.sub) {
+      throw new InternalServerErrorException(
+        'user Id was not provided by apple',
+      );
+    }
     const userRecord = await this.usersService.findUserByAppleId(payload.sub);
     if (userRecord) {
       return userRecord;
     } else {
       return await this.usersService.createUser({
-        appleId: payload.sub,
-        email: user.email || payload.email,
+        appleId: payload?.sub,
+        email: user?.email || payload?.email,
         firstName: user?.name?.firstName,
         lastName: user?.name?.lastName,
         role: Role.User,
