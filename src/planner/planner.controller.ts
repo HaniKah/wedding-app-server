@@ -5,6 +5,7 @@ import { ApiQuery } from '@nestjs/swagger';
 import { CountryCode } from '../types/general/countries.dto';
 import { Categories } from '../types/general/categories';
 import { Public } from '../auth/decorators/public.decorator';
+import { FavoritePlaceDto } from '../types/planner/favorites.dto';
 
 @Controller('planner')
 export class PlannerController {
@@ -35,5 +36,11 @@ export class PlannerController {
     @Query('placeId') placeId: number,
   ): Promise<PlaceDetailsDto> {
     return await this.plannerService.getPlaceDetailsById(placeId);
+  }
+  @Get('getFavorites')
+  public async getFavorites(
+    @Query('id') id: number,
+  ): Promise<FavoritePlaceDto> {
+    return await this.plannerService.getFavorites(Number(id));
   }
 }

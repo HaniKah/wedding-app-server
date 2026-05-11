@@ -2,8 +2,6 @@ import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
 import {
   CreatePlaceRequest,
   DeletePlaceRequest,
-  FavoritePlacesRequest,
-  FavoritesViewModel,
   PublishPlaceRequest,
   UpdatePlaceRequest,
   VendorPlaceDetailsDto,
@@ -58,14 +56,5 @@ export class PlacesController {
     @Query('id') id: number,
   ): Promise<VendorPlaceDetailsDto> {
     return await this.placesService.getPlaceDetails(id);
-  }
-
-  @Get('getFavorites')
-  public async getFavorites(
-    @Body() body: FavoritePlacesRequest,
-  ): Promise<FavoritesViewModel> {
-    return {
-      result: await this.placesService.getFavorites(body.favoriteIds),
-    };
   }
 }

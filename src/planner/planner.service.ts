@@ -8,6 +8,7 @@ import { PhotoSize } from '../types/photos/photos.dto';
 import { CountryCode } from '../types/general/countries.dto';
 import { SaleLabel } from '../types/webhooks/revenue-cat.dto';
 import { Categories } from '../types/general/categories';
+import { FavoritePlaceDto } from '../types/planner/favorites.dto';
 
 @Injectable()
 export class PlannerService {
@@ -106,6 +107,44 @@ export class PlannerService {
       city: place.city,
       priceType: place.priceType,
     };
+  }
+  //todo enhance this, pay attention to places that are deleted or unpublished
+  public async getFavorites(id: number): Promise<FavoritePlaceDto> {
+    try {
+      const p = await this.plannerRepositoryService.getPlaceByIdOrThrow(id);
+      if (p.isPublished) {
+        let mainPhoto: string | null = null;
+        mainPhoto = await this.photosService.getMainPhotoOrFirstByPlaceId(
+          p.id,
+          PhotoSize.Thumbnail,
+        );
+        return {
+          id: id,
+          isFound: !!p,
+          name: p?.name,
+          thumbnail: mainPhoto,
+          minPrice: p?.minPrice,
+          maxPrice: p?.maxPrice,
+          priceType: p?.priceType,
+          category: p?.step,
+          country: p?.country,
+        };
+      } else {
+        throw new Error('place is not published');
+      }
+    } catch {
+      return {
+        id: id,
+        isFound: false,
+        name: null,
+        thumbnail: null,
+        minPrice: null,
+        maxPrice: null,
+        priceType: null,
+        category: null,
+        country: null,
+      };
+    }
   }
 
   private createLabelContent(saleLabel: SaleLabel, percentage: string): string {
