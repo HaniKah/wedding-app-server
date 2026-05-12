@@ -86,7 +86,7 @@ export class PlannerService {
     const mainPhoto: string =
       await this.photosService.getMainPhotoOrFirstByPlaceId(
         place.id,
-        PhotoSize.Thumbnail,
+        PhotoSize.Medium,
       );
 
     return {
