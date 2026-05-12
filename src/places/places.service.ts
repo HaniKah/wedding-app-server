@@ -113,17 +113,17 @@ export class PlacesService {
 
     const placesDto: VendorPlaceDto[] = await Promise.all(
       places.map(async (p) => {
-        const photo: string =
-          await this.photosService.getMainPhotoOrFirstByPlaceId(
-            p.id,
-            PhotoSize.Thumbnail,
-          );
+        const photo = await this.photosService.getMainPhotoOrFirstByPlaceId(
+          p.id,
+          PhotoSize.Thumbnail,
+        );
 
         return {
           id: p.id,
           name: p.name,
           streetName: p.streetName,
-          thumbnail: photo,
+          thumbnail: photo?.uri,
+          thumbnailBlurhash: photo?.blurhash,
           isPublished: p.isPublished,
           isPromoted:
             today >= p.promotionBeginsAt && today <= p.promotionEndsAt,

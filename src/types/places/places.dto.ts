@@ -56,6 +56,7 @@ export class VendorPlaceDto {
   name: string;
   streetName?: string;
   thumbnail: string;
+  thumbnailBlurhash?: string;
   isPublished: boolean;
   isPromoted: boolean;
   minPrice: string;

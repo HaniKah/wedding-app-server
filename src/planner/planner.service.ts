@@ -49,11 +49,10 @@ export class PlannerService {
 
     const list = await Promise.all(
       placesAndPlaceDetailsRecord.map(async (r) => {
-        const mainPhoto: string =
-          await this.photosService.getMainPhotoOrFirstByPlaceId(
-            r.id,
-            PhotoSize.Medium,
-          );
+        const mainPhoto = await this.photosService.getMainPhotoOrFirstByPlaceId(
+          r.id,
+          PhotoSize.Medium,
+        );
         const isPromoted: boolean =
           r.promotionBeginsAt <= new Date() && r.promotionEndsAt >= new Date();
         const label: string =
@@ -63,7 +62,8 @@ export class PlannerService {
           category: r.step,
           name: r.name,
           formattedAddress: r.streetName,
-          mainPhoto: mainPhoto,
+          mainPhoto: mainPhoto?.uri,
+          mainPhotoBlurhash: mainPhoto?.blurhash,
           maxPrice: r.maxPrice,
           minPrice: r.minPrice,
           isPromoted: isPromoted,
@@ -83,11 +83,10 @@ export class PlannerService {
     const place =
       await this.plannerRepositoryService.getPlaceByIdOrThrow(placeId);
 
-    const mainPhoto: string =
-      await this.photosService.getMainPhotoOrFirstByPlaceId(
-        place.id,
-        PhotoSize.Medium,
-      );
+    const mainPhoto = await this.photosService.getMainPhotoOrFirstByPlaceId(
+      place.id,
+      PhotoSize.Medium,
+    );
 
     return {
       id: place.id,
@@ -99,7 +98,8 @@ export class PlannerService {
       instagram: place?.instagram,
       tiktok: place?.tiktok,
       category: place.step as Categories,
-      mainPhoto: mainPhoto,
+      mainPhoto: mainPhoto?.uri,
+      mainPhotoBlurhash: mainPhoto?.blurhash,
       maxPrice: place.maxPrice,
       minPrice: place.minPrice,
       description: place.description,
@@ -113,8 +113,7 @@ export class PlannerService {
     try {
       const p = await this.plannerRepositoryService.getPlaceByIdOrThrow(id);
       if (p.isPublished) {
-        let mainPhoto: string | null = null;
-        mainPhoto = await this.photosService.getMainPhotoOrFirstByPlaceId(
+        const mainPhoto = await this.photosService.getMainPhotoOrFirstByPlaceId(
           p.id,
           PhotoSize.Thumbnail,
         );
@@ -122,7 +121,8 @@ export class PlannerService {
           id: id,
           isFound: !!p,
           name: p?.name,
-          thumbnail: mainPhoto,
+          thumbnail: mainPhoto?.uri,
+          thumbnailBlurhash: mainPhoto?.blurhash,
           minPrice: p?.minPrice,
           maxPrice: p?.maxPrice,
           priceType: p?.priceType,

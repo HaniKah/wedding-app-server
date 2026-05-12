@@ -8,6 +8,7 @@ export class FavoritePlaceDto {
   isFound: boolean;
   name?: string;
   thumbnail?: string;
+  thumbnailBlurhash?: string;
   minPrice?: string;
   maxPrice?: string;
   @ApiProperty({ enum: PriceType, enumName: 'PriceType' })

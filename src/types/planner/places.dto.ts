@@ -10,6 +10,7 @@ export class PlacesDto {
   @ApiProperty({ enum: Categories, enumName: 'Categories' })
   category: Categories;
   mainPhoto: string;
+  mainPhotoBlurhash?: string;
   minPrice: string;
   maxPrice: string;
   isPromoted: boolean;
@@ -34,6 +35,7 @@ export class PlaceDetailsDto {
   @ApiProperty({ enum: Categories, enumName: 'Categories' })
   category: Categories;
   mainPhoto: string;
+  mainPhotoBlurhash?: string;
   maxPrice: string;
   minPrice: string;
   description: string;

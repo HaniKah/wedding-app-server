@@ -7,6 +7,11 @@ import { PhotosDto } from '../types/planner/photos.dto';
 import { BucketName, PhotoSize } from '../types/photos/photos.dto';
 import { encode } from 'blurhash';
 
+export interface PhotoWithBlurhash {
+  uri: string;
+  blurhash: string;
+}
+
 @Injectable()
 export class PhotosService {
   constructor(
@@ -21,23 +26,34 @@ export class PhotosService {
   public async getMainPhotoOrFirstByPlaceId(
     placeId: number,
     photoSize: PhotoSize,
-  ): Promise<string> {
+  ): Promise<PhotoWithBlurhash | null> {
     const photoRecord = await this.photosRepositoryService.getMainPhoto(
       placeId,
       photoSize,
     );
     if (photoRecord) {
-      return await this.getObject(
+      const uri = await this.getObject(
         photoRecord.objectKey,
         photoRecord.bucketName,
       );
+      return {
+        uri,
+        blurhash: photoRecord.blurhash,
+      };
     } else {
       const photos = await this.photosRepositoryService.getPhotosByPlaceId(
         placeId,
         photoSize,
       );
       if (photos.length > 0) {
-        return await this.getObject(photos[0].objectKey, photos[0].bucketName);
+        const uri = await this.getObject(
+          photos[0].objectKey,
+          photos[0].bucketName,
+        );
+        return {
+          uri,
+          blurhash: photos[0].blurhash,
+        };
       } else {
         return null;
       }
