@@ -37,7 +37,7 @@ export class PhotosController {
   public async getPhotos(@Param('id') id: number): Promise<PhotosViewModel> {
     const photos = await this.photosService.getPhotosByPlaceId(
       Number(id),
-      PhotoSize.Image,
+      PhotoSize.Thumbnail,
     );
     return {
       result: photos,

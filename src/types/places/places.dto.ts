@@ -113,7 +113,6 @@ export class VendorPlaceDetailsDto {
   website?: string;
   isPublished: boolean;
   description?: string;
-  mainPhoto: string;
   minPrice: string;
   maxPrice: string;
   @ApiProperty({ enum: PriceType, enumName: 'PriceType' })

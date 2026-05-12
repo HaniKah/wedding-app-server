@@ -61,12 +61,6 @@ export class PlacesService {
   ): Promise<VendorPlaceDetailsDto> {
     const p = await this.placesRepositoryService.getPlaceById(placeId);
 
-    const mainPhoto: string =
-      await this.photosService.getMainPhotoOrFirstByPlaceId(
-        p.id,
-        PhotoSize.Thumbnail,
-      );
-
     return {
       id: p.id,
       name: p.name,
@@ -78,7 +72,6 @@ export class PlacesService {
       website: p.website,
       isPublished: p.isPublished,
       description: p.description,
-      mainPhoto: mainPhoto,
       category: p.step,
       minPrice: p.minPrice,
       maxPrice: p.maxPrice,
@@ -123,7 +116,7 @@ export class PlacesService {
         const photo: string =
           await this.photosService.getMainPhotoOrFirstByPlaceId(
             p.id,
-            PhotoSize.Image,
+            PhotoSize.Thumbnail,
           );
 
         return {
