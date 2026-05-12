@@ -33,7 +33,7 @@ export class PhotosController {
     const id = parseInt(placeId.placeId);
     return await this.photosService.uploadFile(id, file, BucketName.Listings);
   }
-  @Get(':id')
+  @Get('getAll/:id')
   public async getPhotos(@Param('id') id: number): Promise<PhotosViewModel> {
     const photos = await this.photosService.getPhotosByPlaceId(
       Number(id),
