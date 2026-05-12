@@ -13,15 +13,6 @@ export type Numeric = ColumnType<string, number | string, number | string>;
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
-export interface Checklist {
-  createdAt: Generated<Timestamp>;
-  id: Generated<number>;
-  isChecked: Generated<boolean>;
-  task: string;
-  timeframe: Timeframe;
-  userId: number;
-}
-
 export interface Guests {
   coupleSide: CoupleSide;
   createdAt: Generated<Timestamp>;
@@ -35,6 +26,7 @@ export interface Guests {
 }
 
 export interface Photos {
+  blurhash: string | null;
   bucketName: BucketName;
   createdAt: Generated<Timestamp | null>;
   deletedAt: Timestamp | null;
@@ -49,14 +41,6 @@ export interface PhotosVariants {
   photoId: number;
   ratio: number;
   variant: string;
-}
-
-export interface PlaceFilter {
-  id: Generated<number>;
-  isFavorite: Generated<boolean | null>;
-  isPicked: Generated<boolean | null>;
-  placeId: number;
-  userId: number;
 }
 
 export interface Places {
@@ -122,11 +106,9 @@ export interface Users {
 }
 
 export interface DB {
-  checklist: Checklist;
   guests: Guests;
   photos: Photos;
   photosVariants: PhotosVariants;
-  placeFilter: PlaceFilter;
   places: Places;
   plans: Plans;
   promotions: Promotions;

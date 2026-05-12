@@ -5,6 +5,7 @@ import { PhotosRepositoryService } from './photos.repository.service';
 import sharp, { OutputInfo } from 'sharp';
 import { PhotosDto } from '../types/planner/photos.dto';
 import { BucketName, PhotoSize } from '../types/photos/photos.dto';
+import { encode } from 'blurhash';
 
 @Injectable()
 export class PhotosService {
@@ -58,6 +59,7 @@ export class PhotosService {
           id: p.photoId,
           uri: uri,
           ratio: p.ratio,
+          blurhash: p.blurhash,
         };
       }),
     );
@@ -74,9 +76,12 @@ export class PhotosService {
     if (!exists) await this.minioService.minio.makeBucket(BucketName.Listings);
 
     for (const file of files) {
+      const blurhash = await this.generateBlurhash(file.buffer);
+
       const { id } = await this.photosRepositoryService.createPhoto({
         placeId: placeId,
         bucketName: bucketName,
+        blurhash: blurhash,
       });
 
       await this.createVariants(
@@ -195,5 +200,15 @@ export class PhotosService {
         });
       }),
     );
+  }
+
+  private async generateBlurhash(buffer: Buffer): Promise<string> {
+    const { data, info } = await sharp(buffer)
+      .raw()
+      .ensureAlpha()
+      .resize(32, 32, { fit: 'inside' })
+      .toBuffer({ resolveWithObject: true });
+
+    return encode(new Uint8ClampedArray(data), info.width, info.height, 4, 4);
   }
 }
