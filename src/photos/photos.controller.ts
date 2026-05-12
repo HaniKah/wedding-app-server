@@ -44,6 +44,15 @@ export class PhotosController {
     };
   }
 
+  @Get('getPhoto/:id')
+  public async getPhoto(@Param('id') id: number): Promise<PhotosDto> {
+    return await this.photosService.getPhotoById(
+      BucketName.Listings,
+      id,
+      PhotoSize.Image,
+    );
+  }
+
   @Post('delete')
   public async deletePhoto(@Body() req: DeletePhotoRequest): Promise<void> {
     await this.photosService.deletePhoto(req.id);
