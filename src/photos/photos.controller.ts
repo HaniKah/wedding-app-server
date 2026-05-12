@@ -4,10 +4,10 @@ import {
   Get,
   Param,
   Post,
-  UploadedFiles,
+  UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { PhotosService } from './photos.service';
 import {
@@ -15,23 +15,23 @@ import {
   DeletePhotoRequest,
   PhotoSize,
 } from '../types/photos/photos.dto';
-import { PhotosViewModel } from '../types/planner/photos.dto';
+import { PhotosDto, PhotosViewModel } from '../types/planner/photos.dto';
 import { Public } from '../auth/decorators/public.decorator';
 
 @Public()
 @Controller('photos')
 export class PhotosController {
   constructor(private readonly photosService: PhotosService) {}
-  @UseInterceptors(FilesInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: 'multipart/form-data' })
   @Post('upload')
   public async uploadFile(
-    @UploadedFiles() files: Array<Express.Multer.File>,
+    @UploadedFile() file: Express.Multer.File,
     @Body() placeId: { placeId: string },
-  ): Promise<void> {
+  ): Promise<PhotosDto> {
     const id = parseInt(placeId.placeId);
-    await this.photosService.uploadFiles(id, files, BucketName.Listings);
+    return await this.photosService.uploadFile(id, file, BucketName.Listings);
   }
   @Get(':id')
   public async getPhotos(@Param('id') id: number): Promise<PhotosViewModel> {

@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { v4 } from 'uuid';
 import { MinioService } from '../minio/minio.service';
 import { PhotosRepositoryService } from './photos.repository.service';
 import sharp, { OutputInfo } from 'sharp';
 import { PhotosDto } from '../types/planner/photos.dto';
 import { BucketName, PhotoSize } from '../types/photos/photos.dto';
 import { encode } from 'blurhash';
+import { v4 } from 'uuid';
 
 export interface PhotoWithBlurhash {
   uri: string;
@@ -21,6 +21,27 @@ export class PhotosService {
 
   public async hasPhotos(placeId: number): Promise<boolean> {
     return await this.photosRepositoryService.photoExists(placeId);
+  }
+  public async getPhotoById(
+    bucketName: BucketName,
+    photoId: number,
+    photoSize: PhotoSize,
+  ): Promise<PhotosDto> {
+    const variant = await this.photosRepositoryService.getPhotoById(
+      photoId,
+      photoSize,
+    );
+    const obj = await this.minioService.minio.presignedGetObject(
+      bucketName,
+      variant.objectKey,
+    );
+
+    return {
+      id: variant.photoId,
+      uri: obj,
+      ratio: variant.ratio,
+      blurhash: variant.blurhash,
+    };
   }
 
   public async getMainPhotoOrFirstByPlaceId(
@@ -81,33 +102,42 @@ export class PhotosService {
     );
   }
 
-  public async uploadFiles(
+  public async uploadFile(
     placeId: number,
-    files: Array<Express.Multer.File>,
+    file: Express.Multer.File,
     bucketName: BucketName,
-  ) {
+  ): Promise<PhotosDto> {
     const exists: boolean = await this.minioService.minio.bucketExists(
       BucketName.Listings,
     );
     if (!exists) await this.minioService.minio.makeBucket(BucketName.Listings);
 
-    for (const file of files) {
-      const blurhash = await this.generateBlurhash(file.buffer);
+    const blurhash = await this.generateBlurhash(file.buffer);
 
-      const { id } = await this.photosRepositoryService.createPhoto({
-        placeId: placeId,
-        bucketName: bucketName,
-        blurhash: blurhash,
-      });
+    const { id } = await this.photosRepositoryService.createPhoto({
+      placeId: placeId,
+      bucketName: bucketName,
+      blurhash: blurhash,
+    });
 
-      await this.createVariants(
-        [PhotoSize.Image, PhotoSize.Medium, PhotoSize.Thumbnail],
-        file,
-        placeId,
-        bucketName,
-        id,
-      );
-    }
+    await this.createVariants(
+      [PhotoSize.Image, PhotoSize.Medium, PhotoSize.Thumbnail],
+      file,
+      placeId,
+      bucketName,
+      id,
+    );
+
+    // // Fetch the thumbnail variant to return to the client
+    // const uri = await this.getObject(
+    //   `${placeId}/${PhotoSize.Thumbnail}/${id}.webp`,
+    //   bucketName,
+    // );
+    return await this.getPhotoById(
+      BucketName.Listings,
+      id,
+      PhotoSize.Thumbnail,
+    );
   }
 
   public async deletePhoto(photoId: number) {

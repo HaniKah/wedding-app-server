@@ -65,4 +65,13 @@ export class PhotosRepositoryService {
       .where('photos.id', '=', photoId)
       .execute();
   }
+  public async getPhotoById(photoId: number, photoSize: PhotoSize) {
+    return await this.db.db
+      .selectFrom('photos')
+      .innerJoin('photosVariants', 'photosVariants.photoId', 'photos.id')
+      .selectAll()
+      .where('photos.id', '=', photoId)
+      .where('photosVariants.variant', '=', photoSize)
+      .executeTakeFirst();
+  }
 }
