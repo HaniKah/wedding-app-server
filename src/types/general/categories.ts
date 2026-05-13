@@ -18,6 +18,7 @@ export enum Categories {
   Perfume = 'Perfume',
   Shower = 'Shower',
   Clinic = 'Clinic',
+  Cosmetic = 'Cosmetic',
   Firework = 'Firework',
   Miscellaneous = 'Miscellaneous',
 }
