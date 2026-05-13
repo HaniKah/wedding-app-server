@@ -41,7 +41,7 @@ export class AuthService {
 
   async signUp(signUpDto: SignUpDto) {
     const existingUser = await this.usersService.findUserByEmail(
-      signUpDto.email,
+      signUpDto.email.toLowerCase(),
     );
     if (existingUser) {
       throw new BadRequestException('User already exists');
@@ -49,6 +49,7 @@ export class AuthService {
     const hashedPassword = await argon2.hash(signUpDto.password);
     const user = await this.usersService.createUser({
       ...signUpDto,
+      email: signUpDto.email.toLowerCase(),
       password: hashedPassword,
       role: Role.User,
     });
@@ -57,7 +58,9 @@ export class AuthService {
   }
 
   async signIn(signInDto: SignInDto) {
-    const user = await this.usersService.findUserByEmail(signInDto.email);
+    const user = await this.usersService.findUserByEmail(
+      signInDto.email.toLowerCase(),
+    );
     if (!user) {
       throw new BadRequestException(
         'Invalid Email, please try again with correct email or register new account',
