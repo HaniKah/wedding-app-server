@@ -75,9 +75,9 @@ class PlaceInfo {
   phoneNumber: string;
   @ApiProperty({ enum: Categories, enumName: 'Categories' })
   category: Categories;
-  minPrice?: string;
-  maxPrice?: string;
-  priceType?: PriceType;
+  minPrice?: string | null;
+  maxPrice?: string | null;
+  priceType?: PriceType | null;
 }
 
 class LocationInfo {
