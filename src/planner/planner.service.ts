@@ -111,7 +111,6 @@ export class PlannerService {
       priceType: place.priceType,
     };
   }
-  //todo enhance this, pay attention to places that are deleted or unpublished
   public async getFavorites(id: number): Promise<FavoritePlaceDto> {
     try {
       const p = await this.plannerRepositoryService.getPlaceByIdOrThrow(id);
