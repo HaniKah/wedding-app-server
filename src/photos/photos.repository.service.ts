@@ -8,6 +8,14 @@ import { PhotoSize } from '../types/photos/photos.dto';
 export class PhotosRepositoryService {
   constructor(private readonly db: DbService) {}
 
+  public async getAvailablePhotosNumber(placeId) {
+    return await this.db.db
+      .selectFrom('photos')
+      .select((eb) => eb.fn.countAll<number>().as('count'))
+      .where('photos.placeId', '=', placeId)
+      .executeTakeFirst();
+  }
+
   public async createPhoto(dataPhoto: Insertable<Photos>) {
     return await this.db.db
       .insertInto('photos')

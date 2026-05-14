@@ -34,6 +34,7 @@ export class PlaceDetailsDto {
   phoneNumber: string;
   @ApiProperty({ enum: Categories, enumName: 'Categories' })
   category: Categories;
+  photosCount: number;
   mainPhoto: string;
   mainPhotoBlurhash?: string;
   maxPrice: string;

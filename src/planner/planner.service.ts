@@ -87,6 +87,8 @@ export class PlannerService {
       place.id,
       PhotoSize.Medium,
     );
+    const { count } =
+      await this.photosService.getAvailablePhotosNumber(placeId);
 
     return {
       id: place.id,
@@ -98,6 +100,7 @@ export class PlannerService {
       instagram: place?.instagram,
       tiktok: place?.tiktok,
       category: place.step as Categories,
+      photosCount: count,
       mainPhoto: mainPhoto?.uri,
       mainPhotoBlurhash: mainPhoto?.blurhash,
       maxPrice: place.maxPrice,

@@ -22,6 +22,7 @@ export class PhotosService {
   public async hasPhotos(placeId: number): Promise<boolean> {
     return await this.photosRepositoryService.photoExists(placeId);
   }
+
   public async getPhotoById(
     bucketName: BucketName,
     photoId: number,
@@ -150,6 +151,10 @@ export class PhotosService {
       );
       await this.photosRepositoryService.deletePhoto(photoId);
     }
+  }
+
+  public async getAvailablePhotosNumber(placeId) {
+    return this.photosRepositoryService.getAvailablePhotosNumber(placeId);
   }
 
   private async getObject(
