@@ -114,7 +114,7 @@ export class PlannerService {
   public async getFavorites(id: number): Promise<FavoritePlaceDto> {
     try {
       const p = await this.plannerRepositoryService.getPlaceByIdOrThrow(id);
-      if (p.isPublished) {
+      if (p.isPublished || p.deletedAt === null) {
         const mainPhoto = await this.photosService.getMainPhotoOrFirstByPlaceId(
           p.id,
           PhotoSize.Thumbnail,
