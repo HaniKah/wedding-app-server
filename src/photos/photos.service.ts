@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { MinioService } from '../minio/minio.service';
 import { PhotosRepositoryService } from './photos.repository.service';
 import sharp, { OutputInfo } from 'sharp';
@@ -6,6 +6,7 @@ import { PhotosDto } from '../types/planner/photos.dto';
 import { BucketName, PhotoSize } from '../types/photos/photos.dto';
 import { encode } from 'blurhash';
 import { v4 } from 'uuid';
+import { GoogleVisionApiService } from '../google-api/google-vision-api.service';
 
 export interface PhotoWithBlurhash {
   uri: string;
@@ -17,6 +18,7 @@ export class PhotosService {
   constructor(
     private readonly minioService: MinioService,
     private readonly photosRepositoryService: PhotosRepositoryService,
+    private readonly googleVisionApiService: GoogleVisionApiService,
   ) {}
 
   public async hasPhotos(placeId: number): Promise<boolean> {
@@ -108,10 +110,14 @@ export class PhotosService {
     file: Express.Multer.File,
     bucketName: BucketName,
   ): Promise<PhotosDto> {
-    const exists: boolean = await this.minioService.minio.bucketExists(
-      BucketName.Listings,
+    const isApproved = await this.googleVisionApiService.isApproved(
+      file.buffer.toString('base64'),
     );
-    if (!exists) await this.minioService.minio.makeBucket(BucketName.Listings);
+
+    if (!isApproved)
+      throw new UnprocessableEntityException(
+        "Photo couldn't be uploaded for the following reason: Probable adult or violent content",
+      );
 
     const blurhash = await this.generateBlurhash(file.buffer);
 
@@ -129,11 +135,6 @@ export class PhotosService {
       id,
     );
 
-    // // Fetch the thumbnail variant to return to the client
-    // const uri = await this.getObject(
-    //   `${placeId}/${PhotoSize.Thumbnail}/${id}.webp`,
-    //   bucketName,
-    // );
     return await this.getPhotoById(
       BucketName.Listings,
       id,
