@@ -1,8 +1,12 @@
-import { Inject, Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import type { ConfigType } from '@nestjs/config';
 import GoogleApiConfig from './config/google-api.config';
 import { firstValueFrom } from 'rxjs';
+import {
+  Inject,
+  Injectable,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import {
   GoogleLikelihood,
   GoogleVisionResponses,
@@ -72,11 +76,20 @@ export class GoogleVisionApiService {
         },
       ),
     );
-    return (
-      data.responses[0]?.safeSearchAnnotation.adult ===
-        GoogleLikelihood.VERY_UNLIKELY &&
-      data.responses[0]?.safeSearchAnnotation.violence ===
-        GoogleLikelihood.VERY_UNLIKELY
-    );
+    if (
+      data.responses[0]?.safeSearchAnnotation?.adult &&
+      data.responses[0]?.safeSearchAnnotation?.violence
+    ) {
+      return (
+        data.responses[0]?.safeSearchAnnotation?.adult ===
+          GoogleLikelihood.VERY_UNLIKELY &&
+        data.responses[0]?.safeSearchAnnotation?.violence ===
+          GoogleLikelihood.VERY_UNLIKELY
+      );
+    } else {
+      throw new UnprocessableEntityException(
+        'Detection not completed, not safe for upload',
+      );
+    }
   }
 }

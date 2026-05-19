@@ -116,7 +116,7 @@ export class PhotosService {
 
     if (!isApproved)
       throw new UnprocessableEntityException(
-        "Photo couldn't be uploaded for the following reason: Probable adult or violent content",
+        'Probable adult or violent content',
       );
 
     const blurhash = await this.generateBlurhash(file.buffer);
