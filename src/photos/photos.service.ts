@@ -1,4 +1,8 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { MinioService } from '../minio/minio.service';
 import { PhotosRepositoryService } from './photos.repository.service';
 import sharp, { OutputInfo } from 'sharp';
@@ -7,6 +11,8 @@ import { BucketName, PhotoSize } from '../types/photos/photos.dto';
 import { encode } from 'blurhash';
 import { v4 } from 'uuid';
 import { GoogleVisionApiService } from '../google-api/google-vision-api.service';
+import PhotosConfig from './config/photos.config';
+import type { ConfigType } from '@nestjs/config';
 
 export interface PhotoWithBlurhash {
   uri: string;
@@ -19,6 +25,9 @@ export class PhotosService {
     private readonly minioService: MinioService,
     private readonly photosRepositoryService: PhotosRepositoryService,
     private readonly googleVisionApiService: GoogleVisionApiService,
+
+    @Inject(PhotosConfig.KEY)
+    private readonly photosConfig: ConfigType<typeof PhotosConfig>,
   ) {}
 
   public async hasPhotos(placeId: number): Promise<boolean> {
@@ -34,10 +43,7 @@ export class PhotosService {
       photoId,
       photoSize,
     );
-    const obj = await this.minioService.minio.presignedGetObject(
-      bucketName,
-      variant.objectKey,
-    );
+    const obj = this.getPublicObject(variant.objectKey, bucketName);
 
     return {
       id: variant.photoId,
@@ -56,7 +62,7 @@ export class PhotosService {
       photoSize,
     );
     if (photoRecord) {
-      const uri = await this.getObject(
+      const uri = this.getPublicObject(
         photoRecord.objectKey,
         photoRecord.bucketName,
       );
@@ -70,7 +76,7 @@ export class PhotosService {
         photoSize,
       );
       if (photos.length > 0) {
-        const uri = await this.getObject(
+        const uri = this.getPublicObject(
           photos[0].objectKey,
           photos[0].bucketName,
         );
@@ -92,17 +98,15 @@ export class PhotosService {
       placeId,
       photoSize,
     );
-    return Promise.all(
-      photos.map(async (p) => {
-        const uri: string = await this.getObject(p.objectKey, p.bucketName);
-        return {
-          id: p.photoId,
-          uri: uri,
-          ratio: p.ratio,
-          blurhash: p.blurhash,
-        };
-      }),
-    );
+    return photos.map((p) => {
+      const uri: string = this.getPublicObject(p.objectKey, p.bucketName);
+      return {
+        id: p.photoId,
+        uri: uri,
+        ratio: p.ratio,
+        blurhash: p.blurhash,
+      };
+    });
   }
 
   public async uploadFile(
@@ -158,15 +162,13 @@ export class PhotosService {
     return this.photosRepositoryService.getAvailablePhotosNumber(placeId);
   }
 
-  private async getObject(
-    objectKey: string,
-    bucketName: BucketName,
-  ): Promise<string> {
-    return await this.minioService.minio.presignedGetObject(
-      bucketName,
-      objectKey,
-      3600,
-    );
+  private getPublicObject(objectKey: string, bucketName: BucketName): string {
+    return this.photosConfig.minioBaseUrl + bucketName + '/' + objectKey;
+    // return await this.minioService.minio.presignedGetObject(
+    //   bucketName,
+    //   objectKey,
+    //   3600,
+    // );
   }
 
   private async uploadObject(
