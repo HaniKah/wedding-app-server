@@ -1,6 +1,7 @@
 import {
   Inject,
   Injectable,
+  NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { MinioService } from '../minio/minio.service';
@@ -43,14 +44,18 @@ export class PhotosService {
       photoId,
       photoSize,
     );
-    const obj = this.constructPublicUrl(variant.objectKey, bucketName);
 
-    return {
-      id: variant.photoId,
-      uri: obj,
-      ratio: variant.ratio,
-      blurhash: variant.blurhash,
-    };
+    if (!variant) {
+      throw new NotFoundException(`Photo with ID ${photoId} not found`);
+    }
+
+    return this.constructPhotoDto(
+      photoId,
+      variant.ratio,
+      variant.blurhash,
+      variant.objectKey,
+      bucketName,
+    );
   }
 
   public async getMainPhotoOrFirstByPlaceId(
@@ -62,14 +67,13 @@ export class PhotosService {
       photoSize,
     );
     if (photoRecord) {
-      const uri = this.constructPublicUrl(
+      return this.constructPhotoDto(
+        photoRecord.photoId,
+        photoRecord.ratio,
+        photoRecord.blurhash,
         photoRecord.objectKey,
         photoRecord.bucketName,
       );
-      return {
-        uri,
-        blurhash: photoRecord.blurhash,
-      };
     } else {
       return null;
     }
@@ -84,13 +88,13 @@ export class PhotosService {
       photoSize,
     );
     return photos.map((p) => {
-      const uri: string = this.constructPublicUrl(p.objectKey, p.bucketName);
-      return {
-        id: p.photoId,
-        uri: uri,
-        ratio: p.ratio,
-        blurhash: p.blurhash,
-      };
+      return this.constructPhotoDto(
+        p.photoId,
+        p.ratio,
+        p.blurhash,
+        p.objectKey,
+        p.bucketName,
+      );
     });
   }
 
@@ -148,16 +152,19 @@ export class PhotosService {
     return await this.photosRepositoryService.getAvailablePhotosCount(placeId);
   }
 
-  private constructPublicUrl(
+  private constructPhotoDto(
+    photoId: number,
+    ratio: number,
+    blurhash: string,
     objectKey: string,
     bucketName: BucketName,
-  ): string {
-    return this.photosConfig.minioBaseUrl + bucketName + '/' + objectKey;
-    // return await this.minioService.minio.presignedGetObject(
-    //   bucketName,
-    //   objectKey,
-    //   3600,
-    // );
+  ): PhotosDto {
+    return {
+      id: photoId,
+      uri: this.photosConfig.minioBaseUrl + bucketName + '/' + objectKey,
+      ratio: ratio,
+      blurhash: blurhash,
+    };
   }
 
   private async uploadObject(
@@ -169,8 +176,6 @@ export class PhotosService {
     info: OutputInfo,
   ) {
     const uuid = v4();
-
-    // const fileExtension: string = originalName.split('.').pop();
 
     const objectName = `${placeId}/${photoSize}/${uuid}.webp`;
 
