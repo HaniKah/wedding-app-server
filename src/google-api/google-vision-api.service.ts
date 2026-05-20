@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import {
   GoogleLikelihood,
+  GoogleSafeSearchAnnotation,
   GoogleVisionResponses,
 } from '../types/google/vision.dto';
 
@@ -74,14 +75,12 @@ export class GoogleVisionApiService {
         );
       }
 
-      const { adult, violence, medical, spoof, racy } = annotation;
-
       // Log the detection results for audit/debugging
       this.logger.debug(
-        `SafeSearch results: adult=${adult}, violence=${violence}, medical=${medical}, spoof=${spoof}, racy=${racy}`,
+        `SafeSearch results: adult=${annotation.adult}, violence=${annotation.violence}, medical=${annotation.medical}, spoof=${annotation.spoof}, racy=${annotation.racy}`,
       );
 
-      return this.isLikelihoodSafe(adult) && this.isLikelihoodSafe(violence);
+      return this.isLikelihoodSafe(annotation);
     } catch (error) {
       if (error instanceof UnprocessableEntityException) {
         throw error;
@@ -101,10 +100,13 @@ export class GoogleVisionApiService {
   /**
    * Helper to determine if a likelihood level is considered safe.
    */
-  private isLikelihoodSafe(likelihood: GoogleLikelihood): boolean {
+  private isLikelihoodSafe(a: GoogleSafeSearchAnnotation): boolean {
     return (
-      likelihood === GoogleLikelihood.VERY_UNLIKELY ||
-      likelihood === GoogleLikelihood.UNLIKELY
+      a.adult === GoogleLikelihood.VERY_UNLIKELY &&
+      a.spoof === GoogleLikelihood.VERY_UNLIKELY &&
+      // a.medical === GoogleLikelihood.VERY_UNLIKELY &&
+      a.racy === GoogleLikelihood.VERY_UNLIKELY &&
+      a.violence === GoogleLikelihood.VERY_UNLIKELY
     );
   }
 }
