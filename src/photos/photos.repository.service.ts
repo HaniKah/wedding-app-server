@@ -56,8 +56,9 @@ export class PhotosRepositoryService {
       .selectFrom('photos')
       .selectAll()
       .where('placeId', '=', placeId)
-      .execute();
-    return photos.length > 0;
+      .limit(1)
+      .executeTakeFirst();
+    return !!photos;
   }
   public async deletePhoto(photoId: number) {
     await this.db.db
