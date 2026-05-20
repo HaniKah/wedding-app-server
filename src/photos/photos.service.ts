@@ -145,7 +145,7 @@ export class PhotosService {
   }
 
   public async getAvailablePhotosCount(placeId) {
-    return this.photosRepositoryService.getAvailablePhotosCount(placeId);
+    return await this.photosRepositoryService.getAvailablePhotosCount(placeId);
   }
 
   private constructPublicUrl(
