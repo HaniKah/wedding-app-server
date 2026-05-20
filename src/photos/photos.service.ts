@@ -39,7 +39,7 @@ export class PhotosService {
     photoId: number,
     photoSize: PhotoSize,
   ): Promise<PhotosDto> {
-    const variant = await this.photosRepositoryService.getPhotoById(
+    const variant = await this.photosRepositoryService.getVariantByPhotoId(
       photoId,
       photoSize,
     );
@@ -132,7 +132,7 @@ export class PhotosService {
   }
 
   public async deletePhoto(photoId: number) {
-    const photos = await this.photosRepositoryService.getPhotosById(photoId);
+    const photos = await this.photosRepositoryService.getAllVariantsByPhotoId(photoId);
     if (photos.length > 0) {
       await Promise.all(
         photos.map(async (p) => {
@@ -143,8 +143,8 @@ export class PhotosService {
     }
   }
 
-  public async getAvailablePhotosNumber(placeId) {
-    return this.photosRepositoryService.getAvailablePhotosNumber(placeId);
+  public async getAvailablePhotosCount(placeId) {
+    return this.photosRepositoryService.getAvailablePhotosCount(placeId);
   }
 
   private constructPublicUrl(

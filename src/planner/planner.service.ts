@@ -87,8 +87,7 @@ export class PlannerService {
       place.id,
       PhotoSize.Medium,
     );
-    const { count } =
-      await this.photosService.getAvailablePhotosNumber(placeId);
+    const { count } = await this.photosService.getAvailablePhotosCount(placeId);
 
     return {
       id: place.id,

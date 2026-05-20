@@ -8,11 +8,12 @@ import { PhotoSize } from '../types/photos/photos.dto';
 export class PhotosRepositoryService {
   constructor(private readonly db: DbService) {}
 
-  public async getAvailablePhotosNumber(placeId) {
+  public async getAvailablePhotosCount(placeId) {
     return await this.db.db
       .selectFrom('photos')
       .select((eb) => eb.fn.countAll<number>().as('count'))
       .where('photos.placeId', '=', placeId)
+      .where('photos.deletedAt', 'is', null)
       .executeTakeFirst();
   }
 
@@ -38,6 +39,7 @@ export class PhotosRepositoryService {
       .selectAll()
       .where('placeId', '=', placeId)
       .where('photosVariants.variant', '=', photoSize)
+      .where('photos.deletedAt', 'is', null)
       .execute();
   }
   public async getMainPhoto(placeId: number, photoSize: PhotoSize) {
@@ -45,6 +47,7 @@ export class PhotosRepositoryService {
       .selectFrom('photos')
       .innerJoin('photosVariants', 'photosVariants.photoId', 'photos.id')
       .where('photos.placeId', '=', placeId)
+      .where('photos.deletedAt', 'is', null)
       .where('photosVariants.variant', '=', photoSize)
       .selectAll()
       .orderBy('photos.main', (m) => m.desc().nullsLast())
@@ -56,6 +59,7 @@ export class PhotosRepositoryService {
       .selectFrom('photos')
       .selectAll()
       .where('placeId', '=', placeId)
+      .where('photos.deletedAt', '=', null)
       .limit(1)
       .executeTakeFirst();
     return !!photos;
@@ -66,7 +70,7 @@ export class PhotosRepositoryService {
       .where('id', '=', photoId)
       .executeTakeFirst();
   }
-  public async getPhotosById(photoId: number) {
+  public async getAllVariantsByPhotoId(photoId: number) {
     return await this.db.db
       .selectFrom('photos')
       .innerJoin('photosVariants', 'photosVariants.photoId', 'photos.id')
@@ -74,7 +78,7 @@ export class PhotosRepositoryService {
       .where('photos.id', '=', photoId)
       .execute();
   }
-  public async getPhotoById(photoId: number, photoSize: PhotoSize) {
+  public async getVariantByPhotoId(photoId: number, photoSize: PhotoSize) {
     return await this.db.db
       .selectFrom('photos')
       .innerJoin('photosVariants', 'photosVariants.photoId', 'photos.id')
