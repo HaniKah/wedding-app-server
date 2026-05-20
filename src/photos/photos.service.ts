@@ -43,7 +43,7 @@ export class PhotosService {
       photoId,
       photoSize,
     );
-    const obj = this.getPublicObject(variant.objectKey, bucketName);
+    const obj = this.constructPublicUrl(variant.objectKey, bucketName);
 
     return {
       id: variant.photoId,
@@ -62,7 +62,7 @@ export class PhotosService {
       photoSize,
     );
     if (photoRecord) {
-      const uri = this.getPublicObject(
+      const uri = this.constructPublicUrl(
         photoRecord.objectKey,
         photoRecord.bucketName,
       );
@@ -71,22 +71,7 @@ export class PhotosService {
         blurhash: photoRecord.blurhash,
       };
     } else {
-      const photos = await this.photosRepositoryService.getPhotosByPlaceId(
-        placeId,
-        photoSize,
-      );
-      if (photos.length > 0) {
-        const uri = this.getPublicObject(
-          photos[0].objectKey,
-          photos[0].bucketName,
-        );
-        return {
-          uri,
-          blurhash: photos[0].blurhash,
-        };
-      } else {
-        return null;
-      }
+      return null;
     }
   }
 
@@ -99,7 +84,7 @@ export class PhotosService {
       photoSize,
     );
     return photos.map((p) => {
-      const uri: string = this.getPublicObject(p.objectKey, p.bucketName);
+      const uri: string = this.constructPublicUrl(p.objectKey, p.bucketName);
       return {
         id: p.photoId,
         uri: uri,
@@ -162,7 +147,10 @@ export class PhotosService {
     return this.photosRepositoryService.getAvailablePhotosNumber(placeId);
   }
 
-  private getPublicObject(objectKey: string, bucketName: BucketName): string {
+  private constructPublicUrl(
+    objectKey: string,
+    bucketName: BucketName,
+  ): string {
     return this.photosConfig.minioBaseUrl + bucketName + '/' + objectKey;
     // return await this.minioService.minio.presignedGetObject(
     //   bucketName,
