@@ -24,7 +24,7 @@ export class PhotosRepositoryService {
       .executeTakeFirst();
   }
   public async createPhotoVariant(
-    dataPhotoVariant: Insertable<PhotosVariants>,
+    dataPhotoVariant: Insertable<PhotosVariants>[],
   ) {
     await this.db.db
       .insertInto('photosVariants')

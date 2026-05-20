@@ -25,12 +25,11 @@ export class PhotosController {
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: 'multipart/form-data' })
-  @Post('upload')
+  @Post('upload/:placeId')
   public async uploadFile(
     @UploadedFile() file: Express.Multer.File,
-    @Body() placeId: { placeId: string },
+    @Param('placeId') id: number,
   ): Promise<PhotosDto> {
-    const id = parseInt(placeId.placeId);
     return await this.photosService.uploadFile(id, file, BucketName.Listings);
   }
   @Get('getAll/:id')

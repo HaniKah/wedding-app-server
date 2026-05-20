@@ -209,7 +209,7 @@ export class PhotosService {
     photoId: number,
   ): Promise<void> {
     const input = sharp(file.buffer).rotate();
-    await Promise.all(
+    const images = await Promise.all(
       variants.map(async (v) => {
         let width: number;
         let quality: number;
@@ -246,14 +246,15 @@ export class PhotosService {
           data,
           info,
         );
-        await this.photosRepositoryService.createPhotoVariant({
+        return {
           photoId: photoId,
           objectKey: objectName,
           variant: v,
           ratio: info.width / info.height,
-        });
+        };
       }),
     );
+    await this.photosRepositoryService.createPhotoVariant(images);
   }
 
   private async generateBlurhash(buffer: Buffer): Promise<string> {
