@@ -132,7 +132,8 @@ export class PhotosService {
   }
 
   public async deletePhoto(photoId: number) {
-    const photos = await this.photosRepositoryService.getAllVariantsByPhotoId(photoId);
+    const photos =
+      await this.photosRepositoryService.getAllVariantsByPhotoId(photoId);
     if (photos.length > 0) {
       await Promise.all(
         photos.map(async (p) => {
@@ -242,7 +243,7 @@ export class PhotosService {
         };
       }),
     );
-    await this.photosRepositoryService.createPhotoVariant(images);
+    await this.photosRepositoryService.createPhotoVariants(images);
   }
 
   private async generateBlurhash(buffer: Buffer): Promise<string> {
