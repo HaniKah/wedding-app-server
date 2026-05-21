@@ -8,6 +8,7 @@ export class PhotosDto {
   blurhash: string;
   @ApiProperty({ enum: PhotoSize, enumName: 'PhotoSize' })
   photoSize: PhotoSize;
+  isMain: boolean;
 }
 export class PhotosViewModel {
   result: PhotosDto[];

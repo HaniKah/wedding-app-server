@@ -31,6 +31,10 @@ export class PhotosService {
     private readonly photosConfig: ConfigType<typeof PhotosConfig>,
   ) {}
 
+  public async setMain(placeId: number, photoId: number): Promise<void> {
+    await this.photosRepositoryService.setMainPhoto(placeId, photoId);
+  }
+
   public async hasPhotos(placeId: number): Promise<boolean> {
     return await this.photosRepositoryService.photoExists(placeId);
   }
@@ -56,6 +60,7 @@ export class PhotosService {
       variant.objectKey,
       bucketName,
       photoSize,
+      variant.main,
     );
   }
 
@@ -75,6 +80,7 @@ export class PhotosService {
         photoRecord.objectKey,
         photoRecord.bucketName,
         photoSize,
+        photoRecord.main,
       );
     } else {
       return null;
@@ -97,6 +103,7 @@ export class PhotosService {
         p.objectKey,
         p.bucketName,
         photoSize,
+        p.main,
       );
     });
   }
@@ -162,6 +169,7 @@ export class PhotosService {
     objectKey: string,
     bucketName: BucketName,
     photoSize: PhotoSize,
+    isMain: boolean,
   ): PhotosDto {
     return {
       id: photoId,
@@ -169,6 +177,7 @@ export class PhotosService {
       ratio: ratio,
       blurhash: blurhash,
       photoSize: photoSize,
+      isMain: isMain,
     };
   }
 

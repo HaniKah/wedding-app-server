@@ -58,4 +58,12 @@ export class PhotosController {
   public async deletePhoto(@Body() req: DeletePhotoRequest): Promise<void> {
     await this.photosService.deletePhoto(req.id);
   }
+
+  @Post('toggleMain/:placeId/:photoId')
+  public async setMain(
+    @Param('photoId') photoId: number,
+    @Param('placeId') placeId: number,
+  ): Promise<void> {
+    await this.photosService.setMain(placeId, photoId);
+  }
 }
