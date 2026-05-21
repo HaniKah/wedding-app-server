@@ -101,12 +101,16 @@ export class GoogleVisionApiService {
    * Helper to determine if a likelihood level is considered safe.
    */
   private isLikelihoodSafe(a: GoogleSafeSearchAnnotation): boolean {
+    const acceptedValues = [
+      GoogleLikelihood.VERY_UNLIKELY,
+      GoogleLikelihood.UNLIKELY,
+    ];
     return (
       a.adult === GoogleLikelihood.VERY_UNLIKELY &&
-      a.spoof === GoogleLikelihood.VERY_UNLIKELY &&
+      acceptedValues.includes(a.spoof) &&
       // a.medical === GoogleLikelihood.VERY_UNLIKELY &&
-      a.racy === GoogleLikelihood.VERY_UNLIKELY &&
-      a.violence === GoogleLikelihood.VERY_UNLIKELY
+      acceptedValues.includes(a.racy) &&
+      acceptedValues.includes(a.violence)
     );
   }
 }
