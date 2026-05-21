@@ -40,6 +40,7 @@ export class PhotosRepositoryService {
       .where('placeId', '=', placeId)
       .where('photosVariants.variant', '=', photoSize)
       .where('photos.deletedAt', 'is', null)
+      .orderBy('photos.id', 'desc')
       .execute();
   }
   public async getMainPhoto(placeId: number, photoSize: PhotoSize) {

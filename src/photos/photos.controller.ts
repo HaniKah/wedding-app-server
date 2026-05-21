@@ -22,6 +22,7 @@ import { Public } from '../auth/decorators/public.decorator';
 @Controller('photos')
 export class PhotosController {
   constructor(private readonly photosService: PhotosService) {}
+
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: 'multipart/form-data' })
@@ -32,12 +33,13 @@ export class PhotosController {
   ): Promise<PhotosDto> {
     return await this.photosService.uploadFile(id, file, BucketName.Listings);
   }
-  @Get('getAll/:id')
-  public async getPhotos(@Param('id') id: number): Promise<PhotosViewModel> {
-    const photos = await this.photosService.getPhotosByPlaceId(
-      Number(id),
-      PhotoSize.Thumbnail,
-    );
+
+  @Get('getAll/:placeId/:photoSize')
+  public async getAllPhotos(
+    @Param('placeId') id: number,
+    @Param('photoSize') photoSize: PhotoSize,
+  ): Promise<PhotosViewModel> {
+    const photos = await this.photosService.getPhotosByPlaceId(id, photoSize);
     return {
       result: photos,
     };

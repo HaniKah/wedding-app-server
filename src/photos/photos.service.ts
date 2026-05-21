@@ -10,10 +10,10 @@ import sharp, { OutputInfo } from 'sharp';
 import { PhotosDto } from '../types/planner/photos.dto';
 import { BucketName, PhotoSize } from '../types/photos/photos.dto';
 import { encode } from 'blurhash';
-import { v4 } from 'uuid';
 import { GoogleVisionApiService } from '../google-api/google-vision-api.service';
 import PhotosConfig from './config/photos.config';
 import type { ConfigType } from '@nestjs/config';
+import { v4 } from 'uuid';
 
 export interface PhotoWithBlurhash {
   uri: string;
@@ -55,6 +55,7 @@ export class PhotosService {
       variant.blurhash,
       variant.objectKey,
       bucketName,
+      photoSize,
     );
   }
 
@@ -73,6 +74,7 @@ export class PhotosService {
         photoRecord.blurhash,
         photoRecord.objectKey,
         photoRecord.bucketName,
+        photoSize,
       );
     } else {
       return null;
@@ -94,6 +96,7 @@ export class PhotosService {
         p.blurhash,
         p.objectKey,
         p.bucketName,
+        photoSize,
       );
     });
   }
@@ -158,12 +161,14 @@ export class PhotosService {
     blurhash: string,
     objectKey: string,
     bucketName: BucketName,
+    photoSize: PhotoSize,
   ): PhotosDto {
     return {
       id: photoId,
       uri: this.photosConfig.minioBaseUrl + bucketName + '/' + objectKey,
       ratio: ratio,
       blurhash: blurhash,
+      photoSize: photoSize,
     };
   }
 
