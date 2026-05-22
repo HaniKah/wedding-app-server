@@ -34,9 +34,10 @@ export class PlaceDetailsDto {
   phoneNumber: string;
   @ApiProperty({ enum: Categories, enumName: 'Categories' })
   category: Categories;
-  photosCount: number;
-  mainPhoto: string;
-  mainPhotoBlurhash?: string;
+  // photosCount: number;
+  // mainPhoto: string;
+  // mainPhotoBlurhash?: string;
+  photos: PlaceDetailsPhotos[];
   maxPrice: string;
   minPrice: string;
   description: string;
@@ -45,6 +46,11 @@ export class PlaceDetailsDto {
   city: string;
   @ApiProperty({ enum: PriceType, enumName: 'PriceType' })
   priceType: PriceType;
+}
+
+export class PlaceDetailsPhotos {
+  url: string;
+  blurhash: string;
 }
 
 export class PlacesViewModel {

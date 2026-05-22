@@ -24,14 +24,14 @@ export class PhotosRepositoryService {
       .executeTakeFirst();
   }
 
-  public async getAvailablePhotosCount(placeId) {
-    return await this.db.db
-      .selectFrom('photos')
-      .select((eb) => eb.fn.countAll<number>().as('count'))
-      .where('photos.placeId', '=', placeId)
-      .where('photos.deletedAt', 'is', null)
-      .executeTakeFirst();
-  }
+  // public async getAvailablePhotosCount(placeId) {
+  //   return await this.db.db
+  //     .selectFrom('photos')
+  //     .select((eb) => eb.fn.countAll<number>().as('count'))
+  //     .where('photos.placeId', '=', placeId)
+  //     .where('photos.deletedAt', 'is', null)
+  //     .executeTakeFirst();
+  // }
 
   public async createPhoto(dataPhoto: Insertable<Photos>) {
     return await this.db.db
@@ -69,7 +69,7 @@ export class PhotosRepositoryService {
       .where('photosVariants.variant', '=', photoSize)
       .selectAll()
       .orderBy('photos.main', (m) => m.desc().nullsLast())
-      .orderBy('photos.id', 'asc')
+      .orderBy('photos.id', 'desc')
       .executeTakeFirst();
   }
   public async photoExists(placeId: number) {

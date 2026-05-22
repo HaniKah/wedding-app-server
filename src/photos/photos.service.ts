@@ -158,9 +158,9 @@ export class PhotosService {
     }
   }
 
-  public async getAvailablePhotosCount(placeId) {
-    return await this.photosRepositoryService.getAvailablePhotosCount(placeId);
-  }
+  // public async getAvailablePhotosCount(placeId) {
+  //   return await this.photosRepositoryService.getAvailablePhotosCount(placeId);
+  // }
 
   private constructPhotoDto(
     photoId: number,

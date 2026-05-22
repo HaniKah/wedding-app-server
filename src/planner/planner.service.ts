@@ -83,11 +83,15 @@ export class PlannerService {
     const place =
       await this.plannerRepositoryService.getPlaceByIdOrThrow(placeId);
 
-    const mainPhoto = await this.photosService.getMainPhotoOrFirstByPlaceId(
+    const allPhotos = await this.photosService.getPhotosByPlaceId(
       place.id,
       PhotoSize.Medium,
     );
-    const { count } = await this.photosService.getAvailablePhotosCount(placeId);
+    const photosWithBlurHash = allPhotos.map((photo) => ({
+      url: photo.uri,
+      blurhash: photo.blurhash,
+    }));
+    // const { count } = await this.photosService.getAvailablePhotosCount(placeId);
 
     return {
       id: place.id,
@@ -99,9 +103,10 @@ export class PlannerService {
       instagram: place?.instagram,
       tiktok: place?.tiktok,
       category: place.step as Categories,
-      photosCount: count,
-      mainPhoto: mainPhoto?.uri,
-      mainPhotoBlurhash: mainPhoto?.blurhash,
+      // photosCount: count,
+      // mainPhoto: mainPhoto?.uri,
+      // mainPhotoBlurhash: mainPhoto?.blurhash,
+      photos: photosWithBlurHash,
       maxPrice: place.maxPrice,
       minPrice: place.minPrice,
       description: place.description,
