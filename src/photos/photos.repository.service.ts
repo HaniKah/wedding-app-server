@@ -56,6 +56,7 @@ export class PhotosRepositoryService {
       .where('placeId', '=', placeId)
       .where('photosVariants.variant', '=', photoSize)
       .where('photos.deletedAt', 'is', null)
+      .orderBy('photos.main', (m) => m.desc().nullsLast())
       .orderBy('photos.id', 'desc')
       .execute();
   }
