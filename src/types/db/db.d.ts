@@ -50,6 +50,7 @@ export interface Places {
   deletedAt: Timestamp | null;
   description: string | null;
   facebook: string | null;
+  features: PlacesFeatures;
   googleId: string | null;
   id: Generated<number>;
   instagram: string | null;

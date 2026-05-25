@@ -57,4 +57,8 @@ export class PlacesController {
   ): Promise<VendorPlaceDetailsDto> {
     return await this.placesService.getPlaceDetails(id);
   }
+  // @Post('updateFeatures')
+  // public async updateFeatures(@Body() body: UpdateFeaturesRequest) {
+  //   await this.placesService.updateFeatures(body);
+  // }
 }

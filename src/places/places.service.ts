@@ -10,6 +10,7 @@ import {
 import { PlacesRepositoryService } from './places.repository.service';
 import { PhotosService } from '../photos/photos.service';
 import { PhotoSize } from '../types/photos/photos.dto';
+import { normalizePlacesFeatures } from '../types/places/features.dto';
 
 @Injectable()
 export class PlacesService {
@@ -44,6 +45,14 @@ export class PlacesService {
           postalCode: req.location?.postalCode,
         });
         break;
+      case UpdateStep.AddFeatures:
+        await this.placesRepositoryService.updatePlace(req.id, {
+          features: normalizePlacesFeatures(
+            req.features.category,
+            req.features.features,
+          ),
+        });
+        break;
       case UpdateStep.AddDescription:
         await this.placesRepositoryService.updatePlace(req.id, {
           description: req.description,
@@ -60,7 +69,6 @@ export class PlacesService {
     placeId: number,
   ): Promise<VendorPlaceDetailsDto> {
     const p = await this.placesRepositoryService.getPlaceById(placeId);
-
     return {
       id: p.id,
       name: p.name,
@@ -78,6 +86,7 @@ export class PlacesService {
       priceType: p.priceType,
       countryCode: p.country,
       city: p.city,
+      features: normalizePlacesFeatures(p.step, p.features),
     };
   }
 
@@ -117,7 +126,6 @@ export class PlacesService {
           p.id,
           PhotoSize.Thumbnail,
         );
-
         return {
           id: p.id,
           name: p.name,

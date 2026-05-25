@@ -1,9 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { CountryCode } from '../general/countries.dto';
 import { Categories } from '../general/categories';
+import { PlacesFeatures, UpdateFeaturesRequest } from './features.dto';
 
 export enum UpdateStep {
   FillPlaceInfo = 'FillPlaceInfo',
+  AddFeatures = 'AddFeatures',
   AddDescription = 'AddDescription',
   PickPlaceLocation = 'PickPlaceLocation',
   UploadImages = 'UploadImages',
@@ -32,6 +34,7 @@ export class UpdatePlaceRequest {
   placeInfo?: PlaceInfo;
   description?: string;
   location?: LocationInfo;
+  features?: UpdateFeaturesRequest;
   socialMedia?: SocialMediaInfo;
 }
 
@@ -121,4 +124,5 @@ export class VendorPlaceDetailsDto {
   @ApiProperty({ enum: CountryCode, enumName: 'CountryCode' })
   countryCode: CountryCode;
   city: string;
+  features: PlacesFeatures;
 }

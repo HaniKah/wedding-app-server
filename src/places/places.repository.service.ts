@@ -60,4 +60,12 @@ export class PlacesRepositoryService {
       .set(data)
       .executeTakeFirst();
   }
+  public async test() {
+    await this.db.db
+      .insertInto('places')
+      .values({
+        features: {},
+      })
+      .executeTakeFirst();
+  }
 }
