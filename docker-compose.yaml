@@ -11,6 +11,18 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+  postgres_17:
+    image: postgres:17
+    container_name: wedding-planner-postgres-17
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: foobar
+      POSTGRES_DB: postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_17_data:/var/lib/postgresql/data
   postgres_test:
     image: postgres:15
     container_name: wedding-planner-postgres-test
@@ -39,5 +51,6 @@ services:
       - minio_data:/data
 volumes:
   postgres_data:
+  postgres_17_data:
   postgres_test_data:
   minio_data:
