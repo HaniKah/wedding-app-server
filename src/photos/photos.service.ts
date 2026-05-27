@@ -35,10 +35,6 @@ export class PhotosService {
     await this.photosRepositoryService.setMainPhoto(placeId, photoId);
   }
 
-  public async hasPhotos(placeId: number): Promise<boolean> {
-    return await this.photosRepositoryService.photoExists(placeId);
-  }
-
   public async getPhotoById(
     bucketName: BucketName,
     photoId: number,

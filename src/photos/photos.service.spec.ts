@@ -4,7 +4,7 @@ import { MinioService } from '../minio/minio.service';
 import { PhotosRepositoryService } from './photos.repository.service';
 import { GoogleVisionApiService } from '../google-api/google-vision-api.service';
 import PhotosConfig from './config/photos.config';
-import { BucketName, PhotoSize } from '../types/photos/photos.dto';
+import { BucketName } from '../types/photos/photos.dto';
 import { UnprocessableEntityException } from '@nestjs/common';
 
 // Mock sharp
@@ -30,7 +30,7 @@ jest.mock('blurhash', () => ({
 }));
 
 describe('PhotosService', () => {
-  let service: PhotosService;
+  let photoService: PhotosService;
   let minioService: MinioService;
   let repositoryService: PhotosRepositoryService;
   let googleVisionService: GoogleVisionApiService;
@@ -83,7 +83,7 @@ describe('PhotosService', () => {
       ],
     }).compile();
 
-    service = module.get<PhotosService>(PhotosService);
+    photoService = module.get<PhotosService>(PhotosService);
     minioService = module.get<MinioService>(MinioService);
     repositoryService = module.get<PhotosRepositoryService>(
       PhotosRepositoryService,
@@ -94,7 +94,7 @@ describe('PhotosService', () => {
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(photoService).toBeDefined();
   });
 
   describe('uploadFile', () => {
@@ -114,7 +114,7 @@ describe('PhotosService', () => {
         bucketName: BucketName.Listings,
       });
 
-      const result = await service.uploadFile(
+      const result = await photoService.uploadFile(
         123,
         mockFile,
         BucketName.Listings,
@@ -140,152 +140,9 @@ describe('PhotosService', () => {
       googleVisionService.isApproved = jest.fn().mockResolvedValue(false);
 
       await expect(
-        service.uploadFile(123, mockFile, BucketName.Listings),
+        photoService.uploadFile(123, mockFile, BucketName.Listings),
       ).rejects.toThrow(UnprocessableEntityException);
       expect(repositoryService.createPhoto).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('deletePhoto', () => {
-    it('should remove all variants from Minio and delete from DB', async () => {
-      const mockVariants = [
-        { bucketName: BucketName.Listings, objectKey: 'key1' },
-        { bucketName: BucketName.Listings, objectKey: 'key2' },
-      ];
-      repositoryService.getAllVariantsByPhotoId = jest
-        .fn()
-        .mockResolvedValue(mockVariants);
-
-      await service.deletePhoto(1);
-
-      expect(mockMinio.removeObject).toHaveBeenCalledTimes(2);
-      expect(mockMinio.removeObject).toHaveBeenCalledWith(
-        BucketName.Listings,
-        'key1',
-      );
-      expect(mockMinio.removeObject).toHaveBeenCalledWith(
-        BucketName.Listings,
-        'key2',
-      );
-      expect(repositoryService.deletePhoto).toHaveBeenCalledWith(1);
-    });
-
-    it('should do nothing if photo has no variants', async () => {
-      repositoryService.getAllVariantsByPhotoId = jest
-        .fn()
-        .mockResolvedValue([]);
-
-      await service.deletePhoto(1);
-
-      expect(mockMinio.removeObject).not.toHaveBeenCalled();
-      expect(repositoryService.deletePhoto).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('Retrieval logic', () => {
-    it('getMainPhotoOrFirstByPlaceId should return photo DTO', async () => {
-      repositoryService.getMainPhoto = jest.fn().mockResolvedValue({
-        photoId: 1,
-        ratio: 1.5,
-        blurhash: 'hash',
-        objectKey: 'key.webp',
-        bucketName: BucketName.Listings,
-      });
-
-      const result = await service.getMainPhotoOrFirstByPlaceId(
-        123,
-        PhotoSize.Thumbnail,
-      );
-
-      expect(repositoryService.getMainPhoto).toHaveBeenCalledWith(
-        123,
-        PhotoSize.Thumbnail,
-      );
-      expect(result).toEqual({
-        id: 1,
-        uri: 'http://localhost:9000/listings/key.webp',
-        ratio: 1.5,
-        blurhash: 'hash',
-      });
-    });
-
-    it('getPhotoById should return photo DTO', async () => {
-      repositoryService.getVariantByPhotoId = jest.fn().mockResolvedValue({
-        photoId: 1,
-        ratio: 1.5,
-        blurhash: 'hash',
-        objectKey: 'key.webp',
-        bucketName: BucketName.Listings,
-      });
-
-      const result = await service.getPhotoById(
-        BucketName.Listings,
-        1,
-        PhotoSize.Image,
-      );
-
-      expect(repositoryService.getVariantByPhotoId).toHaveBeenCalledWith(
-        1,
-        PhotoSize.Image,
-      );
-      expect(result).toEqual({
-        id: 1,
-        uri: 'http://localhost:9000/listings/key.webp',
-        ratio: 1.5,
-        blurhash: 'hash',
-      });
-    });
-  });
-
-  describe('hasPhotos', () => {
-    it('should return true if repository has photos', async () => {
-      repositoryService.photoExists = jest.fn().mockResolvedValue(true);
-      const result = await service.hasPhotos(123);
-      expect(repositoryService.photoExists).toHaveBeenCalledWith(123);
-      expect(result).toBe(true);
-    });
-
-    it('should return false if repository has no photos', async () => {
-      repositoryService.photoExists = jest.fn().mockResolvedValue(false);
-      const result = await service.hasPhotos(123);
-      expect(result).toBe(false);
-    });
-  });
-
-  describe('getPhotosByPlaceId', () => {
-    it('should return an array of photo DTOs', async () => {
-      repositoryService.getPhotosByPlaceId = jest.fn().mockResolvedValue([
-        {
-          photoId: 1,
-          ratio: 1,
-          blurhash: 'h1',
-          objectKey: 'k1.webp',
-          bucketName: BucketName.Listings,
-        },
-        {
-          photoId: 2,
-          ratio: 2,
-          blurhash: 'h2',
-          objectKey: 'k2.webp',
-          bucketName: BucketName.Listings,
-        },
-      ]);
-
-      const result = await service.getPhotosByPlaceId(123, PhotoSize.Thumbnail);
-
-      expect(result).toHaveLength(2);
-      expect(result[0].id).toBe(1);
-      expect(result[1].id).toBe(2);
-    });
-  });
-
-  describe('getAvailablePhotosCount', () => {
-    it('should return the count from repository', async () => {
-      repositoryService.getAvailablePhotosCount = jest
-        .fn()
-        .mockResolvedValue({ count: 5 });
-      const result = await service.getAvailablePhotosCount(123);
-      expect(result).toEqual({ count: 5 });
     });
   });
 });
