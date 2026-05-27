@@ -1,16 +1,4 @@
 services:
-  postgres:
-    image: postgres:15
-    container_name: wedding-planner-postgres
-    restart: always
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: foobar
-      POSTGRES_DB: postgres
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
   postgres_17:
     image: postgres:17
     container_name: wedding-planner-postgres-17
@@ -20,21 +8,20 @@ services:
       POSTGRES_PASSWORD: foobar
       POSTGRES_DB: postgres
     ports:
-      - "5434:5432"
+      - "5432:5432"
     volumes:
       - postgres_17_data:/var/lib/postgresql/data
   postgres_test:
-    image: postgres:15
+    image: postgres:17
     container_name: wedding-planner-postgres-test
     restart: always
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: wedding_app_test
+      POSTGRES_DB: postgres_test
     ports:
       - "5433:5432"
     volumes:
-      - ./schema-dump.sql:/docker-entrypoint-initdb.d/10-schema.sql
       - postgres_test_data:/var/lib/postgresql/data
   minio:
     image: minio/minio
@@ -50,7 +37,6 @@ services:
     volumes:
       - minio_data:/data
 volumes:
-  postgres_data:
   postgres_17_data:
   postgres_test_data:
   minio_data:
