@@ -39,10 +39,10 @@ describe('PlacesService (Integration)', () => {
     // Ensure we are using a test database
     const dbUrl = module
       .get<ConfigService>(ConfigService)
-      .get('DATABASE_URL_TEST');
-    if (!dbUrl || !dbUrl.includes('test')) {
+      .get('DATABASE_PUBLIC_URL');
+    if (!dbUrl || !dbUrl.includes('postgres_test')) {
       // Logic to prevent running against production if no test DB is set
-      // throw new Error('DATABASE_URL must be a test database');
+      throw new Error('DATABASE_PUBLIC_URL must be a test database');
     }
 
     // Clean up and Setup test user
