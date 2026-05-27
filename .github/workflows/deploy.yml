@@ -26,10 +26,6 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
-    env:
-      DATABASE_URL_TEST: postgresql://user:password@localhost:5432/wedding_app_test
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -45,10 +41,8 @@ jobs:
 
       - name: Import Base Schema
         run: |
-          PGPASSWORD=password psql -h localhost -U user -d wedding_app_test -f schema_dump.sql
-        env:
-          PGPASSWORD: password
-
+          psql postgresql://user:password@localhost:5432/wedding_app_test -f schema_dump.sql
+          
       - name: Run migrations
         run: npm run migrate
         env:
