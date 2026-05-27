@@ -14,7 +14,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:16
+        image: postgres:17
         env:
           POSTGRES_DB: wedding_app_test
           POSTGRES_USER: user
@@ -45,7 +45,7 @@ jobs:
 
       - name: Import Base Schema
         run: |
-          PGPASSWORD=password psql -h localhost -U user -d wedding_app_test -f schema-dump.sql
+          PGPASSWORD=password psql -h localhost -U user -d wedding_app_test -f schema_dump.sql
         env:
           PGPASSWORD: password
 
@@ -55,7 +55,9 @@ jobs:
           DATABASE_PUBLIC_URL: postgresql://user:password@localhost:5432/wedding_app_test
 
       - name: Run tests
-        run: npm run test:int
+        run: |
+          npm test
+          npm run test:int
 
   migrations:
     name: Run migrations
