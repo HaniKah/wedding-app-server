@@ -21,6 +21,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "codegen": "kysely-codegen --out-file ./src/types/db/db.d.ts",
     "migrate": "ts-node migrations/migrate.ts",
+    "migrate:test": "DATABASE_PUBLIC_URL=postgresql://user:password@localhost:5433/postgres_test ts-node migrations/migrate.ts",
     "ngrok": "ngrok http 3000 --url=exacting-uncrossable-delena.ngrok-free.dev"
   },
   "dependencies": {

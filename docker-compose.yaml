@@ -11,6 +11,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_17_data:/var/lib/postgresql/data
+
   postgres_test:
     image: postgres:17
     container_name: wedding-planner-postgres-test
@@ -23,6 +24,7 @@ services:
       - "5433:5432"
     volumes:
       - postgres_test_data:/var/lib/postgresql/data
+
   minio:
     image: minio/minio
     container_name: minio
