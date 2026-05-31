@@ -11,6 +11,7 @@ export class PlacesFeatures {
   rent?: boolean;
   capacity?: number;
   outdoor?: boolean;
+  indoor?: boolean;
 }
 
 export function normalizePlacesFeatures(
@@ -23,6 +24,7 @@ export function normalizePlacesFeatures(
       return {
         capacity: 'capacity' in features ? features.capacity : undefined,
         outdoor: 'outdoor' in features ? features.outdoor : undefined,
+        indoor: 'indoor' in features ? features.indoor : undefined,
       };
     case Categories.Dress:
       return {
