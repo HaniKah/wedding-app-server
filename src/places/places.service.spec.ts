@@ -20,7 +20,7 @@ jest.mock('../types/places/features.dto', () => {
     ...actual,
     normalizePlacesFeatures: jest.fn(actual.normalizePlacesFeatures),
   };
-});
+}); // todo: this is mocking the module , but also running the actual function , just to be able to see if it has been called , does it make any sense ?
 
 describe('PlacesService', () => {
   let placesService: PlacesService;
