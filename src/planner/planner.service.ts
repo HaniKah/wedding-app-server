@@ -115,6 +115,7 @@ export class PlannerService {
       countryCode: place.country,
       city: place.city,
       priceType: place.priceType,
+      features: normalizePlacesFeatures(place.step, place.features),
     };
   }
   public async getFavorites(id: number): Promise<FavoritePlaceDto> {

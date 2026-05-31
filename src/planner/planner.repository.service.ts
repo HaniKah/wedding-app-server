@@ -16,20 +16,6 @@ export class PlannerRepositoryService {
     const LIMIT = 5;
     const now = new Date();
 
-    // const planRecord = await this.dbService.db
-    //   .selectFrom('plans')
-    //   .selectAll()
-    //   .where('plans.userId', '=', userId)
-    //   .executeTakeFirst();
-    //
-    // if (!planRecord) return [];
-
-    // const placeFilter = this.dbService.db
-    //   .selectFrom('placeFilter')
-    //   .select(['placeId', 'isPicked', 'isFavorite'])
-    //   .where('placeFilter.userId', '=', userId)
-    //   .as('placeFilter');
-
     return await this.dbService.db
       .selectFrom('places')
       .selectAll()

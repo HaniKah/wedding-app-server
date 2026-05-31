@@ -48,6 +48,7 @@ export class PlaceDetailsDto {
   city: string;
   @ApiProperty({ enum: PriceType, enumName: 'PriceType' })
   priceType: PriceType;
+  features: PlacesFeatures;
 }
 
 export class PlaceDetailsPhotos {
