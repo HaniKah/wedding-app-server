@@ -21,6 +21,9 @@ export const placesViewModelStub = (): PlacesViewModel => {
         city: 'Amman',
         formattedAddress:
           'sample address , sample city , sample state , sample country',
+        features: {
+          capacity: 100,
+        },
       },
     ],
   };

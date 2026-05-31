@@ -9,6 +9,7 @@ import { CountryCode } from '../types/general/countries.dto';
 import { SaleLabel } from '../types/webhooks/revenue-cat.dto';
 import { Categories } from '../types/general/categories';
 import { FavoritePlaceDto } from '../types/planner/favorites.dto';
+import { normalizePlacesFeatures } from '../types/places/features.dto';
 
 @Injectable()
 export class PlannerService {
@@ -72,6 +73,7 @@ export class PlannerService {
           priceType: r.priceType,
           country: r.country,
           city: r.city,
+          features: normalizePlacesFeatures(r.step, r.features),
         };
       }),
     );
