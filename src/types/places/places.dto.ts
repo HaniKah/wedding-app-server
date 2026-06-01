@@ -7,7 +7,6 @@ export enum UpdateStep {
   FillPlaceInfo = 'FillPlaceInfo',
   AddFeatures = 'AddFeatures',
   AddDescription = 'AddDescription',
-  PickPlaceLocation = 'PickPlaceLocation',
   UploadImages = 'UploadImages',
 }
 
@@ -33,14 +32,12 @@ export class UpdatePlaceRequest {
   updateStep: UpdateStep;
   placeInfo?: PlaceInfo;
   description?: string;
-  location?: LocationInfo;
   features?: UpdateFeaturesRequest;
   socialMedia?: SocialMediaInfo;
 }
 
 export class CreatePlaceRequest {
   placeInfo: PlaceInfo;
-  location: LocationInfo;
 }
 
 export class VendorPlaceViewModel {
@@ -81,9 +78,6 @@ class PlaceInfo {
   minPrice?: string | null;
   maxPrice?: string | null;
   priceType?: PriceType | null;
-}
-
-class LocationInfo {
   city: string;
   countryCode: CountryCode;
   streetName?: string;
@@ -92,6 +86,7 @@ class LocationInfo {
   lng?: number;
   googleId?: string;
 }
+
 class SocialMediaInfo {
   instagram?: string;
   facebook?: string;

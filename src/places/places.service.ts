@@ -31,20 +31,11 @@ export class PlacesService {
           maxPrice: req.placeInfo.maxPrice,
           priceType: req.placeInfo.priceType,
           step: req.placeInfo.category,
+          country: req.placeInfo?.countryCode,
+          city: req.placeInfo?.city,
         });
         break;
       }
-      case UpdateStep.PickPlaceLocation:
-        await this.placesRepositoryService.updatePlace(req.id, {
-          streetName: req.location?.streetName,
-          lng: req.location?.lng,
-          lat: req.location?.lat,
-          city: req.location?.city,
-          googleId: req.location?.googleId,
-          country: req.location?.countryCode,
-          postalCode: req.location?.postalCode,
-        });
-        break;
       case UpdateStep.AddFeatures:
         await this.placesRepositoryService.updatePlace(req.id, {
           features: normalizePlacesFeatures(
@@ -105,8 +96,8 @@ export class PlacesService {
       name: data.placeInfo.name,
       step: data.placeInfo.category,
       phoneNumber: data.placeInfo.phoneNumber,
-      country: data.location.countryCode,
-      city: data.location.city,
+      country: data.placeInfo.countryCode,
+      city: data.placeInfo.city,
       minPrice: data.placeInfo.minPrice,
       maxPrice: data.placeInfo.maxPrice,
       priceType: data.placeInfo.priceType,
