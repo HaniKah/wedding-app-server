@@ -28,16 +28,16 @@ jest.mock('sharp', () => {
 jest.mock('blurhash', () => ({
   encode: jest.fn().mockReturnValue('mockBlurhash'),
 }));
+jest.mock('uuid', () => ({ v4: jest.fn().mockReturnValue('mockUuid') }));
 
 describe('PhotosService', () => {
   let photoService: PhotosService;
-  let minioService: MinioService;
-  let repositoryService: PhotosRepositoryService;
-  let googleVisionService: GoogleVisionApiService;
 
-  const mockMinio = {
-    putObject: jest.fn(),
-    removeObject: jest.fn(),
+  const mockMinioService = {
+    minio: {
+      putObject: jest.fn(),
+      removeObject: jest.fn(),
+    },
   };
 
   const mockRepositoryService = {
@@ -66,7 +66,7 @@ describe('PhotosService', () => {
         PhotosService,
         {
           provide: MinioService,
-          useValue: { minio: mockMinio },
+          useValue: mockMinioService,
         },
         {
           provide: PhotosRepositoryService,
@@ -80,17 +80,13 @@ describe('PhotosService', () => {
           provide: PhotosConfig.KEY,
           useValue: mockPhotosConfig,
         },
+        {
+          provide: MinioService,
+          useValue: mockMinioService,
+        },
       ],
     }).compile();
-
     photoService = module.get<PhotosService>(PhotosService);
-    minioService = module.get<MinioService>(MinioService);
-    repositoryService = module.get<PhotosRepositoryService>(
-      PhotosRepositoryService,
-    );
-    googleVisionService = module.get<GoogleVisionApiService>(
-      GoogleVisionApiService,
-    );
   });
 
   it('should be defined', () => {
@@ -104,14 +100,13 @@ describe('PhotosService', () => {
     } as Express.Multer.File;
 
     it('should upload a file and create variants if approved', async () => {
-      googleVisionService.isApproved = jest.fn().mockResolvedValue(true);
-      repositoryService.createPhoto = jest.fn().mockResolvedValue({ id: 1 });
-      repositoryService.getVariantByPhotoId = jest.fn().mockResolvedValue({
-        photoId: 1,
+      mockGoogleVisionService.isApproved.mockResolvedValue(true);
+      mockRepositoryService.createPhoto.mockResolvedValue({ id: 1 });
+      mockRepositoryService.getVariantByPhotoId.mockResolvedValue({
         ratio: 1,
         blurhash: 'mockBlurhash',
-        objectKey: '1/thumbnail/uuid.webp',
-        bucketName: BucketName.Listings,
+        objectKey: '123/Thumbnail/mockUuid.webp',
+        main: undefined,
       });
 
       const result = await photoService.uploadFile(
@@ -120,29 +115,31 @@ describe('PhotosService', () => {
         BucketName.Listings,
       );
 
-      expect(googleVisionService.isApproved).toHaveBeenCalled();
-      expect(repositoryService.createPhoto).toHaveBeenCalledWith({
+      expect(mockGoogleVisionService.isApproved).toHaveBeenCalled();
+      expect(mockRepositoryService.createPhoto).toHaveBeenCalledWith({
         placeId: 123,
         bucketName: BucketName.Listings,
         blurhash: 'mockBlurhash',
       });
-      expect(mockMinio.putObject).toHaveBeenCalledTimes(3); // 3 variants
-      expect(repositoryService.createPhotoVariants).toHaveBeenCalled();
+      expect(mockMinioService.minio.putObject).toHaveBeenCalledTimes(3); // 3 variants
+      expect(mockRepositoryService.createPhotoVariants).toHaveBeenCalled();
       expect(result).toEqual({
         id: 1,
-        uri: 'http://localhost:9000/listings/1/thumbnail/uuid.webp',
+        uri: 'http://localhost:9000/listings/123/Thumbnail/mockUuid.webp',
         ratio: 1,
         blurhash: 'mockBlurhash',
+        photoSize: 'Thumbnail',
+        isMain: undefined,
       });
     });
 
     it('should throw UnprocessableEntityException if not approved', async () => {
-      googleVisionService.isApproved = jest.fn().mockResolvedValue(false);
+      mockGoogleVisionService.isApproved = jest.fn().mockResolvedValue(false);
 
       await expect(
         photoService.uploadFile(123, mockFile, BucketName.Listings),
       ).rejects.toThrow(UnprocessableEntityException);
-      expect(repositoryService.createPhoto).not.toHaveBeenCalled();
+      expect(mockRepositoryService.createPhoto).not.toHaveBeenCalled();
     });
   });
 });
