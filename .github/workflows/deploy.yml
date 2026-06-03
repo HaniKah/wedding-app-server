@@ -52,6 +52,9 @@ jobs:
         run: |
           npm test
           npm run test:int
+        env:
+          DATABASE_URL: postgresql://user:password@localhost:5432/postgres_test
+
 
   migrations:
     name: Run migrations
