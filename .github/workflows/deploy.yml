@@ -16,7 +16,7 @@ jobs:
       postgres:
         image: postgres:17
         env:
-          POSTGRES_DB: wedding_app_test
+          POSTGRES_DB: postgres_test
           POSTGRES_USER: user
           POSTGRES_PASSWORD: password
         ports:
@@ -41,12 +41,12 @@ jobs:
 
       - name: Import Base Schema
         run: |
-          psql postgresql://user:password@localhost:5432/wedding_app_test -f schema_dump.sql
-          
+          psql postgresql://user:password@localhost:5432/postgres_test -f schema_dump.sql
+
       - name: Run migrations
         run: npm run migrate
         env:
-          DATABASE_URL: postgresql://user:password@localhost:5432/wedding_app_test
+          DATABASE_URL: postgresql://user:password@localhost:5432/postgres_test
 
       - name: Run tests
         run: |
