@@ -4,7 +4,12 @@ import { PlacesRepositoryService } from '../src/places/places.repository.service
 import { PhotosService } from '../src/photos/photos.service';
 import { DbService } from '../src/db/db.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { PriceType, UpdateStep } from '../src/types/places/places.dto';
+import {
+  CreatePlaceRequest,
+  PriceType,
+  UpdatePlaceRequest,
+  UpdateStep,
+} from '../src/types/places/places.dto';
 import { Categories } from '../src/types/general/categories';
 import { CountryCode } from '../src/types/general/countries.dto';
 
@@ -70,7 +75,7 @@ describe('PlacesService (Integration)', () => {
   describe('createPlace and getPlaceDetails', () => {
     it('should create a place and retrieve its details with features', async () => {
       // 1. Create a place
-      const createReq = {
+      const createReq: CreatePlaceRequest = {
         placeInfo: {
           name: 'Test Venue',
           category: Categories.Host,
@@ -78,8 +83,6 @@ describe('PlacesService (Integration)', () => {
           minPrice: '100',
           maxPrice: '500',
           priceType: PriceType.PerPerson,
-        },
-        location: {
           city: 'Amman',
           countryCode: CountryCode.JO,
         },
@@ -90,7 +93,7 @@ describe('PlacesService (Integration)', () => {
       expect(createdPlace.name).toBe(createReq.placeInfo.name);
 
       // 2. Add features via editPlace
-      const featuresReq = {
+      const featuresReq: UpdatePlaceRequest = {
         id: createdPlace.id,
         updateStep: UpdateStep.AddFeatures,
         features: {
@@ -103,7 +106,7 @@ describe('PlacesService (Integration)', () => {
         },
       };
 
-      await service.editPlace(featuresReq as any);
+      await service.editPlace(featuresReq);
 
       // 3. Get details and verify JSONB integrity and normalization
       const details = await service.getPlaceDetails(createdPlace.id);
@@ -119,7 +122,7 @@ describe('PlacesService (Integration)', () => {
   describe('editPlace with different categories', () => {
     it('should normalize features based on category when editing', async () => {
       // Create a place with category Dress
-      const createReq = {
+      const createReq: CreatePlaceRequest = {
         placeInfo: {
           name: 'Boutique',
           category: Categories.Dress,
@@ -127,8 +130,6 @@ describe('PlacesService (Integration)', () => {
           minPrice: '50',
           maxPrice: '200',
           priceType: PriceType.PerItem,
-        },
-        location: {
           city: 'Amman',
           countryCode: CountryCode.JO,
         },
@@ -149,7 +150,7 @@ describe('PlacesService (Integration)', () => {
         },
       };
 
-      await service.editPlace(featuresReq as any);
+      await service.editPlace(featuresReq);
 
       const details = await service.getPlaceDetails(createdPlace.id);
 
