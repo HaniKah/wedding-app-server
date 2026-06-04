@@ -57,8 +57,8 @@ export interface Places {
   isPublished: Generated<boolean>;
   lat: number | null;
   lng: number | null;
-  maxPrice: Numeric | null;
-  minPrice: Numeric | null;
+  maxPrice: Money;
+  minPrice: Money;
   modifiedAt: Timestamp | null;
   name: string | null;
   phoneNumber: string | null;

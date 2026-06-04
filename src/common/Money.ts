@@ -2,41 +2,40 @@ import Decimal from 'decimal.js';
 
 export class Money {
   private value: Decimal;
-  private currency: string;
+  // private currency: string;
 
-  constructor(value: string | number | null, currency = 'JOD') {
+  constructor(value: string | number | null) {
     if (!value) {
       return null;
     }
     // Always create Decimal from string to avoid JS float issues
     this.value = new Decimal(value);
-    this.currency = currency;
   }
 
   // --- Formatting ---
   get getFormatted(): string {
     return this.formatMoney(this.value);
   }
-  get getCurrency(): string {
-    return this.currency;
-  }
+  // get getCurrency(): string {
+  //   return this.currency;
+  // }
 
   add(money: Money): Money {
-    this.ensureSameCurrency(money);
-    return new Money(this.value.plus(money.value).toString(), this.currency);
+    // this.ensureSameCurrency(money);
+    return new Money(this.value.plus(money.value).toString());
   }
 
   subtract(money: Money): Money {
-    this.ensureSameCurrency(money);
-    return new Money(this.value.minus(money.value).toString(), this.currency);
+    // this.ensureSameCurrency(money);
+    return new Money(this.value.minus(money.value).toString());
   }
 
   multiply(multiplier: number | string): Money {
-    return new Money(this.value.times(multiplier).toString(), this.currency);
+    return new Money(this.value.times(multiplier).toString());
   }
 
   divide(divisor: number | string): Money {
-    return new Money(this.value.div(divisor).toString(), this.currency);
+    return new Money(this.value.div(divisor).toString());
   }
 
   toString(): string {
@@ -46,8 +45,8 @@ export class Money {
   private formatMoney(amount: Decimal): string {
     const hasFractions = !amount.isInteger();
     const formatter = new Intl.NumberFormat('en-JO', {
-      style: 'currency',
-      currency: this.currency,
+      // style: 'currency',
+      // currency: 'JOD',
       minimumFractionDigits: hasFractions ? 2 : 0,
       maximumFractionDigits: hasFractions ? 2 : 0,
     });
@@ -55,9 +54,9 @@ export class Money {
   }
 
   // --- Utility ---
-  private ensureSameCurrency(other: Money) {
-    if (this.currency !== other.currency) {
-      throw new Error('Currency mismatch');
-    }
-  }
+  // private ensureSameCurrency(other: Money) {
+  //   if (this.currency !== other.currency) {
+  //     throw new Error('Currency mismatch');
+  //   }
+  // }
 }

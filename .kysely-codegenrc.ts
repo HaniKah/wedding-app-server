@@ -19,6 +19,8 @@ export default {
 
       'checklist.timeframe': 'Timeframe',
       'places.features': 'PlacesFeatures',
+      'places.min_price': 'Money',
+      'places.max_price': 'Money',
     },
   },
   customImports: {
