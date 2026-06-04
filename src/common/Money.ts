@@ -44,11 +44,12 @@ export class Money {
   }
 
   private formatMoney(amount: Decimal): string {
+    const hasFractions = !amount.isInteger();
     const formatter = new Intl.NumberFormat('en-JO', {
-      // style: 'currency',
-      // currency: this.currency,
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
+      style: 'currency',
+      currency: this.currency,
+      minimumFractionDigits: hasFractions ? 2 : 0,
+      maximumFractionDigits: hasFractions ? 2 : 0,
     });
     return formatter.format(amount.toNumber());
   }
