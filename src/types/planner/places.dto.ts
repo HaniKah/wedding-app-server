@@ -40,8 +40,8 @@ export class PlaceDetailsDto {
   // mainPhoto: string;
   // mainPhotoBlurhash?: string;
   photos: PlaceDetailsPhotos[];
-  maxPrice: string;
-  minPrice: string;
+  maxPrice: string | undefined;
+  minPrice: string | undefined;
   description: string;
   @ApiProperty({ enum: CountryCode, enumName: 'CountryCode' })
   countryCode: CountryCode;

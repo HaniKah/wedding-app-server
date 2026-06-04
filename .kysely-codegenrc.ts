@@ -25,6 +25,7 @@ export default {
   },
   customImports: {
     CategoryFeatures: '../places/features.dto#PlacesFeatures',
+    Money: '../../common/Money',
   },
 
   defaultSchemas: ['planner'],

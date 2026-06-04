@@ -19,13 +19,19 @@ export class MoneyTransformerPlugin implements KyselyPlugin {
     const rows = args.result.rows.map((row) => {
       const transformedRow = { ...row };
 
-      if (typeof row.minPrice === 'string') {
+      if (
+        typeof row.minPrice === 'string' ||
+        typeof row.minPrice === 'number'
+      ) {
         transformedRow.minPrice = new Money(row.minPrice);
       } else if (row.minPrice === null) {
         transformedRow.minPrice = null;
       }
 
-      if (typeof row.maxPrice === 'string') {
+      if (
+        typeof row.maxPrice === 'string' ||
+        typeof row.maxPrice === 'number'
+      ) {
         transformedRow.maxPrice = new Money(row.maxPrice);
       } else if (row.maxPrice === null) {
         transformedRow.maxPrice = null;

@@ -4,16 +4,19 @@ export class Money {
   private value: Decimal;
   // private currency: string;
 
-  constructor(value: string | number | null) {
-    if (!value) {
-      return null;
-    }
+  constructor(value: string | number | Decimal) {
     // Always create Decimal from string to avoid JS float issues
     this.value = new Decimal(value);
   }
 
+  // public static fromNullable(
+  //   value: string | number | Decimal | null,
+  // ): Money | null {
+  //   return value === null ? null : new Money(value);
+  // }
+
   // --- Formatting ---
-  get getFormatted(): string {
+  getFormatted(): string {
     return this.formatMoney(this.value);
   }
   // get getCurrency(): string {
@@ -22,20 +25,20 @@ export class Money {
 
   add(money: Money): Money {
     // this.ensureSameCurrency(money);
-    return new Money(this.value.plus(money.value).toString());
+    return new Money(this.value.plus(money.value));
   }
 
   subtract(money: Money): Money {
     // this.ensureSameCurrency(money);
-    return new Money(this.value.minus(money.value).toString());
+    return new Money(this.value.minus(money.value));
   }
 
   multiply(multiplier: number | string): Money {
-    return new Money(this.value.times(multiplier).toString());
+    return new Money(this.value.times(multiplier));
   }
 
   divide(divisor: number | string): Money {
-    return new Money(this.value.div(divisor).toString());
+    return new Money(this.value.div(divisor));
   }
 
   toString(): string {

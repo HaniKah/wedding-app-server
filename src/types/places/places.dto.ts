@@ -59,8 +59,8 @@ export class VendorPlaceDto {
   thumbnailBlurhash?: string;
   isPublished: boolean;
   isPromoted: boolean;
-  minPrice: string;
-  maxPrice: string;
+  minPrice: string | undefined;
+  maxPrice: string | undefined;
   @ApiProperty({ enum: PriceType, enumName: 'PriceType' })
   priceType: PriceType;
   @ApiProperty({ enum: CountryCode, enumName: 'CountryCode' })
@@ -112,8 +112,8 @@ export class VendorPlaceDetailsDto {
   website?: string;
   isPublished: boolean;
   description?: string;
-  minPrice: string;
-  maxPrice: string;
+  minPrice: string | undefined;
+  maxPrice: string | undefined;
   @ApiProperty({ enum: PriceType, enumName: 'PriceType' })
   priceType: PriceType;
   @ApiProperty({ enum: CountryCode, enumName: 'CountryCode' })
