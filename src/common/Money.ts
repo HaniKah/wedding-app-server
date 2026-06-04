@@ -1,4 +1,11 @@
 import Decimal from 'decimal.js';
+import { ColumnType } from 'kysely';
+
+export type MoneyColumn = ColumnType<
+  Money | null,
+  string | number | null,
+  string | number | null
+>;
 
 export class Money {
   private value: Decimal;

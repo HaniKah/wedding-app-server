@@ -19,13 +19,13 @@ export default {
 
       'checklist.timeframe': 'Timeframe',
       'places.features': 'PlacesFeatures',
-      'places.min_price': 'Money',
-      'places.max_price': 'Money',
+      'places.min_price': 'MoneyColumn',
+      'places.max_price': 'MoneyColumn',
     },
   },
   customImports: {
     CategoryFeatures: '../places/features.dto#PlacesFeatures',
-    Money: '../../common/Money',
+    MoneyColumn: '../../common/Money#MoneyColumn',
   },
 
   defaultSchemas: ['planner'],
