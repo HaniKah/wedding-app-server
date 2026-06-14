@@ -1,5 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { PlaceDetailsDto, PlacesViewModel } from '../types/planner/places.dto';
+import {
+  PlaceDetailsDto,
+  PlacesViewModel,
+  SearchFilter,
+} from '../types/planner/places.dto';
 import { WeddingDateDto } from '../types/planner/weddingDateDto';
 import { PlansRepositoryService } from './plans.repository.service';
 import { PlannerRepositoryService } from './planner.repository.service';
@@ -38,14 +42,14 @@ export class PlannerService {
     countryCode: CountryCode,
     offset: number,
     searchQuery?: string,
-    category?: Categories,
+    filters?: SearchFilter,
   ): Promise<PlacesViewModel> {
     const placesAndPlaceDetailsRecord =
       await this.plannerRepositoryService.getAllPlaces(
         countryCode,
         offset,
         searchQuery,
-        category,
+        filters,
       );
 
     const list = await Promise.all(

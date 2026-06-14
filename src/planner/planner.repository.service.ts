@@ -1,7 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DbService } from '../db/db.service';
 import { CountryCode } from '../types/general/countries.dto';
-import { Categories } from '../types/general/categories';
+import { SearchFilter } from '../types/planner/places.dto';
+import { Money } from '../common/Money';
 
 @Injectable()
 export class PlannerRepositoryService {
@@ -11,7 +12,7 @@ export class PlannerRepositoryService {
     countryCode: CountryCode,
     offset: number,
     searchQuery?: string,
-    category?: Categories,
+    filters?: SearchFilter,
   ) {
     const LIMIT = 5;
     const now = new Date();
@@ -25,7 +26,13 @@ export class PlannerRepositoryService {
       .$if(!!searchQuery, (eb) =>
         eb.where((eb) => eb.or([eb('name', 'ilike', `%${searchQuery}%`)])),
       )
-      .$if(!!category, (eb) => eb.where('places.step', '=', category))
+      .$if(!!filters.category, (eb) =>
+        eb.where('places.step', '==', filters.category),
+      )
+      .$if(!!filters.price, (eb) =>
+        eb.where('places.maxPrice', '>=', new Money(filters.price)),
+      )
+      .$if(!!filters.price, (eb) => eb.where('places.city', '==', filters.city))
       .orderBy((eb) =>
         eb
           .case()

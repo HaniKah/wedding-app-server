@@ -1,9 +1,12 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { PlannerService } from './planner.service';
-import { PlaceDetailsDto, PlacesViewModel } from '../types/planner/places.dto';
+import {
+  PlaceDetailsDto,
+  PlacesViewModel,
+  SearchFilter,
+} from '../types/planner/places.dto';
 import { ApiQuery } from '@nestjs/swagger';
 import { CountryCode } from '../types/general/countries.dto';
-import { Categories } from '../types/general/categories';
 import { Public } from '../auth/decorators/public.decorator';
 import { FavoritePlaceDto } from '../types/planner/favorites.dto';
 
@@ -16,18 +19,18 @@ export class PlannerController {
   @ApiQuery({ name: 'offset', required: true })
   @ApiQuery({ name: 'countryCode', required: true, enum: CountryCode })
   @ApiQuery({ name: 'search', required: false })
-  @ApiQuery({ name: 'category', required: false, enum: Categories })
+  @ApiQuery({ name: 'filters', required: false })
   public async getPlaces(
     @Query('offset') offset: number,
     @Query('countryCode') countryCode: CountryCode,
-    @Query('category') category: Categories,
+    @Query('filters') filters: SearchFilter,
     @Query('search') search?: string,
   ): Promise<PlacesViewModel> {
     return await this.plannerService.getPlaces(
       countryCode,
       offset,
       search,
-      category,
+      filters,
     );
   }
   @Public()

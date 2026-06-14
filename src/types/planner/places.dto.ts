@@ -61,7 +61,10 @@ export class PlacesViewModel {
 }
 
 export class SearchFilter {
+  @ApiProperty({ enum: Categories, enumName: 'Categories' })
   category?: Categories;
+  city?: string;
+  price?: string;
 }
 
 //coming from google places api , a fetchName is used to fetch from the places photos api
