@@ -23,7 +23,7 @@ export class PlannerController {
   public async getPlaces(
     @Query('offset') offset: number,
     @Query('countryCode') countryCode: CountryCode,
-    @Query('filters') filters: SearchFilter,
+    @Query('filters') filters?: SearchFilter,
     @Query('search') search?: string,
   ): Promise<PlacesViewModel> {
     return await this.plannerService.getPlaces(
