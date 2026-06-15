@@ -26,13 +26,15 @@ export class PlannerRepositoryService {
       .$if(!!searchQuery, (eb) =>
         eb.where((eb) => eb.or([eb('name', 'ilike', `%${searchQuery}%`)])),
       )
-      .$if(!!filters.category, (eb) =>
+      .$if(filters?.category !== undefined, (eb) =>
         eb.where('places.step', '==', filters.category),
       )
-      .$if(!!filters.price, (eb) =>
-        eb.where('places.maxPrice', '>=', new Money(filters.price)),
+      .$if(filters?.price !== undefined, (eb) =>
+        eb.where('places.minPrice', '>=', new Money(filters.price)),
       )
-      .$if(!!filters.city, (eb) => eb.where('places.city', '==', filters.city))
+      .$if(filters?.city !== undefined, (eb) =>
+        eb.where('places.city', '==', filters.city),
+      )
       .orderBy((eb) =>
         eb
           .case()
