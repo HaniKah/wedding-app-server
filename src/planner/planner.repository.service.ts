@@ -32,7 +32,7 @@ export class PlannerRepositoryService {
       .$if(!!filters.price, (eb) =>
         eb.where('places.maxPrice', '>=', new Money(filters.price)),
       )
-      .$if(!!filters.price, (eb) => eb.where('places.city', '==', filters.city))
+      .$if(!!filters.city, (eb) => eb.where('places.city', '==', filters.city))
       .orderBy((eb) =>
         eb
           .case()
