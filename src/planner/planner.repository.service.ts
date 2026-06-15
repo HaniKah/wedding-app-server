@@ -28,9 +28,9 @@ export class PlannerRepositoryService {
       .$if(filters?.category !== undefined, (eb) =>
         eb.where('places.step', '=', filters.category),
       )
-      // .$if(filters?.price !== undefined, (eb) =>
-      //   eb.where('places.minPrice', '<=', filters.price),
-      // )
+      .$if(filters?.price !== undefined && filters.price !== '0', (eb) =>
+        eb.where('places.minPrice', '<=', filters.price),
+      )
       .$if(filters?.city !== undefined, (eb) =>
         eb.where('places.city', '=', filters.city),
       )
