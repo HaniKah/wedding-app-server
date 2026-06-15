@@ -2,7 +2,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { DbService } from '../db/db.service';
 import { CountryCode } from '../types/general/countries.dto';
 import { SearchFilter } from '../types/planner/places.dto';
-import { Money } from '../common/Money';
 
 @Injectable()
 export class PlannerRepositoryService {
@@ -27,13 +26,13 @@ export class PlannerRepositoryService {
         eb.where((eb) => eb.or([eb('name', 'ilike', `%${searchQuery}%`)])),
       )
       .$if(filters?.category !== undefined, (eb) =>
-        eb.where('places.step', '==', filters.category),
+        eb.where('places.step', '=', filters.category),
       )
-      .$if(filters?.price !== undefined, (eb) =>
-        eb.where('places.minPrice', '>=', new Money(filters.price)),
-      )
+      // .$if(filters?.price !== undefined, (eb) =>
+      //   eb.where('places.minPrice', '<=', filters.price),
+      // )
       .$if(filters?.city !== undefined, (eb) =>
-        eb.where('places.city', '==', filters.city),
+        eb.where('places.city', '=', filters.city),
       )
       .orderBy((eb) =>
         eb

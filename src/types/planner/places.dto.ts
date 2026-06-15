@@ -3,7 +3,15 @@ import { PriceType } from '../places/places.dto';
 import { Categories } from '../general/categories';
 import { CountryCode } from '../general/countries.dto';
 import { PlacesFeatures } from '../places/features.dto';
+import { IsOptional, IsString } from 'class-validator';
 
+export class GetPlacesRequest {
+  offset: number;
+  @ApiProperty({ enum: CountryCode, enumName: 'CountryCode' })
+  countryCode: CountryCode;
+  filters: SearchFilter;
+  search?: string;
+}
 export class PlacesDto {
   id: number;
   name?: string | null;
@@ -61,9 +69,14 @@ export class PlacesViewModel {
 }
 
 export class SearchFilter {
+  @IsOptional()
   @ApiProperty({ enum: Categories, enumName: 'Categories' })
   category?: Categories;
+  @IsOptional()
+  @IsString()
   city?: string;
+  @IsOptional()
+  @IsString()
   price?: string;
 }
 
