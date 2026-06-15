@@ -14,6 +14,7 @@ import { SaleLabel } from '../types/webhooks/revenue-cat.dto';
 import { Categories } from '../types/general/categories';
 import { FavoritePlaceDto } from '../types/planner/favorites.dto';
 import { normalizePlacesFeatures } from '../types/places/features.dto';
+import { Money } from '../common/Money';
 
 @Injectable()
 export class PlannerService {
@@ -69,8 +70,12 @@ export class PlannerService {
           formattedAddress: r.streetName,
           mainPhoto: mainPhoto?.uri,
           mainPhotoBlurhash: mainPhoto?.blurhash,
-          maxPrice: r.maxPrice?.getFormatted(),
-          minPrice: r.minPrice?.getFormatted(),
+          maxPrice: r.maxPrice
+            ? new Money(r.maxPrice).getFormatted()
+            : undefined,
+          minPrice: r.minPrice
+            ? new Money(r.minPrice).getFormatted()
+            : undefined,
           isPromoted: isPromoted,
           label: label,
           phoneNumber: r.phoneNumber,
@@ -113,8 +118,12 @@ export class PlannerService {
       // mainPhoto: mainPhoto?.uri,
       // mainPhotoBlurhash: mainPhoto?.blurhash,
       photos: photosWithBlurHash,
-      maxPrice: place.maxPrice?.getFormatted(),
-      minPrice: place.minPrice?.getFormatted(),
+      maxPrice: place.maxPrice
+        ? new Money(place.maxPrice).getFormatted()
+        : undefined,
+      minPrice: place.minPrice
+        ? new Money(place.minPrice).getFormatted()
+        : undefined,
       description: place.description,
       countryCode: place.country,
       city: place.city,
@@ -136,8 +145,12 @@ export class PlannerService {
           name: p?.name,
           thumbnail: mainPhoto?.uri,
           thumbnailBlurhash: mainPhoto?.blurhash,
-          minPrice: p?.minPrice?.getFormatted(),
-          maxPrice: p?.maxPrice?.getFormatted(),
+          minPrice: p?.minPrice
+            ? new Money(p.minPrice).getFormatted()
+            : undefined,
+          maxPrice: p?.maxPrice
+            ? new Money(p.maxPrice).getFormatted()
+            : undefined,
           priceType: p?.priceType,
           category: p?.step,
           country: p?.country,

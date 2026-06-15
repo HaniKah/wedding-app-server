@@ -9,7 +9,6 @@ import {
   PostgresDialect,
   WithSchemaPlugin,
 } from 'kysely';
-import { MoneyTransformerPlugin } from '../db-utils/money-transformer-plugin';
 
 @Injectable()
 export class DbService {
@@ -25,7 +24,7 @@ export class DbService {
       plugins: [
         new CamelCasePlugin(),
         new WithSchemaPlugin('planner'),
-        new MoneyTransformerPlugin(),
+        // new MoneyTransformerPlugin(),
       ],
     });
   }

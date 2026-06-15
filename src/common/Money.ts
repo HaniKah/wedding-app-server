@@ -16,27 +16,16 @@ export class Money {
     this.value = new Decimal(value);
   }
 
-  // public static fromNullable(
-  //   value: string | number | Decimal | null,
-  // ): Money | null {
-  //   return value === null ? null : new Money(value);
-  // }
-
   // --- Formatting ---
   getFormatted(): string {
     return this.formatMoney(this.value);
   }
-  // get getCurrency(): string {
-  //   return this.currency;
-  // }
 
   add(money: Money): Money {
-    // this.ensureSameCurrency(money);
     return new Money(this.value.plus(money.value));
   }
 
   subtract(money: Money): Money {
-    // this.ensureSameCurrency(money);
     return new Money(this.value.minus(money.value));
   }
 

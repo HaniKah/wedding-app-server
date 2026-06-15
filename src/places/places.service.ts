@@ -11,6 +11,7 @@ import { PlacesRepositoryService } from './places.repository.service';
 import { PhotosService } from '../photos/photos.service';
 import { PhotoSize } from '../types/photos/photos.dto';
 import { normalizePlacesFeatures } from '../types/places/features.dto';
+import { Money } from '../common/Money';
 
 @Injectable()
 export class PlacesService {
@@ -72,8 +73,8 @@ export class PlacesService {
       isPublished: p.isPublished,
       description: p.description,
       category: p.step,
-      minPrice: p.minPrice?.getFormatted(),
-      maxPrice: p.maxPrice?.getFormatted(),
+      minPrice: p.minPrice ? new Money(p.minPrice).getFormatted() : undefined,
+      maxPrice: p.maxPrice ? new Money(p.maxPrice).getFormatted() : undefined,
       priceType: p.priceType,
       countryCode: p.country,
       city: p.city,
@@ -126,8 +127,12 @@ export class PlacesService {
           isPublished: p.isPublished,
           isPromoted:
             today >= p.promotionBeginsAt && today <= p.promotionEndsAt,
-          minPrice: p.minPrice?.getFormatted(),
-          maxPrice: p.maxPrice?.getFormatted(),
+          minPrice: p.minPrice
+            ? new Money(p.minPrice).getFormatted()
+            : undefined,
+          maxPrice: p.maxPrice
+            ? new Money(p.maxPrice).getFormatted()
+            : undefined,
           priceType: p.priceType,
           city: p.city,
           country: p.country,

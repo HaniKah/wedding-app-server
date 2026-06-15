@@ -3,7 +3,6 @@
  * Please do not edit it manually.
  */
 
-import type { MoneyColumn } from "../../common/Money";
 import type { ColumnType } from "kysely";
 
 export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
@@ -58,8 +57,8 @@ export interface Places {
   isPublished: Generated<boolean>;
   lat: number | null;
   lng: number | null;
-  maxPrice: MoneyColumn;
-  minPrice: MoneyColumn;
+  maxPrice: Numeric | null;
+  minPrice: Numeric | null;
   modifiedAt: Timestamp | null;
   name: string | null;
   phoneNumber: string | null;
