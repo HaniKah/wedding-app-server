@@ -28,12 +28,12 @@ describe('PlannerController', () => {
       let places: PlacesViewModel;
 
       beforeEach(async () => {
-        places = await plannerController.getPlaces(
-          getPlaceRequestStub().offset,
-          getPlaceRequestStub().countryCode,
-          getPlaceRequestStub().step,
-          getPlaceRequestStub().searchQuery,
-        );
+        places = await plannerController.getPlaces({
+          search: getPlaceRequestStub().searchQuery,
+          offset: getPlaceRequestStub().offset,
+          countryCode: getPlaceRequestStub().countryCode,
+          filters: {},
+        });
       });
       // we could have written expect(plannerSerivce.getplaces).tohavebeen... but because of esLint errors , this is the friendly way to do it
       test('then it should call plannerService', () => {
@@ -41,7 +41,6 @@ describe('PlannerController', () => {
           getPlaceRequestStub().countryCode,
           getPlaceRequestStub().offset,
           getPlaceRequestStub().searchQuery,
-          getPlaceRequestStub().step,
         );
       });
 

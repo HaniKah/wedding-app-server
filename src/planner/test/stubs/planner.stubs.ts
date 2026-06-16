@@ -30,7 +30,6 @@ export const placesViewModelStub = (): PlacesViewModel => {
 };
 
 export const getPlaceRequestStub = () => ({
-  step: Categories.Dress,
   offset: 0,
   countryCode: CountryCode.JO,
   searchQuery: 'sample',
