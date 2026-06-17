@@ -1,4 +1,7 @@
-import { PlacesViewModel } from '../../../types/planner/places.dto';
+import {
+  GetPlacesRequest,
+  PlacesViewModel,
+} from '../../../types/planner/places.dto';
 import { CountryCode } from '../../../types/general/countries.dto';
 import { PriceType } from '../../../types/places/places.dto';
 import { Categories } from '../../../types/general/categories';
@@ -29,8 +32,9 @@ export const placesViewModelStub = (): PlacesViewModel => {
   };
 };
 
-export const getPlaceRequestStub = () => ({
+export const getPlaceRequestStub = (): GetPlacesRequest => ({
   offset: 0,
   countryCode: CountryCode.JO,
-  searchQuery: 'sample',
+  search: 'sample',
+  filters: {},
 });
