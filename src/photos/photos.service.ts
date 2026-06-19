@@ -109,35 +109,59 @@ export class PhotosService {
     file: Express.Multer.File,
     bucketName: BucketName,
   ): Promise<PhotosDto> {
-    const isApproved = await this.googleVisionApiService.isApproved(
-      file.buffer.toString('base64'),
-    );
+    // Decode the source once: rotate via EXIF then keep an in-memory pipeline
+    // that every downstream operation (vision preview, blurhash, variants)
+    // can clone from without re-parsing the original JPEG/PNG bytes.
+    const decoded = sharp(file.buffer, { failOn: 'truncated' }).rotate();
 
-    if (!isApproved)
+    // Run the three independent operations concurrently: SafeSearch check,
+    // blurhash generation, and the placeholder DB row insert.
+    const visionPreview = await decoded
+      .clone()
+      .resize({ width: 640, withoutEnlargement: true, fit: 'inside' })
+      .jpeg({ quality: 80 })
+      .toBuffer();
+
+    const [isApproved, blurhash, created] = await Promise.all([
+      this.googleVisionApiService.isApproved(visionPreview.toString('base64')),
+      this.generateBlurhash(decoded),
+      this.photosRepositoryService.createPhoto({
+        placeId: placeId,
+        bucketName: bucketName,
+        blurhash: '',
+      }),
+    ]);
+
+    if (!isApproved) {
+      // Roll the placeholder row back so a rejected upload leaves no trace.
+      await this.photosRepositoryService.deletePhoto(created.id);
       throw new UnprocessableEntityException(
         'Probable adult or violent content',
       );
+    }
 
-    const blurhash = await this.generateBlurhash(file.buffer);
-
-    const { id } = await this.photosRepositoryService.createPhoto({
-      placeId: placeId,
-      bucketName: bucketName,
-      blurhash: blurhash,
-    });
-
-    await this.createVariants(
-      [PhotoSize.Image, PhotoSize.Medium, PhotoSize.Thumbnail],
-      file,
-      placeId,
-      bucketName,
-      id,
+    await this.photosRepositoryService.updatePhotoBlurhash(
+      created.id,
+      blurhash,
     );
 
-    return await this.getPhotoById(
-      BucketName.Listings,
-      id,
+    const thumbnailVariant = await this.createVariants(
+      [PhotoSize.Image, PhotoSize.Medium, PhotoSize.Thumbnail],
+      decoded,
+      file.originalname,
+      placeId,
+      bucketName,
+      created.id,
+    );
+
+    return this.constructPhotoDto(
+      created.id,
+      thumbnailVariant.ratio,
+      blurhash,
+      thumbnailVariant.objectKey,
+      bucketName,
       PhotoSize.Thumbnail,
+      false,
     );
   }
 
@@ -207,12 +231,12 @@ export class PhotosService {
 
   private async createVariants(
     variants: PhotoSize[],
-    file: Express.Multer.File,
+    decoded: sharp.Sharp,
+    originalName: string,
     placeId: number,
     bucketName: string,
     photoId: number,
-  ): Promise<void> {
-    const input = sharp(file.buffer).rotate();
+  ): Promise<{ objectKey: string; ratio: number }> {
     const images = await Promise.all(
       variants.map(async (v) => {
         let width: number;
@@ -222,12 +246,12 @@ export class PhotosService {
           case PhotoSize.Thumbnail:
             width = 300;
             quality = 72;
-            effort = 3;
+            effort = 2;
             break;
           case PhotoSize.Medium:
             width = 800;
             quality = 82;
-            effort = 4;
+            effort = 3;
             break;
           case PhotoSize.Image:
             width = 1400;
@@ -236,14 +260,14 @@ export class PhotosService {
             break;
         }
 
-        const { data, info } = await input
+        const { data, info } = await decoded
           .clone()
           .resize({ width: width, withoutEnlargement: true, fit: 'inside' })
           .webp({ quality: quality, effort: effort })
           .toBuffer({ resolveWithObject: true });
 
         const objectName: string = await this.uploadObject(
-          file.originalname,
+          originalName,
           placeId,
           bucketName,
           v,
@@ -259,10 +283,13 @@ export class PhotosService {
       }),
     );
     await this.photosRepositoryService.createPhotoVariants(images);
+    const thumbnail = images.find((i) => i.variant === PhotoSize.Thumbnail);
+    return { objectKey: thumbnail.objectKey, ratio: thumbnail.ratio };
   }
 
-  private async generateBlurhash(buffer: Buffer): Promise<string> {
-    const { data, info } = await sharp(buffer)
+  private async generateBlurhash(decoded: sharp.Sharp): Promise<string> {
+    const { data, info } = await decoded
+      .clone()
       .raw()
       .ensureAlpha()
       .resize(32, 32, { fit: 'inside' })

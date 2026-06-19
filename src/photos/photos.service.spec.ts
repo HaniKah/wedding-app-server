@@ -9,18 +9,27 @@ import { UnprocessableEntityException } from '@nestjs/common';
 
 // Mock sharp
 jest.mock('sharp', () => {
-  const mSharp = {
-    rotate: jest.fn().mockReturnThis(),
-    clone: jest.fn().mockReturnThis(),
-    resize: jest.fn().mockReturnThis(),
-    webp: jest.fn().mockReturnThis(),
-    toBuffer: jest.fn().mockResolvedValue({
-      data: Buffer.from('mockData'),
-      info: { width: 100, height: 100, size: 1000 },
+  const mSharp: Record<string, jest.Mock> = {
+    rotate: jest.fn(),
+    clone: jest.fn(),
+    resize: jest.fn(),
+    webp: jest.fn(),
+    jpeg: jest.fn(),
+    raw: jest.fn(),
+    ensureAlpha: jest.fn(),
+    toBuffer: jest.fn((opts?: { resolveWithObject?: boolean }) => {
+      if (opts?.resolveWithObject) {
+        return Promise.resolve({
+          data: Buffer.from('mockData'),
+          info: { width: 100, height: 100, size: 1000 },
+        });
+      }
+      return Promise.resolve(Buffer.from('mockData'));
     }),
-    raw: jest.fn().mockReturnThis(),
-    ensureAlpha: jest.fn().mockReturnThis(),
   };
+  for (const key of ['rotate', 'clone', 'resize', 'webp', 'jpeg', 'raw', 'ensureAlpha']) {
+    mSharp[key].mockReturnValue(mSharp);
+  }
   return jest.fn(() => mSharp);
 });
 
@@ -42,6 +51,7 @@ describe('PhotosService', () => {
 
   const mockRepositoryService = {
     createPhoto: jest.fn(),
+    updatePhotoBlurhash: jest.fn(),
     createPhotoVariants: jest.fn(),
     getPhotosByPlaceId: jest.fn(),
     getMainPhoto: jest.fn(),
@@ -102,12 +112,6 @@ describe('PhotosService', () => {
     it('should upload a file and create variants if approved', async () => {
       mockGoogleVisionService.isApproved.mockResolvedValue(true);
       mockRepositoryService.createPhoto.mockResolvedValue({ id: 1 });
-      mockRepositoryService.getVariantByPhotoId.mockResolvedValue({
-        ratio: 1,
-        blurhash: 'mockBlurhash',
-        objectKey: '123/Thumbnail/mockUuid.webp',
-        main: undefined,
-      });
 
       const result = await photoService.uploadFile(
         123,
@@ -119,27 +123,35 @@ describe('PhotosService', () => {
       expect(mockRepositoryService.createPhoto).toHaveBeenCalledWith({
         placeId: 123,
         bucketName: BucketName.Listings,
-        blurhash: 'mockBlurhash',
+        blurhash: '',
       });
+      expect(mockRepositoryService.updatePhotoBlurhash).toHaveBeenCalledWith(
+        1,
+        'mockBlurhash',
+      );
       expect(mockMinioService.minio.putObject).toHaveBeenCalledTimes(3); // 3 variants
       expect(mockRepositoryService.createPhotoVariants).toHaveBeenCalled();
+      expect(mockRepositoryService.getVariantByPhotoId).not.toHaveBeenCalled();
       expect(result).toEqual({
         id: 1,
         uri: 'http://localhost:9000/listings/123/Thumbnail/mockUuid.webp',
         ratio: 1,
         blurhash: 'mockBlurhash',
         photoSize: 'Thumbnail',
-        isMain: undefined,
+        isMain: false,
       });
     });
 
     it('should throw UnprocessableEntityException if not approved', async () => {
       mockGoogleVisionService.isApproved = jest.fn().mockResolvedValue(false);
+      mockRepositoryService.createPhoto.mockResolvedValue({ id: 42 });
 
       await expect(
         photoService.uploadFile(123, mockFile, BucketName.Listings),
       ).rejects.toThrow(UnprocessableEntityException);
-      expect(mockRepositoryService.createPhoto).not.toHaveBeenCalled();
+      // The placeholder row is rolled back when SafeSearch rejects the upload.
+      expect(mockRepositoryService.deletePhoto).toHaveBeenCalledWith(42);
+      expect(mockRepositoryService.createPhotoVariants).not.toHaveBeenCalled();
     });
   });
 });

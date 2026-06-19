@@ -38,7 +38,14 @@ export class PhotosRepositoryService {
       .insertInto('photos')
       .values(dataPhoto)
       .returning('photos.id')
-      .executeTakeFirst();
+      .executeTakeFirstOrThrow();
+  }
+  public async updatePhotoBlurhash(photoId: number, blurhash: string) {
+    await this.db.db
+      .updateTable('photos')
+      .set({ blurhash })
+      .where('id', '=', photoId)
+      .execute();
   }
   public async createPhotoVariants(
     dataPhotoVariant: Insertable<PhotosVariants>[],
