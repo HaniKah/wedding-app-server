@@ -37,6 +37,10 @@ npm run ngrok           # Expose local server (for webhook testing)
 **NestJS 11 + TypeScript** backend for a wedding planning mobile app. PostgreSQL via **Kysely** ORM, **MinIO** for
 object storage, **Sharp** for image processing.
 
+## Tech Stack
+
+This project is used with a combination of the frontend which can be found in desktop/WeddingApp
+
 ### Module Structure
 
 Each feature is a self-contained NestJS module. Most modules follow a three-layer pattern:
