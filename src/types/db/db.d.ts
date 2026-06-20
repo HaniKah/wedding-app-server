@@ -13,6 +13,16 @@ export type Numeric = ColumnType<string, number | string, number | string>;
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
+export interface EmailOtps {
+  attempts: Generated<number>;
+  codeHash: string;
+  consumedAt: Timestamp | null;
+  createdAt: Generated<Timestamp>;
+  expiresAt: Timestamp;
+  id: Generated<number>;
+  userId: number;
+}
+
 export interface Guests {
   coupleSide: CoupleSide;
   createdAt: Generated<Timestamp>;
@@ -96,6 +106,7 @@ export interface Users {
   createdAt: Generated<Timestamp | null>;
   deletedAt: Timestamp | null;
   email: string;
+  emailVerified: Generated<boolean>;
   firstName: string | null;
   googleId: string | null;
   id: Generated<number>;
@@ -107,6 +118,7 @@ export interface Users {
 }
 
 export interface DB {
+  emailOtps: EmailOtps;
   guests: Guests;
   photos: Photos;
   photosVariants: PhotosVariants;

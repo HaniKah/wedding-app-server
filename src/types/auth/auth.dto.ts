@@ -1,4 +1,4 @@
-import { IsEmail, IsString } from 'class-validator';
+import { IsEmail, IsString, Length } from 'class-validator';
 
 export class SignInDto {
   @IsString()
@@ -41,4 +41,20 @@ export class SignUpDto {
 
   @IsString()
   password: string;
+}
+
+export class VerifyEmailDto {
+  @IsString()
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  @Length(6, 6)
+  code: string;
+}
+
+export class ResendVerificationDto {
+  @IsString()
+  @IsEmail()
+  email: string;
 }

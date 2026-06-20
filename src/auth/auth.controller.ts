@@ -19,7 +19,12 @@ import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 import type { Request, Response } from 'express';
 import { ExchangeAuthGuard } from './guards/exchange-auth/exchange-auth.guard';
 import { ExchangeTokenDto } from '../types/auth/exchange.dto';
-import { SignInDto, SignUpDto } from '../types/auth/auth.dto';
+import {
+  ResendVerificationDto,
+  SignInDto,
+  SignUpDto,
+  VerifyEmailDto,
+} from '../types/auth/auth.dto';
 import AppleOauthConfig from './config/appleOauth.config';
 import GoogleOauthConfig from './config/googleOauth.config';
 import { AppleAuthGuard } from './guards/apple-auth/apple-auth.guard';
@@ -50,7 +55,7 @@ export class AuthController {
 
   @Public()
   @Post('signup')
-  async signUp(@Body() signUpDto: SignUpDto): Promise<ExchangeTokenDto> {
+  async signUp(@Body() signUpDto: SignUpDto) {
     return await this.authService.signUp(signUpDto);
   }
 
@@ -58,6 +63,23 @@ export class AuthController {
   @Post('signin')
   async signIn(@Body() signInDto: SignInDto): Promise<ExchangeTokenDto> {
     return await this.authService.signIn(signInDto);
+  }
+
+  @Public()
+  @Post('verify-email')
+  async verifyEmail(
+    @Body() verifyEmailDto: VerifyEmailDto,
+  ): Promise<ExchangeTokenDto> {
+    return await this.authService.verifyEmail(
+      verifyEmailDto.email,
+      verifyEmailDto.code,
+    );
+  }
+
+  @Public()
+  @Post('resend-verification')
+  async resendVerification(@Body() resendDto: ResendVerificationDto) {
+    return await this.authService.resendVerificationCode(resendDto.email);
   }
 
   @UseGuards(JwtAuthGuard)

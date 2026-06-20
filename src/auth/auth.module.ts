@@ -18,10 +18,13 @@ import appleOauthConfig from './config/appleOauth.config';
 import { HttpModule } from '@nestjs/axios';
 import { UsersModule } from '../users/users.module';
 import { PlannerModule } from '../planner/planner.module';
+import { EmailModule } from '../email/email.module';
+import { EmailOtpRepositoryService } from './email-otp.repository.service';
 
 @Module({
   providers: [
     AuthService,
+    EmailOtpRepositoryService,
     GoogleStrategy,
     JwtStrategy,
     RefreshJwtStrategy,
@@ -47,6 +50,7 @@ import { PlannerModule } from '../planner/planner.module';
     HttpModule,
     UsersModule,
     PlannerModule,
+    EmailModule,
   ],
 })
 export class AuthModule {}
