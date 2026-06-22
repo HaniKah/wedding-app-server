@@ -13,6 +13,7 @@ import { MinioModule } from './minio/minio.module';
 import { PhotosModule } from './photos/photos.module';
 
 import { PromotionsModule } from './promotions/promotions.module';
+import { AppVersionModule } from './app-version/app-version.module';
 import { WebhooksModule } from './webhooks/webhooks.module';
 
 @Module({
@@ -31,6 +32,7 @@ import { WebhooksModule } from './webhooks/webhooks.module';
     PlacesModule,
     MinioModule,
     PhotosModule,
+    AppVersionModule,
     PromotionsModule,
     WebhooksModule,
   ],
