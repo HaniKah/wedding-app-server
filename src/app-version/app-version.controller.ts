@@ -7,7 +7,7 @@ import { Public } from '../auth/decorators/public.decorator';
 export class AppVersionController {
   constructor(private readonly appVersionService: AppVersionService) {}
   @Public()
-  @Get()
+  @Get('getConfig')
   getConfig(): VersionDto {
     return this.appVersionService.getConfig();
   }
