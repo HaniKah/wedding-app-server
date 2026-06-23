@@ -147,9 +147,13 @@ export class AuthController {
     const exchangeToken = await this.authService.generateExchangeToken(
       req.user.id,
     );
-    const params = new URLSearchParams({ exchangeToken, state });
+    const stateAndRedirectUriList: string[] = state.split('#');
+    const params = new URLSearchParams({
+      exchangeToken,
+      state: stateAndRedirectUriList[0],
+    });
     //todo instead of manually using a redirect uri, the backend has to extract the directuri from request and preserve it somewhere in state or cookie, then use it when redirecting back to the app
-    return res.redirect(`${this.googleOathConfig.appScheme}?${params}`);
+    return res.redirect(`${stateAndRedirectUriList[1]}?${params}`);
   }
 
   @Public()
