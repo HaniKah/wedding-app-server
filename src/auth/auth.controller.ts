@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   Inject,
+  Logger,
   Post,
   Query,
   Req,
@@ -148,6 +149,7 @@ export class AuthController {
   @UseGuards(ExchangeAuthGuard)
   @Post('exchangeToken')
   async exchangeToken(@Req() req: Request): Promise<ExchangeTokenDto> {
+    Logger.log('exchanging token...');
     return await this.authService.login(req.user.id);
   }
 }
