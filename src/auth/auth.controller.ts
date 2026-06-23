@@ -103,7 +103,7 @@ export class AuthController {
     @Query('redirect_uri') redirectUri: string,
     @Res() res: Response,
   ) {
-    const stateAndRedirectUri = `${state}#${redirectUri}`; // just preserving the scheme redirectUri to be used on auth/callback
+    const stateAndRedirectUri = `${state}###${redirectUri}`; // just preserving the scheme redirectUri to be used on auth/callback
     const params = new URLSearchParams({
       client_id: this.appleOauthConfig.clientID,
       redirect_uri: this.appleOauthConfig.callbackURL,
@@ -128,7 +128,7 @@ export class AuthController {
     const exchangeToken = await this.authService.generateExchangeToken(
       req.user.id,
     );
-    const stateAndRedirectUriList: string[] = stateAndRedirectUri.split('#');
+    const stateAndRedirectUriList: string[] = stateAndRedirectUri.split('###');
     const params = new URLSearchParams({
       exchangeToken,
       state: stateAndRedirectUriList[0],
@@ -147,12 +147,11 @@ export class AuthController {
     const exchangeToken = await this.authService.generateExchangeToken(
       req.user.id,
     );
-    const stateAndRedirectUriList: string[] = state.split('#');
+    const stateAndRedirectUriList: string[] = state.split('###');
     const params = new URLSearchParams({
       exchangeToken,
       state: stateAndRedirectUriList[0],
     });
-    //todo instead of manually using a redirect uri, the backend has to extract the directuri from request and preserve it somewhere in state or cookie, then use it when redirecting back to the app
     return res.redirect(`${stateAndRedirectUriList[1]}?${params}`);
   }
 

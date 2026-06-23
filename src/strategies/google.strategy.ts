@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-google-oauth20';
 import type { ConfigType } from '@nestjs/config';
@@ -27,7 +27,13 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
 
   //this here to interrupt the normal flow of passport google and manually use the authenticate function because we had to add state manually which was not working in the constructor here is the fix : https://stackoverflow.com/questions/60857548/how-to-pass-state-during-nest-js-authentication-flow
   authenticate(req: Request, options: AuthenticateOptions) {
-    options.state = `${req.query.state}#${req.query.redirect_uri}`;
+    if (
+      typeof req.query.state !== 'string' ||
+      typeof req.query.redirect_uri !== 'string'
+    ) {
+      throw new BadRequestException('Invalid Google OAuth query parameters');
+    }
+    options.state = `${req.query.state}###${req.query.redirect_uri}`;
     options.prompt = 'select_account';
     options.successRedirect = req.query.redirectUri as string;
     super.authenticate(req, options);
