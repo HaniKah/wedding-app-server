@@ -6,6 +6,5 @@ export default registerAs('appleOAuth', () => ({
   teamID: process.env.APPLE_TEAM_ID,
   clientSecret: process.env.APPLE_SECRET,
   callbackURL: process.env.APPLE_CALLBACK_URL,
-  appScheme: process.env.APP_SCHEME,
   appleAuthUrl: process.env.APPLE_AUTH_URL,
 }));
