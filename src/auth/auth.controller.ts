@@ -103,7 +103,7 @@ export class AuthController {
     @Query('redirect_uri') redirectUri: string,
     @Res() res: Response,
   ) {
-    const stateAndRedirectUri = `${state}1#${redirectUri}`; // just preserving the scheme redirectUri to be used on auth/callback
+    const stateAndRedirectUri = `${state}#${redirectUri}`; // just preserving the scheme redirectUri to be used on auth/callback
     const params = new URLSearchParams({
       client_id: this.appleOauthConfig.clientID,
       redirect_uri: this.appleOauthConfig.callbackURL,
