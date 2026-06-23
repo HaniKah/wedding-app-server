@@ -100,14 +100,16 @@ export class AuthController {
   appleLogin(
     @Query('scope') scope: string,
     @Query('state') state: string,
+    @Query('redirect_uri') redirectUri: string,
     @Res() res: Response,
   ) {
+    const stateAndRedirectUri = `${state}1#${redirectUri}`; // just preserving the scheme redirectUri to be used on auth/callback
     const params = new URLSearchParams({
       client_id: this.appleOauthConfig.clientID,
       redirect_uri: this.appleOauthConfig.callbackURL,
       response_type: 'code',
-      scope: scope || 'name email',
-      state: state,
+      scope: scope,
+      state: stateAndRedirectUri,
       response_mode: 'form_post',
     } satisfies AppleAuthorizeRequestParams);
     return res.redirect(
@@ -121,13 +123,17 @@ export class AuthController {
   async appleCallback(
     @Req() req: Request,
     @Res() res: Response,
-    @Body('state') state: string,
+    @Body('state') stateAndRedirectUri: string,
   ): Promise<void> {
     const exchangeToken = await this.authService.generateExchangeToken(
       req.user.id,
     );
-    const params = new URLSearchParams({ exchangeToken, state });
-    return res.redirect(`${this.appleOauthConfig.appScheme}?${params}`);
+    const stateAndRedirectUriList: string[] = stateAndRedirectUri.split('#');
+    const params = new URLSearchParams({
+      exchangeToken,
+      state: stateAndRedirectUriList[0],
+    });
+    return res.redirect(`${stateAndRedirectUriList[1]}?${params}`);
   }
 
   @Public()
@@ -142,6 +148,7 @@ export class AuthController {
       req.user.id,
     );
     const params = new URLSearchParams({ exchangeToken, state });
+    //todo instead of manually using a redirect uri, the backend has to extract the directuri from request and preserve it somewhere in state or cookie, then use it when redirecting back to the app
     return res.redirect(`${this.googleOathConfig.appScheme}?${params}`);
   }
 
