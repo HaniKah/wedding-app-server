@@ -20,7 +20,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       clientID: googleConfiguration.clientID,
       clientSecret: googleConfiguration.clientSecret,
       callbackURL: googleConfiguration.callbackURL,
-      scope: ['email', 'profile'],
+      scope: ['openid', 'email', 'profile'],
       passReqToCallback: true,
     });
   }
@@ -29,7 +29,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
   authenticate(req: Request, options: AuthenticateOptions) {
     options.state = `${req.query.state as string}###${req.query.redirect_uri as string}`;
     options.prompt = 'select_account';
-    options.successRedirect = req.query.redirectUri as string;
     super.authenticate(req, options);
   }
 
