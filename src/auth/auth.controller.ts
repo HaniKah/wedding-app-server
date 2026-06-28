@@ -133,7 +133,6 @@ export class AuthController {
       exchangeToken,
       state: stateAndRedirectUriList[0],
     });
-    Logger.log(`Redirecting to ${stateAndRedirectUriList[1]}?${params}`);
     return res.redirect(`${stateAndRedirectUriList[1]}?${params}`);
   }
 
@@ -153,7 +152,6 @@ export class AuthController {
       exchangeToken,
       state: stateAndRedirectUriList[0],
     });
-    Logger.log(`Redirecting to ${stateAndRedirectUriList[1]}?${params}`);
     return res.redirect(`${stateAndRedirectUriList[1]}?${params}`);
   }
 
