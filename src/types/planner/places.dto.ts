@@ -4,6 +4,7 @@ import { Categories } from '../general/categories';
 import { CountryCode } from '../general/countries.dto';
 import { PlacesFeatures } from '../places/features.dto';
 import { IsOptional, IsString } from 'class-validator';
+import { HeroMediaItemDto } from './videos.dto';
 
 export class GetPlacesRequest {
   offset: number;
@@ -48,6 +49,10 @@ export class PlaceDetailsDto {
   // mainPhoto: string;
   // mainPhotoBlurhash?: string;
   photos: PlaceDetailsPhotos[];
+  // Ordered photo+video sequence for the listing's hero carousel — see
+  // PlannerService.getPlaceDetailsById for ordering rules (main photo first,
+  // then remaining photos/videos by recency).
+  heroMedia: HeroMediaItemDto[];
   maxPrice: string | undefined;
   minPrice: string | undefined;
   description: string;

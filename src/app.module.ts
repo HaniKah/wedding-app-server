@@ -11,6 +11,7 @@ import { UsersModule } from './users/users.module';
 import { PlacesModule } from './places/places.module';
 import { MinioModule } from './minio/minio.module';
 import { PhotosModule } from './photos/photos.module';
+import { VideosModule } from './videos/videos.module';
 
 import { PromotionsModule } from './promotions/promotions.module';
 import { AppVersionModule } from './app-version/app-version.module';
@@ -32,6 +33,7 @@ import { WebhooksModule } from './webhooks/webhooks.module';
     PlacesModule,
     MinioModule,
     PhotosModule,
+    VideosModule,
     AppVersionModule,
     PromotionsModule,
     WebhooksModule,

@@ -5,6 +5,7 @@ import { Users } from 'src/types/db/db';
 import { Role } from '../types/auth/auth.dto';
 import { PlansRepositoryService } from '../planner/plans.repository.service';
 import { PhotosService } from '../photos/photos.service';
+import { VideosService } from '../videos/videos.service';
 
 @Injectable()
 export class UsersService {
@@ -12,6 +13,7 @@ export class UsersService {
     private readonly dbService: DbService,
     private readonly plansRepositoryService: PlansRepositoryService,
     private readonly photosService: PhotosService,
+    private readonly videosService: VideosService,
   ) {}
 
   async updateUser(userId: number, data: Updateable<Users>) {
@@ -84,10 +86,14 @@ export class UsersService {
       .executeTakeFirst();
   }
   async deleteUser(userId: number) {
-    const objectKeys = await this.getAllObjectKeysByUserId(userId);
-    await Promise.all(
-      objectKeys.map((p) => this.photosService.deletePhoto(p.id)),
-    );
+    const [photoIds, videoIds] = await Promise.all([
+      this.getAllObjectKeysByUserId(userId),
+      this.getAllVideoIdsByUserId(userId),
+    ]);
+    await Promise.all([
+      ...photoIds.map((p) => this.photosService.deletePhoto(p.id)),
+      ...videoIds.map((v) => this.videosService.deleteVideo(v.id)),
+    ]);
 
     await this.dbService.db
       .deleteFrom('users')
@@ -99,6 +105,14 @@ export class UsersService {
       .selectFrom('places')
       .innerJoin('photos', 'places.id', 'photos.placeId')
       .select('photos.id')
+      .where('userId', '=', userId)
+      .execute();
+  }
+  private async getAllVideoIdsByUserId(userId: number) {
+    return await this.dbService.db
+      .selectFrom('places')
+      .innerJoin('videos', 'places.id', 'videos.placeId')
+      .select('videos.id')
       .where('userId', '=', userId)
       .execute();
   }
