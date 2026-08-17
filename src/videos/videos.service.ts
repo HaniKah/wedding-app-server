@@ -113,17 +113,18 @@ export class VideosService {
         );
       });
 
-      const posterSharp = sharp(posterPath);
-      const [blurhash, posterMeta] = await Promise.all([
-        generateBlurhash(posterSharp),
-        posterSharp.metadata(),
-      ]);
+      const { data: posterBuffer, info: posterInfo } = await sharp(posterPath)
+        .resize({ width: 800, withoutEnlargement: true, fit: 'inside' })
+        .webp({ quality: 82 })
+        .toBuffer({ resolveWithObject: true });
+
+      const blurhash = await generateBlurhash(sharp(posterBuffer));
 
       const ratio =
         probe.width && probe.height
           ? probe.width / probe.height
-          : posterMeta.width && posterMeta.height
-            ? posterMeta.width / posterMeta.height
+          : posterInfo.width && posterInfo.height
+            ? posterInfo.width / posterInfo.height
             : null;
 
       const objectKey = await this.uploadOriginal(
@@ -136,7 +137,7 @@ export class VideosService {
       const posterObjectKey = await this.uploadPoster(
         placeId,
         bucketName,
-        posterPath,
+        posterBuffer,
       );
 
       const created = await this.videosRepositoryService.createVideo({
@@ -269,17 +270,16 @@ export class VideosService {
   private async uploadPoster(
     placeId: number,
     bucketName: string,
-    posterPath: string,
+    posterBuffer: Buffer,
   ): Promise<string> {
-    const objectName = `${placeId}/video/poster/${v4()}.jpg`;
-    const stat = await fs.promises.stat(posterPath);
+    const objectName = `${placeId}/video/poster/${v4()}.webp`;
 
     await this.minioService.minio.putObject(
       bucketName,
       objectName,
-      fs.createReadStream(posterPath),
-      stat.size,
-      { contentType: 'image/jpeg' },
+      posterBuffer,
+      posterBuffer.length,
+      { contentType: 'image/webp' },
     );
     return objectName;
   }
