@@ -15,6 +15,8 @@ import { Categories } from '../types/general/categories';
 import { FavoritePlaceDto } from '../types/planner/favorites.dto';
 import { normalizePlacesFeatures } from '../types/places/features.dto';
 import { Money } from '../common/Money';
+import { VideosService } from '../videos/videos.service';
+import { HeroMediaItemDto, HeroMediaType } from '../types/planner/videos.dto';
 
 @Injectable()
 export class PlannerService {
@@ -22,6 +24,7 @@ export class PlannerService {
     private readonly plansRepositoryService: PlansRepositoryService,
     private readonly plannerRepositoryService: PlannerRepositoryService,
     private readonly photosService: PhotosService,
+    private readonly videosService: VideosService,
   ) {}
 
   public async updateWeddingDate(userId: number, date: Date): Promise<void> {
@@ -94,10 +97,10 @@ export class PlannerService {
     const place =
       await this.plannerRepositoryService.getPlaceByIdOrThrow(placeId);
 
-    const allPhotos = await this.photosService.getPhotosByPlaceId(
-      place.id,
-      PhotoSize.Medium,
-    );
+    const [allPhotos, allVideos] = await Promise.all([
+      this.photosService.getPhotosByPlaceId(place.id, PhotoSize.Medium),
+      this.videosService.getVideosByPlaceId(place.id),
+    ]);
     const photosWithBlurHash = allPhotos.map((photo) => ({
       url: photo.uri,
       blurhash: photo.blurhash,
@@ -118,6 +121,7 @@ export class PlannerService {
       // mainPhoto: mainPhoto?.uri,
       // mainPhotoBlurhash: mainPhoto?.blurhash,
       photos: photosWithBlurHash,
+      heroMedia: this.buildHeroMedia(allPhotos, allVideos),
       maxPrice: place.maxPrice
         ? new Money(place.maxPrice).getFormatted()
         : undefined,
@@ -131,6 +135,41 @@ export class PlannerService {
       features: normalizePlacesFeatures(place.step, place.features),
     };
   }
+
+  // Interleaves photos and videos into one ordered sequence for the listing's
+  // hero carousel: the item flagged main (photo or video) leads, followed by
+  // the remaining photos and remaining videos in the order their own services
+  // already return them (each is main-first / most-recent-first).
+  private buildHeroMedia(
+    photos: Awaited<ReturnType<PhotosService['getPhotosByPlaceId']>>,
+    videos: Awaited<ReturnType<VideosService['getVideosByPlaceId']>>,
+  ): HeroMediaItemDto[] {
+    const photoItems: HeroMediaItemDto[] = photos.map((p) => ({
+      id: p.id,
+      type: HeroMediaType.Photo,
+      uri: p.uri,
+      posterUri: null,
+      blurhash: p.blurhash,
+      ratio: p.ratio,
+      isMain: p.isMain,
+    }));
+    const videoItems: HeroMediaItemDto[] = videos.map((v) => ({
+      id: v.id,
+      type: HeroMediaType.Video,
+      uri: v.uri,
+      posterUri: v.posterUri,
+      blurhash: v.blurhash,
+      ratio: v.ratio,
+      isMain: v.isMain,
+    }));
+
+    const main = [...photoItems, ...videoItems].find((m) => m.isMain);
+    const rest = [...photoItems, ...videoItems].filter(
+      (m) => !(main && m.type === main.type && m.id === main.id),
+    );
+    return main ? [main, ...rest] : rest;
+  }
+
   public async getFavorites(id: number): Promise<FavoritePlaceDto> {
     try {
       const p = await this.plannerRepositoryService.getPlaceByIdOrThrow(id);

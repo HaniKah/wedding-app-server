@@ -9,11 +9,11 @@ import { PhotosRepositoryService } from './photos.repository.service';
 import sharp, { OutputInfo } from 'sharp';
 import { PhotosDto } from '../types/planner/photos.dto';
 import { BucketName, PhotoSize } from '../types/photos/photos.dto';
-import { encode } from 'blurhash';
 import { GoogleVisionApiService } from '../google-api/google-vision-api.service';
 import PhotosConfig from './config/photos.config';
 import type { ConfigType } from '@nestjs/config';
 import { v4 } from 'uuid';
+import { generateBlurhash } from '../common/blurhash.util';
 
 export interface PhotoWithBlurhash {
   uri: string;
@@ -124,7 +124,7 @@ export class PhotosService {
 
     const [isApproved, blurhash, created] = await Promise.all([
       this.googleVisionApiService.isApproved(visionPreview.toString('base64')),
-      this.generateBlurhash(decoded),
+      generateBlurhash(decoded),
       this.photosRepositoryService.createPhoto({
         placeId: placeId,
         bucketName: bucketName,
@@ -285,16 +285,5 @@ export class PhotosService {
     await this.photosRepositoryService.createPhotoVariants(images);
     const thumbnail = images.find((i) => i.variant === PhotoSize.Thumbnail);
     return { objectKey: thumbnail.objectKey, ratio: thumbnail.ratio };
-  }
-
-  private async generateBlurhash(decoded: sharp.Sharp): Promise<string> {
-    const { data, info } = await decoded
-      .clone()
-      .raw()
-      .ensureAlpha()
-      .resize(32, 32, { fit: 'inside' })
-      .toBuffer({ resolveWithObject: true });
-
-    return encode(new Uint8ClampedArray(data), info.width, info.height, 4, 4);
   }
 }

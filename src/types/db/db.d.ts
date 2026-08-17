@@ -117,6 +117,22 @@ export interface Users {
   updatedAt: Timestamp | null;
 }
 
+export interface Videos {
+  blurhash: string | null;
+  bucketName: string;
+  createdAt: Generated<Timestamp>;
+  deletedAt: Timestamp | null;
+  durationMs: number | null;
+  fileSize: number;
+  id: Generated<number>;
+  main: boolean | null;
+  mimeType: string;
+  objectKey: string;
+  placeId: number;
+  posterObjectKey: string | null;
+  ratio: number | null;
+}
+
 export interface DB {
   emailOtps: EmailOtps;
   guests: Guests;
@@ -126,4 +142,5 @@ export interface DB {
   plans: Plans;
   promotions: Promotions;
   users: Users;
+  videos: Videos;
 }
