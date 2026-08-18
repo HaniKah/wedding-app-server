@@ -1,6 +1,5 @@
 import {
   BadRequestException,
-  ForbiddenException,
   Inject,
   Injectable,
   InternalServerErrorException,
@@ -90,15 +89,17 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new BadRequestException('Invalid password, try again!');
     }
+    //todo : this deactivates the email verification
 
-    if (!user.emailVerified) {
-      await this.sendVerificationCode(user.id, user.email);
-      throw new ForbiddenException({
-        message: 'Email not verified. A new verification code has been sent.',
-        requiresVerification: true,
-        email: user.email,
-      });
-    }
+    // TEMPORARILY DISABLED: email verification requirement
+    // if (!user.emailVerified) {
+    //   await this.sendVerificationCode(user.id, user.email);
+    //   throw new ForbiddenException({
+    //     message: 'Email not verified. A new verification code has been sent.',
+    //     requiresVerification: true,
+    //     email: user.email,
+    //   });
+    // }
 
     return await this.login(user.id);
   }
