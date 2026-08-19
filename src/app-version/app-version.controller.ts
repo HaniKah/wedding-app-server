@@ -10,5 +10,6 @@ export class AppVersionController {
   @Get('getConfig')
   getConfig(): VersionDto {
     return this.appVersionService.getConfig();
+    //this is just a comment
   }
 }
