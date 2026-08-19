@@ -40,6 +40,11 @@ export class CreatePlaceRequest {
   placeInfo: PlaceInfo;
 }
 
+export class AdminCreatePlaceRequest {
+  userId: number;
+  placeInfo: PlaceInfo;
+}
+
 export class VendorPlaceViewModel {
   published: {
     title: string;
@@ -70,7 +75,19 @@ export class VendorPlaceDto {
   category: Categories;
 }
 
-class PlaceInfo {
+export class AdminPlaceDto {
+  id: number;
+  userId: number;
+  name: string;
+  @ApiProperty({ enum: Categories, enumName: 'Categories' })
+  category: Categories;
+  city: string;
+  @ApiProperty({ enum: CountryCode, enumName: 'CountryCode' })
+  country: CountryCode;
+  isPublished: boolean;
+}
+
+export class PlaceInfo {
   name: string;
   phoneNumber: string;
   @ApiProperty({ enum: Categories, enumName: 'Categories' })

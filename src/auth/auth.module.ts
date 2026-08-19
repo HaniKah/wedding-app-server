@@ -12,6 +12,7 @@ import { RefreshJwtStrategy } from '../strategies/refresh.strategy';
 import exchangeJwtConfig from './config/exchange-jwt.config';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
+import { RolesGuard } from './guards/roles/roles.guard';
 import webhookJwtConfig from './config/webhook-jwt.config';
 import { WebhookJwtStrategy } from '../strategies/webhook-jwt.strategy';
 import appleOauthConfig from './config/appleOauth.config';
@@ -33,10 +34,10 @@ import { EmailOtpRepositoryService } from './email-otp.repository.service';
       provide: APP_GUARD,
       useClass: JwtAuthGuard, //@UseGuards(JwtAuthGuard) applied on all API endppints
     },
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: RolesGuard,
-    // },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
   ],
   controllers: [AuthController],
   imports: [

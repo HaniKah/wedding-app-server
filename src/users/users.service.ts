@@ -65,6 +65,42 @@ export class UsersService {
       .executeTakeFirst();
   }
 
+  async findAllUsers() {
+    return await this.dbService.db
+      .selectFrom('users')
+      .select([
+        'id',
+        'firstName',
+        'lastName',
+        'email',
+        'role',
+        'googleId',
+        'appleId',
+        'emailVerified',
+        'createdAt',
+      ])
+      .orderBy('id', 'desc')
+      .execute();
+  }
+
+  async findAdminUserById(id: number) {
+    return await this.dbService.db
+      .selectFrom('users')
+      .select([
+        'id',
+        'firstName',
+        'lastName',
+        'email',
+        'role',
+        'googleId',
+        'appleId',
+        'emailVerified',
+        'createdAt',
+      ])
+      .where('id', '=', id)
+      .executeTakeFirst();
+  }
+
   async createUser(user: Insertable<Users>) {
     const userId = await this.dbService.db
       .insertInto('users')

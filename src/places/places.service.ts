@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import {
+  AdminPlaceDto,
   CreatePlaceRequest,
   UpdatePlaceRequest,
   UpdateStep,
@@ -12,6 +13,8 @@ import { PhotosService } from '../photos/photos.service';
 import { PhotoSize } from '../types/photos/photos.dto';
 import { normalizePlacesFeatures } from '../types/places/features.dto';
 import { Money } from '../common/Money';
+import { Categories } from '../types/general/categories';
+import { CountryCode } from '../types/general/countries.dto';
 
 @Injectable()
 export class PlacesService {
@@ -105,6 +108,37 @@ export class PlacesService {
       isPublished: true,
     });
     return await this.getPlaceDetails(placeRecord.id);
+  }
+
+  public async getAllPlaces(): Promise<AdminPlaceDto[]> {
+    const places = await this.placesRepositoryService.getAllPlaces();
+    return places.map(this.toAdminPlaceDto);
+  }
+
+  public async getAllPlacesByUserId(userId: number): Promise<AdminPlaceDto[]> {
+    const places =
+      await this.placesRepositoryService.getAllPlacesByUserId(userId);
+    return places.map(this.toAdminPlaceDto);
+  }
+
+  private toAdminPlaceDto(p: {
+    id: number;
+    userId: number;
+    name: string;
+    step: Categories;
+    city: string;
+    country: CountryCode;
+    isPublished: boolean;
+  }): AdminPlaceDto {
+    return {
+      id: p.id,
+      userId: p.userId,
+      name: p.name,
+      category: p.step,
+      city: p.city,
+      country: p.country,
+      isPublished: p.isPublished,
+    };
   }
 
   public async getPlaces(userId: number): Promise<VendorPlaceViewModel> {

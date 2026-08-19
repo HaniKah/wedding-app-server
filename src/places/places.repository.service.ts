@@ -30,6 +30,14 @@ export class PlacesRepositoryService {
       .returning('id')
       .executeTakeFirst();
   }
+  public async getAllPlaces() {
+    return await this.db.db
+      .selectFrom('places')
+      .selectAll()
+      .where('deletedAt', 'is', null)
+      .orderBy('id', 'desc')
+      .execute();
+  }
   public async getAllPlacesByUserId(userId: number) {
     const now = new Date();
     return await this.db.db

@@ -16,6 +16,7 @@ import { VideosModule } from './videos/videos.module';
 import { PromotionsModule } from './promotions/promotions.module';
 import { AppVersionModule } from './app-version/app-version.module';
 import { WebhooksModule } from './webhooks/webhooks.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { WebhooksModule } from './webhooks/webhooks.module';
     AppVersionModule,
     PromotionsModule,
     WebhooksModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],
