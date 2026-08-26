@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { RequestMethod } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as process from 'node:process';
@@ -7,7 +8,11 @@ import session from 'express-session';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api', {
+    exclude: [
+      { path: '.well-known/assetlinks.json', method: RequestMethod.ALL },
+    ],
+  });
 
   //todo : swagger openApi is running in production also , which is not ideal , change following :
   // 1. uninstall swagger , install using --save-dev

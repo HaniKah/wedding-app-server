@@ -1,7 +1,7 @@
 # Graph Report - wedding-app-server  (2026-08-26)
 
 ## Corpus Check
-- 143 files · ~19,998 words
+- 143 files · ~19,983 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -55,7 +55,7 @@
 - decimal.js
 - axios
 - eslint-config-prettier
-- argon2
+- @eslint/js
 - eslint-plugin-prettier
 - express-session
 - globals
@@ -67,7 +67,7 @@
 - minio
 - @nestjs/axios
 - @nestjs/cli
-- eslint
+- @nestjs/common
 - @nestjs/config
 - @nestjs/core
 - @nestjs/jwt
@@ -232,11 +232,11 @@ Nodes (9): Categories, GeneratePackagesRequest, PackagesDto, ApiProperty, Update
 
 ### Community 23 - "dependencies"
 Cohesion: 0.22
-Nodes (9): class-validator, ffmpeg-static, @nestjs/common, dependencies, class-validator, ffmpeg-static, @nestjs/common, passport (+1 more)
+Nodes (9): argon2, class-validator, ffmpeg-static, dependencies, argon2, class-validator, ffmpeg-static, passport (+1 more)
 
 ### Community 24 - "devDependencies"
 Cohesion: 0.22
-Nodes (9): @eslint/js, devDependencies, @eslint/js, @types/jest, @types/passport-apple, @types/passport-google-oauth20, @types/jest, @types/passport-apple (+1 more)
+Nodes (9): eslint, devDependencies, eslint, @types/jest, @types/passport-apple, @types/passport-google-oauth20, @types/jest, @types/passport-apple (+1 more)
 
 ### Community 25 - "exclude"
 Cohesion: 0.25

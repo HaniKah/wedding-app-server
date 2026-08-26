@@ -1479,7 +1479,7 @@
       "label": "WellKnownController",
       "file_type": "code",
       "source_file": "src/auth/well-known.controller.ts",
-      "source_location": "L7",
+      "source_location": "L5",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
@@ -5016,7 +5016,7 @@
       "label": ".getAssetLinks()",
       "file_type": "code",
       "source_file": "src/auth/well-known.controller.ts",
-      "source_location": "L17",
+      "source_location": "L8",
       "_callable": true,
       "_origin": "ast",
       "id": "src_auth_well_known_controller_wellknowncontroller_getassetlinks",
@@ -6941,6 +6941,17 @@
       "norm_label": "dependencies"
     },
     {
+      "label": "argon2",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L37",
+      "_origin": "ast",
+      "id": "package_dependencies_argon2",
+      "community": 23,
+      "community_name": "dependencies",
+      "norm_label": "argon2"
+    },
+    {
       "label": "class-validator",
       "file_type": "code",
       "source_file": "package.json",
@@ -6963,17 +6974,6 @@
       "norm_label": "ffmpeg-static"
     },
     {
-      "label": "@nestjs/common",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L30",
-      "_origin": "ast",
-      "id": "package_dependencies_nestjs_common",
-      "community": 23,
-      "community_name": "dependencies",
-      "norm_label": "@nestjs/common"
-    },
-    {
       "label": "passport",
       "file_type": "code",
       "source_file": "package.json",
@@ -6983,6 +6983,17 @@
       "community": 23,
       "community_name": "dependencies",
       "norm_label": "passport"
+    },
+    {
+      "label": "argon2",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L37",
+      "_origin": "ast",
+      "id": "argon2",
+      "community": 23,
+      "community_name": "dependencies",
+      "norm_label": "argon2"
     },
     {
       "label": "class-validator",
@@ -7007,17 +7018,6 @@
       "norm_label": "ffmpeg-static"
     },
     {
-      "label": "@nestjs/common",
-      "file_type": "concept",
-      "source_file": "package.json",
-      "source_location": "L30",
-      "_origin": "ast",
-      "id": "nestjs_common",
-      "community": 23,
-      "community_name": "dependencies",
-      "norm_label": "@nestjs/common"
-    },
-    {
       "label": "passport",
       "file_type": "concept",
       "source_file": "package.json",
@@ -7040,15 +7040,15 @@
       "norm_label": "devdependencies"
     },
     {
-      "label": "@eslint/js",
+      "label": "eslint",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L64",
+      "source_location": "L79",
       "_origin": "ast",
-      "id": "package_devdependencies_eslint_js",
+      "id": "package_devdependencies_eslint",
       "community": 24,
       "community_name": "devDependencies",
-      "norm_label": "@eslint/js"
+      "norm_label": "eslint"
     },
     {
       "label": "@types/jest",
@@ -7084,15 +7084,15 @@
       "norm_label": "@types/passport-google-oauth20"
     },
     {
-      "label": "@eslint/js",
+      "label": "eslint",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L64",
+      "source_location": "L79",
       "_origin": "ast",
-      "id": "eslint_js",
+      "id": "eslint",
       "community": 24,
       "community_name": "devDependencies",
-      "norm_label": "@eslint/js"
+      "norm_label": "eslint"
     },
     {
       "label": "@types/jest",
@@ -8987,26 +8987,26 @@
       "norm_label": "eslint-config-prettier"
     },
     {
-      "label": "argon2",
+      "label": "@eslint/js",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L37",
+      "source_location": "L64",
       "_origin": "ast",
-      "id": "package_dependencies_argon2",
+      "id": "package_devdependencies_eslint_js",
       "community": 42,
-      "community_name": "argon2",
-      "norm_label": "argon2"
+      "community_name": "@eslint/js",
+      "norm_label": "@eslint/js"
     },
     {
-      "label": "argon2",
+      "label": "@eslint/js",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L37",
+      "source_location": "L64",
       "_origin": "ast",
-      "id": "argon2",
+      "id": "eslint_js",
       "community": 42,
-      "community_name": "argon2",
-      "norm_label": "argon2"
+      "community_name": "@eslint/js",
+      "norm_label": "@eslint/js"
     },
     {
       "label": "eslint-plugin-prettier",
@@ -9438,26 +9438,26 @@
       "norm_label": "@nestjs/cli"
     },
     {
-      "label": "eslint",
+      "label": "@nestjs/common",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L79",
+      "source_location": "L30",
       "_origin": "ast",
-      "id": "package_devdependencies_eslint",
+      "id": "package_dependencies_nestjs_common",
       "community": 55,
-      "community_name": "eslint",
-      "norm_label": "eslint"
+      "community_name": "@nestjs/common",
+      "norm_label": "@nestjs/common"
     },
     {
-      "label": "eslint",
+      "label": "@nestjs/common",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L79",
+      "source_location": "L30",
       "_origin": "ast",
-      "id": "eslint",
+      "id": "nestjs_common",
       "community": 55,
-      "community_name": "eslint",
-      "norm_label": "eslint"
+      "community_name": "@nestjs/common",
+      "norm_label": "@nestjs/common"
     },
     {
       "label": "@nestjs/config",
@@ -12927,7 +12927,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "src/auth/well-known.controller.ts",
-      "source_location": "L6",
+      "source_location": "L4",
       "weight": 1.0,
       "context": "decorator",
       "_origin": "ast",
@@ -12939,7 +12939,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "src/auth/well-known.controller.ts",
-      "source_location": "L15",
+      "source_location": "L6",
       "weight": 1.0,
       "context": "decorator",
       "_origin": "ast",
@@ -12951,7 +12951,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "src/auth/well-known.controller.ts",
-      "source_location": "L16",
+      "source_location": "L7",
       "weight": 1.0,
       "context": "decorator",
       "_origin": "ast",
@@ -17788,7 +17788,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/auth/well-known.controller.ts",
-      "source_location": "L4",
+      "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_auth_well_known_controller",
@@ -21544,7 +21544,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/auth/well-known.controller.ts",
-      "source_location": "L4",
+      "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_auth_well_known_controller",
@@ -26881,7 +26881,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/auth/well-known.controller.ts",
-      "source_location": "L7",
+      "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_auth_well_known_controller",
@@ -29783,7 +29783,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "src/auth/well-known.controller.ts",
-      "source_location": "L17",
+      "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_auth_well_known_controller_wellknowncontroller",
