@@ -21,7 +21,6 @@ import { UsersModule } from '../users/users.module';
 import { PlannerModule } from '../planner/planner.module';
 import { EmailModule } from '../email/email.module';
 import { EmailOtpRepositoryService } from './email-otp.repository.service';
-import { WellKnownController } from './well-known.controller';
 
 @Module({
   providers: [
@@ -40,7 +39,7 @@ import { WellKnownController } from './well-known.controller';
       useClass: RolesGuard,
     },
   ],
-  controllers: [AuthController, WellKnownController],
+  controllers: [AuthController],
   imports: [
     JwtModule.registerAsync(jwtConfig.asProvider()),
     ConfigModule.forFeature(jwtConfig),
